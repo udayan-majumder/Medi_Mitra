@@ -1,8 +1,27 @@
 #client
+# Dependencies
+**/node_modules/
 
-client/node_modules
-client/.env
+# Environment files
+**/.env*
 
+# Next.js build outputs
+**/.next/
+**/out/
+**/build/
+
+# Capacitor build outputs
+**/android/app/build/
+**/android/.gradle/
+**/android/local.properties
+**/ios/App/build/
+**/ios/App/Pods/
+
+# IDE and OS
+.DS_Store
+**/.vscode/
+**/.idea/
+**/*.log
 # backend
 
 backend/node_modules
