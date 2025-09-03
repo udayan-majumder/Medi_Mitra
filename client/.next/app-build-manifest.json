@@ -1,0 +1,22 @@
+{
+  "pages": {
+    "/page": [
+      "static/chunks/c49cf_next_dist_4137b3ff._.js",
+      "static/chunks/Documents_Projects_Medi_Mitra_client_src_app_favicon_ico_mjs_938b6d80._.js",
+      "static/chunks/[root-of-the-server]__cccda264._.css",
+      "static/chunks/Documents_Projects_Medi_Mitra_client_src_app_layout_e1768908.js",
+      "static/chunks/c49cf_next_dist_client_components_builtin_global-error_c1720d11.js",
+      "static/chunks/c49cf_next_dist_c89dd082._.js",
+      "static/chunks/Documents_Projects_Medi_Mitra_client_src_app_page_c1720d11.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_a5df1d55._.js",
+      "static/chunks/c49cf_next_dist_compiled_react-dom_dd4da199._.js",
+      "static/chunks/c49cf_next_dist_compiled_next-devtools_index_e824a77b.js",
+      "static/chunks/c49cf_next_dist_compiled_1b0eedd3._.js",
+      "static/chunks/c49cf_next_dist_client_7a88b514._.js",
+      "static/chunks/c49cf_next_dist_06c538d4._.js",
+      "static/chunks/c49cf_@swc_helpers_cjs_de681878._.js",
+      "static/chunks/Documents_Projects_Medi_Mitra_client_a0ff3932._.js",
+      "static/chunks/turbopack-Documents_Projects_Medi_Mitra_client_08eead8b._.js"
+    ]
+  }
+}

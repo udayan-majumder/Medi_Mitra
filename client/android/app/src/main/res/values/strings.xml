@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">medimitra</string>
+    <string name="title_activity_main">medimitra</string>
+    <string name="package_name">com.medimitra.app</string>
+    <string name="custom_url_scheme">com.medimitra.app</string>
+</resources>
