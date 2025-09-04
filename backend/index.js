@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import RegisterRoute from "./routes/register.routes.js"
+import MedicineRouter from "./routes/medicine.routes.js"
 import cors from "cors"
 
 dotenv.config()
@@ -14,7 +15,7 @@ app.use(cors())
 
 
 app.use("/user",RegisterRoute)
-
+app.use("/medicine",MedicineRouter)
 
 app.listen(PORT,()=>{
     console.log(`server is running on localhost:${PORT}`)
