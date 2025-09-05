@@ -1,6 +1,6 @@
 import {Router} from "express"
 import { MiddleWareFunction } from "../middleware/verifytoken.middleware.js";
-import UserDetailsFunction from "../controllers/userdetails.controllers.js";
+import UserDetailsFunction from "../controllers/userdetails.controller.js";
 
 const router = Router()
  
