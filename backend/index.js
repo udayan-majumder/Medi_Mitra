@@ -1,10 +1,10 @@
 import express from "express"
 import dotenv from "dotenv"
-import RegisterRoute from "./routes/register.routes.js"
-import MedicineRouter from "./routes/medicine.routes.js"
-import LoginRoute from "./routes/login.routes.js"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import userRouter from "./routes/user.routes.js"
+import medicineRouter from "./routes/medicine.routes.js"
+import pharmacyRouter from "./routes/pharmacy.routes.js"
 dotenv.config()
 
 const app = express()
@@ -22,11 +22,13 @@ app.use(cookieParser())
 
 
 // User Routes 
-app.use("/user",RegisterRoute)
-app.use("/user",LoginRoute)
+app.use("/user",userRouter)
 
 //medicine route
-app.use("/medicine",MedicineRouter)
+app.use("/medicine",medicineRouter)
+
+//pharmacy route
+app.use("/pharmacy",pharmacyRouter)
 
 app.listen(PORT,()=>{
     console.log(`server is running on localhost:${PORT}`)
