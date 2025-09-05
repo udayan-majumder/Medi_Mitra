@@ -9,7 +9,7 @@ const RegisterFunction = async (req, res) => {
     const isUserExsists = await CheckUserFunction(email, type);
 
     if (isUserExsists) {
-      return res.status(400).json({ message: "user exsists" });
+      return res.status(400).json({ message: "user exists" });
     }
 
     const hassPassword = await bcrypt.hash(password, 10);

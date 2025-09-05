@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { fetchAllMedicines } from "../controllers/medicine.controller";
+import { fetchAllMedicines } from "../controllers/medicine.controller.js";
 
-const MedicineRouter = Router();
+const medicineRouter = Router();
 
-MedicineRouter.get("/fetch", fetchAllMedicines);
+medicineRouter.get("/fetch", fetchAllMedicines);
 
-export default MedicineRouter;
+export default medicineRouter;

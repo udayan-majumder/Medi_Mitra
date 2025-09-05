@@ -53,3 +53,18 @@ export const AddPatientFunction = async (id, diseases =[], age=null) => {
     }
   } catch (err) {}
 };
+
+export const checkUserById = async (id) => {
+  try {
+    const isUserExsists = await pool.query(
+      "SELECT * FROM userinfo WHERE id=$1",
+      [id]
+    );
+    if (isUserExsists.rows.length > 0) {
+      return isUserExsists.rows[0];
+    }
+    return false;
+  } catch (err) {
+    throw err;
+  }
+};
