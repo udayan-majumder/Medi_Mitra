@@ -9,19 +9,19 @@ const LoginFunction = async (req, res) => {
     const isUserExsists = await CheckUserFunction(email, type);
 
     if (!isUserExsists) {
-      return res.status(400).json({ message: "user does not exsists" });
+      return res.status(400).json({ "user":false});
     }
 
     const hassPassword = isUserExsists.password;
     const isPasswordMatch = await bcrypt.compare(password, hassPassword);
 
     if (!isPasswordMatch) {
-      return res.status(400).json({ message: "Password does not match" });
+      return res.status(400).json({ "correctpass":false });
     }
 
     const token = GenerateToken(isUserExsists);
     if (!token) {
-      return res.status(400).json({ message: "error in token generation" });
+      return res.status(400).json({ "tokengenerated": false });
     }
 
     res.cookie("token", token, {
