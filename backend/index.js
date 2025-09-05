@@ -1,5 +1,8 @@
 import express from "express"
 import dotenv from "dotenv"
+import UserDetailsRoute from "./routes/userdetails.routes.js"
+
+
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import userRouter from "./routes/user.routes.js"
@@ -20,8 +23,10 @@ app.use(cors({
 }))
 app.use(cookieParser())
 
-
 // User Routes 
+
+app.use("/user",UserDetailsRoute)
+
 app.use("/user",userRouter)
 
 //medicine route

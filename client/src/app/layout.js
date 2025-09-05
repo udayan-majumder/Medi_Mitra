@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import Wrapper from "@/hooks/userauth.hooks";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,12 +21,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Wrapper>
+          {children}
+        </Wrapper>
       </body>
     </html>
+
   );
 }
+
+
+
