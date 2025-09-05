@@ -3,11 +3,11 @@ import Image from "next/image";
 import CapacitorInfoStore from "../store/capacitorInfo"
 import { Capacitor } from "@capacitor/core";
 import { useEffect } from "react";
-
+import { UserStore } from "@/hooks/userauth.hooks";
 
 export default function Home() {
  const {IsMobileView,setIsMobileView} = CapacitorInfoStore()
-
+ const {User,setUser} = UserStore()
 
  useEffect(()=>{
   if(Capacitor.isNativePlatform()){
