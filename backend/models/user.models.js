@@ -7,7 +7,7 @@ export const CheckUserFunction = async (email, type) => {
       [email, type]
     );
     if (isUserExsists.rows.length > 0) {
-      return true;
+      return isUserExsists.rows[0];
     }
     return false;
   } catch (err) {
