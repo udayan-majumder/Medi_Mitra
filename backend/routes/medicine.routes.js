@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { fetchAllMedicines } from "../models/medicine.models.js";
+import { fetchAllMedicines } from "../controllers/medicine.controller";
 
 const MedicineRouter = Router();
 
