@@ -21,3 +21,19 @@ export const GenerateToken = (payload) => {
     console.log("error", e);
   }
 };
+
+export const ValidateToken = (payload) => {
+  try {
+    const isValidToken = jwt.verify(payload, process.env.JWT_SECRET)
+    if (isValidToken.id) {
+      return isValidToken;
+    }
+    return false
+  }
+  catch (e) {
+    if(e.name==="TokenExpiredError"){
+      return {expired:true}
+    }
+  }
+}
+
