@@ -25,8 +25,6 @@ app.use(cookieParser())
 
 // User Routes 
 
-app.use("/user",UserDetailsRoute)
-
 app.use("/user",userRouter)
 
 //medicine route
