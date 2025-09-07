@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-import CapacitorInfoStore from "../store/capacitorInfo"
+import CapacitorInfoStore from "../store/capacitorInfo.store"
 import { Capacitor } from "@capacitor/core";
 import { useEffect } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
