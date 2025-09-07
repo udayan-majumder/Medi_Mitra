@@ -6,7 +6,7 @@ import {
     useState,
     useEffect,
 } from "react";
-import axios from "axios";
+import { GetUserDetails } from "@/services/user.services";
 
 export const UserContext = createContext(null);
 
@@ -22,24 +22,12 @@ const Wrapper = ({ children }) => {
     const [User, setUser] = useState(null);
     const [LanguageType, setLanguageType] = useState(null);
 
-    const GetUserDetails = async () => {
-        try {
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_SERVER_URL}/user/userdetails`,
-                {
-                    withCredentials: true,
-                }
-            );
-            if (res?.data?.id) {
-                setUser(res?.data);
-            }
-        } catch (e) {
-            setUser(null);
-        }
-    };
+   
 
     useEffect(() => {
-        GetUserDetails();
+        const res = GetUserDetails();
+        setUser(res)
+
         const Ltype = localStorage.getItem("languagetype");
         if (!Ltype) {
             setLanguageType("english");
