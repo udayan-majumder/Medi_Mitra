@@ -3,7 +3,7 @@
 import React from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock,Eye,EyeOff } from "lucide-react";
 import { useState } from "react";
 import {useRouter} from "next/navigation";
 import { LoginHandler } from "@/services/user.services";
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [UserType, setUserType] = useState("patient");
+  const [showPassword,setshowPassword] = useState(false)
   const router = useRouter()
 
   
@@ -98,7 +99,7 @@ export default function LoginPage() {
               )}
 
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={Password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={Language?.[LanguageType]?.Password}
@@ -106,6 +107,15 @@ export default function LoginPage() {
                focus:border-green-700 focus:ring-1 focus:ring-green-500 text-gray-800 pl-10 outline-none"
                 required
               />
+
+              {
+                  <button
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  onClick={()=> showPassword ? setshowPassword(false) : setshowPassword(true)}
+                >
+                  {showPassword ? <Eye/> : <EyeOff/>}
+                </button>
+              }
             </div>
 
             {/* Forgot Password*/}

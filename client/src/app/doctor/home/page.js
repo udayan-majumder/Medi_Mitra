@@ -1,6 +1,9 @@
 
 export default function Home(){
     return(
-        <div>doctor homepage</div>
+        <div className="h-screen w-full">
+            
+            doctor homepage
+            </div>
     )
 }
