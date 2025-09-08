@@ -22,12 +22,13 @@ const Wrapper = ({ children }) => {
     const [User, setUser] = useState(null);
     const [LanguageType, setLanguageType] = useState(null);
 
-   
+    const handleUser = async()=>{
+        const res = await GetUserDetails();
+        setUser(res)
+    }
 
     useEffect(() => {
-        const res = GetUserDetails();
-        setUser(res)
-
+        handleUser()
         const Ltype = localStorage.getItem("languagetype");
         if (!Ltype) {
             setLanguageType("english");

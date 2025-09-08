@@ -6,13 +6,15 @@ import { LanguageStore } from "@/store/Dictionary.store";
 import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import {useRouter} from "next/navigation";
-import axios from "axios";
-
+import { LoginHandler } from "@/services/user.services";
+import toast,{Toaster} from "react-hot-toast";
+import CapacitorInfoStore from "@/store/capacitorInfo.store";
 
 export default function LoginPage() {
   {/*Store variables */}
-  const { LanguageType } = UserStore();
+  const { LanguageType,setUser } = UserStore();
   const { Language } = LanguageStore();
+  const {IsMobileView} =CapacitorInfoStore()
 
   {/*Custom Hooks */}
   const [Email, setEmail] = useState("");
@@ -21,24 +23,43 @@ export default function LoginPage() {
   const router = useRouter()
 
   
+  const handleSubmit = async(e) =>{
+    e.preventDefault()
+    try{
+      toast.loading("authenticating")
+      const res = await LoginHandler(Email,Password,UserType)
+      
+      if(res?.errortype){
+        toast.dismissAll()  
+        return toast.error("invalid email / password")
+      }
+       
+        setTimeout(()=>{
+       toast.dismissAll()  
+       toast.success("Login succesfull") 
+       },1000)
 
-
-  
-
-
-
-
+       setTimeout(()=>{
+       setUser(res)
+       },2000)
+      
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
 
   return (
-    <div className="h-screen w-full bg-white flex flex-row items-center poppins tracking-wide">
+    <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
+      <Toaster/>
       {/*image vector green curve */}
-      <div className="h-full w-[40%]">
+      <div className="h-[20%] sm:h-full w-full sm:w-[40%]">
         <img src="/green-arc-desktop.png" className="h-screen w-full" />
       </div>
 
       {/* Login Box */}
-      <div className="h-full w-[60%] flex justify-center items-center poppins">
-        <div className=" h-[70%] w-[50%] bg-white rounded-xl shadow-xl p-8 flex flex-col justify-center items-center space-y-5">
+      <div className="h-[80%] sm:h-full w-full sm:w-[60%] flex justify-center items-center poppins">
+        <div className="h-full sm:h-[70%] w-full sm:w-[50%] bg-white rounded-none sm:rounded-xl shadow-xl p-8 flex flex-col justify-center items-center space-y-5">
           {/*Medicare Logo */}
           <img src="/logo.png" className="h-24" />
           <button className="text-gray-500 text-center text-sm cursor-pointer hover:text-black hover:border-b-1" onClick={()=>{
@@ -48,7 +69,7 @@ export default function LoginPage() {
           </button>
 
           {/*Input Button Container */}
-          <form className="mt-6 space-y-5 flex flex-col justify-center items-center w-[90%]">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-5 flex flex-col justify-center items-center w-[90%]">
             {/* Email Input Container*/}
             <div className="relative space-x-2">
               {Email.length > 0 ? null : (
@@ -102,7 +123,9 @@ export default function LoginPage() {
             <div className="w-full max-w-md mx-auto">
               <div className="flex justify-center items-center">
                 <button
-                  onClick={() => setUserType("patient")}
+                  onClick={(e) => {
+                     e.preventDefault()
+                    setUserType("patient")}}
                   className={`flex px-4 py-2 text-sm font-medium cursor-pointer ${
                     UserType === "patient"
                       ? " rounded-b-xl bg-green-700 rounded-t-xl"
@@ -113,7 +136,9 @@ export default function LoginPage() {
                 </button>
 
                 <button
-                  onClick={() => setUserType("doctor")}
+                  onClick={(e) => {
+                     e.preventDefault()
+                    setUserType("doctor")}}
                   className={`flex px-4 py-2 text-sm font-medium cursor-pointer ${
                     UserType === "doctor"
                       ? "rounded-b-xl bg-green-700 rounded-t-xl"
@@ -123,7 +148,9 @@ export default function LoginPage() {
                   {Language?.[LanguageType]?.doctor}
                 </button>
                 <button
-                  onClick={() => setUserType("pharmacy")}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setUserType("pharmacy")}}
                   className={`flex px-4 py-2 text-sm font-medium cursor-pointer ${
                     UserType === "pharmacy"
                       ? "rounded-b-xl bg-green-700 rounded-t-xl"
