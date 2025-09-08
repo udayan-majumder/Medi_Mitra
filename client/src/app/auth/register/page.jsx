@@ -1,3 +1,4 @@
+"use client"
 import { useState } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
