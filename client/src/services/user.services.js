@@ -29,3 +29,16 @@ export const LoginHandler = async(email,password,type) =>{
      return {internal_server_error : true}
     }
 }
+
+export const RegisterHandler = async(username,email,password,location,type,diseases=[],age=null) =>{
+    try{
+const reqbody = {"username":username,"email":email,"password":password,"location":location,"type":type,"diseases":diseases,"age":age}
+    const res = await api.post("/user/register",reqbody)
+    if(res.status === 200){
+        return res
+    }
+    }
+    catch(e){
+        return {"errortype":e?.response?.data}
+    }
+}
