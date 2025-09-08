@@ -1,12 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.medimitra.app',
-  appName: 'medimitra',
-  webDir: 'public',
+  appId: "com.medimitra.app",
+  appName: "medimitra",
+  webDir: "public",
   server: {
-    url: 'https://medi-mitra-chi.vercel.app/'
-  }
+    url: "https://development-medimitra.udayan.fyi/",
+  },
 };
 
 export default config;
