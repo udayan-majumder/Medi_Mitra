@@ -1,52 +1,51 @@
 "use client";
 import {
-  useContext,
-  createContext,
-  Children,
-  useState,
-  useEffect,
+    useContext,
+    createContext,
+    Children,
+    useState,
+    useEffect,
 } from "react";
-import axios from "axios";
+import { GetUserDetails } from "@/services/user.services";
 
 export const UserContext = createContext(null);
 
 export const UserStore = () => {
-  const context = useContext(UserContext);
-  if (context === null) {
-    throw new Error({ User: false });
-  }
-  return context;
+    const context = useContext(UserContext);
+    if (context === null) {
+        throw new Error({ User: false });
+    }
+    return context;
 };
 
 const Wrapper = ({ children }) => {
-  const [User, setUser] = useState(null);
+    const [User, setUser] = useState(null);
+    const [LanguageType, setLanguageType] = useState(null);
 
-  const GetUserDetails = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/userdetails`,
-        {
-          withCredentials: true,
-        }
-      );
-      if (res?.data?.id) {
-        setUser(res?.data);
-      }
-    } catch (e) {
-        setUser(null);
-      
+    const handleUser = async()=>{
+        const res = await GetUserDetails();
+        setUser(res)
     }
-  };
 
-  useEffect(() => {
-    GetUserDetails();
-  }, []);
+    useEffect(() => {
+        handleUser()
+        const Ltype = localStorage.getItem("languagetype");
+        if (!Ltype) {
+            setLanguageType("english");
+        } else {
+            setLanguageType(Ltype);
+        }
+    }, []);
 
-  return (
-    <UserContext.Provider value={{ User, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+    useEffect(() => {
+        localStorage.setItem("languagetype", LanguageType);
+    }, [LanguageType]);
+
+    return (
+        <UserContext.Provider value={{ User, setUser, LanguageType , setLanguageType }}>
+            {children}
+        </UserContext.Provider>
+    );
 };
 
 export default Wrapper;
