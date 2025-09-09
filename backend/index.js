@@ -1,13 +1,20 @@
+//Load all env 
+import dotenv from "dotenv";
+dotenv.config();
+
+//Server Imports
 import express from "express"
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
+import cors from "cors"
+
+//Routes Imports
 import userRouter from "./routes/user.routes.js"
 import medicineRouter from "./routes/medicine.routes.js"
 import pharmacyRouter from "./routes/pharmacy.routes.js"
 
-
+//Web Socket Imports
 import { config } from './config/server.config.js';
 import { QueueService } from './services/queue.service.js';
 import { SessionService } from './services/session.service.js';
@@ -17,12 +24,13 @@ import { WebRTCHandler } from './handlers/webrtc.handler.js';
 import { SocketManager } from './socket/socket.manager.js';
 import { createApiRoutes } from './routes/api.routes.js';
 
-dotenv.config()
+
 
 //required setups
 const app = express()
 const server = createServer(app);
 const io = new Server(server, { cors: config.cors });
+app.use(cors(config.cors))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cookieParser())
