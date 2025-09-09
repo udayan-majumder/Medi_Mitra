@@ -1,39 +1,62 @@
 import express from "express"
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import dotenv from "dotenv"
-import cors from "cors"
 import cookieParser from "cookie-parser"
 import userRouter from "./routes/user.routes.js"
 import medicineRouter from "./routes/medicine.routes.js"
 import pharmacyRouter from "./routes/pharmacy.routes.js"
+
+
+import { config } from './config/server.config.js';
+import { QueueService } from './services/queue.service.js';
+import { SessionService } from './services/session.service.js';
+import { MatchingService } from './services/matching.service.js';
+import { ConnectionHandler } from './handlers/connection.handler.js';
+import { WebRTCHandler } from './handlers/webrtc.handler.js';
+import { SocketManager } from './socket/socket.manager.js';
+import { createApiRoutes } from './routes/api.routes.js';
+
 dotenv.config()
 
-const app = express()
-const PORT = process.env.PORT
-
 //required setups
+const app = express()
+const server = createServer(app);
+const io = new Server(server, { cors: config.cors });
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
-app.use(cors({
-    methods:["GET","POST","UPDATE","DELETE"],
-    origin:process.env.FRONTEND_URL,
-    credentials:true
-}))
 app.use(cookieParser())
+
+// Initialize services
+const queueService = new QueueService();
+const sessionService = new SessionService();
+const matchingService = new MatchingService(queueService, sessionService);
+
+// Initialize handlers
+const connectionHandler = new ConnectionHandler(queueService, sessionService, matchingService, io);
+const webrtcHandler = new WebRTCHandler(sessionService);
+
+// Initialize socket manager
+const socketManager = new SocketManager(io, connectionHandler, webrtcHandler);
+socketManager.initialize();
+
+// Setup routes
+
+const apiRoutes = createApiRoutes(queueService, sessionService);
+app.use('/', apiRoutes);
 
 // User Routes 
 
 app.use("/user",userRouter)
 
-//medicine route
+// Medicine Route
 app.use("/medicine",medicineRouter)
 
-//pharmacy route
+// Pharmacy Route
 app.use("/pharmacy",pharmacyRouter)
 
-app.listen(PORT,()=>{
-    console.log(`server is running on localhost:${PORT}`)
+server.listen(config.port,()=>{
+    console.log(`server is running on localhost:${config.port}`)
 })
-
-
 
 
