@@ -57,7 +57,7 @@ export default function Inventory() {
             <div className="h-[90%] w-full flex justify-center items-start  pt-[10px] overflow-y-scroll">
               {MedicineInventory?.length > 0 ? (
                 MedicineInventory?.map((items) => (
-                    <div className="flex-1 flex justify-center items-center h-[10%] w-full text-black border-b-1 border-gray-300">
+                    <div key={items?.pharma_id} className="flex-1 flex justify-center items-center h-[10%] w-full text-black border-b-1 border-gray-300">
                       <div className="h-full w-[20%] flex justify-center items-center">
                         {items?.medicine_name}
                       </div>
