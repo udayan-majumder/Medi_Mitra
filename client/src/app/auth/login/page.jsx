@@ -12,7 +12,7 @@ import CapacitorInfoStore from "@/store/capacitorInfo.store";
 
 export default function LoginPage() {
   {/*Store variables */}
-  const { LanguageType,setUser } = UserStore();
+  const { LanguageType,setUser,setLanguageType } = UserStore();
   const { Language } = LanguageStore();
   const {IsMobileView} =CapacitorInfoStore()
 
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [Password, setPassword] = useState("");
   const [UserType, setUserType] = useState("patient");
   const [showPassword,setshowPassword] = useState(false)
+
   const router = useRouter()
 
   
@@ -178,6 +179,9 @@ export default function LoginPage() {
             <button className="bg-green-700 h-9 w-28 rounded-2xl poppins">
               {Language?.[LanguageType]?.loginbtn}
             </button>
+            <div  className="flex items-center justify-center">
+              
+            </div>
           </form>
         </div>
       </div>
