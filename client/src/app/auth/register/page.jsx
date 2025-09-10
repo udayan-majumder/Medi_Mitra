@@ -196,7 +196,7 @@ export default function RegisterPage() {
 
              {/* location input container */}
              <div className="relative space-x-2">
-              {location.length > 0 ? null : (
+              {Location.length > 0 ? null : (
                 <MapPin
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                   size={18}
