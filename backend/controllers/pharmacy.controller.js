@@ -29,7 +29,17 @@ export const getPharmacyStock = async (req, res) => {
       [id]
     );
 
-    return res.send(fetchQuery.rows);
+    const StockQuery = await pool.query(
+      `SELECT
+    p.pharma_id,
+    sum(p.quantity) as TotalQuantity
+    FROM pharma p
+    JOIN medicine m ON p.medicine_id = m.medicine_id
+    WHERE p.pharma_id = $1 group by p.pharma_id` ,
+      [id]
+    );
+
+    return res.json({"list":fetchQuery?.rows,"totalstock":StockQuery?.rows});
   } catch (err) {
     console.error("Error fetching medicines:", err);
     throw err;
@@ -73,3 +83,4 @@ export const addPharmacyStock = async (req, res) => {
     throw err;
   }
 };
+
