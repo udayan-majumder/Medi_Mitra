@@ -55,7 +55,8 @@ export default function LoginPage() {
       <Toaster/>
       {/*image vector green curve */}
       <div className="h-[20%] sm:h-full w-full sm:w-[40%]">
-        <img src="/green-arc-desktop.png" className="h-screen w-full" />
+        <img src="/green-arc-desktop.png" className="h-screen w-full hidden sm:flex" />
+        <img src="/arc-mobile-view.png" className="h-full w-full flex sm:hidden" />
       </div>
 
       {/* Login Box */}
@@ -111,7 +112,9 @@ export default function LoginPage() {
               {
                   <button
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  onClick={()=> showPassword ? setshowPassword(false) : setshowPassword(true)}
+                  onClick={(e)=> {
+                    e.preventDefault()
+                    showPassword ? setshowPassword(false) : setshowPassword(true)}}
                 >
                   {showPassword ? <Eye/> : <EyeOff/>}
                 </button>
