@@ -183,6 +183,36 @@ export default function LoginPage() {
               
             </div>
           </form>
+            <div className=" flex justify-center items-center h-[5%] w-full">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+
+                setLanguageType("english");
+              }}
+              className={
+                LanguageType === "english"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.englishtext}
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setLanguageType("hindi");
+              }}
+              className={
+                LanguageType === "hindi"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.hinditext}
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
@@ -6,17 +6,16 @@ import CapacitorInfoStore from "@/store/capacitorInfo.store";
 import { useRouter } from "next/navigation";
 import { RegisterHandler } from "@/services/user.services";
 import toast, { Toaster } from "react-hot-toast";
-import { Mail, Eye, EyeOff,Lock, UserRound , MapPin  } from "lucide-react";
-
+import { Mail, Eye, EyeOff, Lock, UserRound, MapPin,Check,X } from "lucide-react";
+import DiseasesStore from "@/store/Diseases.store";
 export default function RegisterPage() {
   {
     /*Store variables */
   }
-  const { LanguageType, setUser,setLanguageType,User} = UserStore();
-  
+  const { LanguageType, setLanguageType } = UserStore();
   const { Language } = LanguageStore();
   const { IsMobileView } = CapacitorInfoStore();
-
+  const { DiseasesList } = DiseasesStore();
   {
     /*Custom Hooks */
   }
@@ -27,8 +26,10 @@ export default function RegisterPage() {
   const [Location, setLocation] = useState("");
   const [UserType, setUserType] = useState("patient");
   const [DiseasesType, setDiseasesType] = useState([]);
-  const [Age, setAge] = useState(null);
+  const [Age, setAge] = useState(18);
   const [showPassword, setshowPassword] = useState(false);
+  const [showRePassword, setshowRePassword] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -70,17 +71,20 @@ export default function RegisterPage() {
       toast.error("Something went wrong");
     }
   };
-  {
-    /*Important --- Kaushani Form Use Krbi ... dekh Login er Design change korechi div er jai form use krbi 
-    and e.preventDefault() use krbi jate reload na hoi jai baki sob setup kore diechi */
-  }
-  return(
-     <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
-      <Toaster/>
+
+  return (
+    <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
+      <Toaster />
       {/*image vector green curve */}
       <div className="h-[20%] sm:h-full w-full sm:w-[40%]">
-        <img src="/green-arc-desktop.png" className="h-screen w-full hidden sm:flex" />
-        <img src="/arc-mobile-view.png" className="h-full w-full flex sm:hidden" />
+        <img
+          src="/green-arc-desktop.png"
+          className="h-screen w-full hidden sm:flex"
+        />
+        <img
+          src="/arc-mobile-view.png"
+          className="h-full w-full flex sm:hidden"
+        />
       </div>
 
       {/* Login Box */}
@@ -88,16 +92,22 @@ export default function RegisterPage() {
         <div className="h-full sm:h-[95%] w-full sm:w-[50%] bg-white rounded-none sm:rounded-xl shadow-xl p-8 flex flex-col justify-center items-center space-y-5">
           {/*Medicare Logo */}
           <img src="/logo.png" className="h-20" />
-          <button className="text-gray-500 text-center text-sm cursor-pointer hover:text-black hover:border-b-1" onClick={()=>{
-            router.push("/auth/register")
-          }}>
+          <button
+            className="text-gray-500 text-center text-sm cursor-pointer hover:text-black hover:border-b-1"
+            onClick={() => {
+              router.push("/auth/login");
+            }}
+          >
             {Language?.[LanguageType]?.signupheading}
           </button>
 
           {/*Input Button Container */}
-          <form onSubmit={handleSubmit} className="space-y-3  flex flex-col justify-center items-center w-[90%]">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-3  flex flex-col justify-center items-center w-[90%]"
+          >
             {/* name input container */}
-             <div className="relative space-x-2">
+            <div className="relative space-x-2">
               {Username.length > 0 ? null : (
                 <UserRound
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -113,6 +123,7 @@ export default function RegisterPage() {
                 required
               />
             </div>
+
             {/* Email Input Container*/}
             <div className="relative space-x-2">
               {Email.length > 0 ? null : (
@@ -139,7 +150,6 @@ export default function RegisterPage() {
                   size={18}
                 />
               )}
-
               <input
                 type={showPassword ? "text" : "password"}
                 value={Password}
@@ -151,18 +161,20 @@ export default function RegisterPage() {
               />
 
               {
-                  <button
+                <button
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  onClick={(e)=> {
-                    e.preventDefault()
-                    showPassword ? setshowPassword(false) : setshowPassword(true)}}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    showPassword
+                      ? setshowPassword(false)
+                      : setshowPassword(true);
+                  }}
                 >
-                  {showPassword ? <Eye/> : <EyeOff/>}
+                  {showPassword ? <Eye /> : <EyeOff />}
                 </button>
               }
             </div>
-            
-            
+
             {/* re-Password Input Container*/}
             <div className="relative space-x-2">
               {RePassword.length > 0 ? null : (
@@ -173,7 +185,7 @@ export default function RegisterPage() {
               )}
 
               <input
-                type={showPassword ? "text" : "password"}
+                type={showRePassword ? "text" : "password"}
                 value={RePassword}
                 onChange={(e) => setRePassword(e.target.value)}
                 placeholder={Language?.[LanguageType]?.repasswordtext}
@@ -183,19 +195,22 @@ export default function RegisterPage() {
               />
 
               {
-                  <button
+                <button
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  onClick={(e)=> {
-                    e.preventDefault()
-                    showPassword ? setshowPassword(false) : setshowPassword(true)}}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    showRePassword
+                      ? setshowRePassword(false)
+                      : setshowRePassword(true);
+                  }}
                 >
-                  {showPassword ? <Eye/> : <EyeOff/>}
+                  {showRePassword ? <Eye /> : <EyeOff />}
                 </button>
               }
             </div>
 
-             {/* location input container */}
-             <div className="relative space-x-2">
+            {/* location input container */}
+            <div className="relative space-x-2">
               {Location.length > 0 ? null : (
                 <MapPin
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -221,31 +236,61 @@ export default function RegisterPage() {
                 {Language?.[LanguageType]?.forgotpassword}
               </a>
             </div>
-            
-            {UserType==="patient" ? <div className="w-full h-[10%] flex justify-center items-center text-gray-900 space-x-5 ">
-              <select className="w-[60%] text-sm border-gray-300 border p-2 rounded-lg">
-                <option disabled> Medical Condition </option>
-                <option value={"Diabetes (Type 1 & Type 2)"}> Diabetes (Type 1 & Type 2) </option>
-                <option value={"Hypertension (High Blood Pressure)"}>Hypertension (High Blood Pressure)</option>
-                <option value={"Asthma"}>Asthma</option>
-                <option value={"Chronic Obstructive Pulmonary Disease (COPD)"}>Chronic Obstructive Pulmonary Disease (COPD)</option>
-                <option value={"Arthritis (Rheumatoid / Osteoarthritis)"}>Arthritis (Rheumatoid / Osteoarthritis)</option>
-                <option value={"HIV/AIDS"}>HIV/AIDS</option>
-                <option value={"Chronic Kidney Disease"}>Chronic Kidney Disease</option>
-                <option value={"Coronary Artery Disease / Heart Disease"}> Coronary Artery Disease / Heart Disease</option>
-                <option value={"Parkinson’s Disease"}>Parkinson’s Disease</option>
-                <option value={"Alzheimer’s Disease (Dementia)"}>Alzheimer’s Disease (Dementia)</option>
-              </select>
-              <input type="number" placeholder={Language?.[LanguageType]?.agetext} className="w-[20%] p-2 border border-gray-300 rounded-lg"></input>
-            </div>: <div></div>}
+
+            {/*Diseases and Age Div */}
+
+            {UserType === "patient" ? (
+              <div className="w-full h-[10%] flex justify-center items-center text-gray-900 space-x-5 ">
+                <select
+                  className="w-[60%] text-sm border-gray-300 border p-2 rounded-lg"
+
+                  onChange={(e)=>{
+                    e.preventDefault()
+                    if(!DiseasesType?.includes(e.target.value)){
+                      setDiseasesType((prev)=>[...prev,e.target.value])
+                    }
+                    console.log(DiseasesType)
+                  }}
+                >
+                  <option value="" disabled>
+                    Medical Condition
+                  </option>
+                  {DiseasesList.map((item, index) => (
+                    <option key={index} value={item} className={DiseasesType?.includes(item) ? "bg-green-500 text-white":""}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="number"
+                  value={Age}
+                  placeholder={Language?.[LanguageType]?.agetext}
+                  className="w-[20%] p-2 border border-gray-300 rounded-lg"
+                  min={18}
+                  onChange={(e)=>{
+                    e.preventDefault()
+                    if(Number(e.target.value)<18){
+                      setAge(18)
+                    }
+                    else{
+                      setAge(Number(e.target.value))
+                    }
+                  }}
+                ></input>
+              </div>
+            ) : (
+              <div></div>
+            )}
+
 
             {/* Toggle usertype*/}
             <div className="w-full max-w-md mx-auto">
               <div className="flex justify-center items-center">
                 <button
                   onClick={(e) => {
-                     e.preventDefault()
-                    setUserType("patient")}}
+                    e.preventDefault();
+                    setUserType("patient");
+                  }}
                   className={`flex px-4 py-2 text-sm font-medium cursor-pointer ${
                     UserType === "patient"
                       ? " rounded-b-xl bg-green-700 rounded-t-xl"
@@ -257,8 +302,9 @@ export default function RegisterPage() {
 
                 <button
                   onClick={(e) => {
-                     e.preventDefault()
-                    setUserType("doctor")}}
+                    e.preventDefault();
+                    setUserType("doctor");
+                  }}
                   className={`flex px-4 py-2 text-sm font-medium cursor-pointer ${
                     UserType === "doctor"
                       ? "rounded-b-xl bg-green-700 rounded-t-xl"
@@ -269,8 +315,9 @@ export default function RegisterPage() {
                 </button>
                 <button
                   onClick={(e) => {
-                    e.preventDefault()
-                    setUserType("pharmacy")}}
+                    e.preventDefault();
+                    setUserType("pharmacy");
+                  }}
                   className={`flex px-4 py-2 text-sm font-medium cursor-pointer ${
                     UserType === "pharmacy"
                       ? "rounded-b-xl bg-green-700 rounded-t-xl"
@@ -285,32 +332,41 @@ export default function RegisterPage() {
             <button className="bg-green-700 h-9 w-28 rounded-2xl poppins">
               {Language?.[LanguageType]?.loginbtn}
             </button>
-           
           </form>
-           <div className=" flex justify-center items-center h-[5%] w-full">
-                    <button
-                  onClick={(e) => {
-                     e.preventDefault()
-                    
-                    setLanguageType("english")}}
-                  className={LanguageType==="english"? "rounded-xl bg-green-700 w-[20%] h-[90%]" : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"}
-                >
-                  {Language?.[LanguageType]?.englishtext}
-                </button>
+          <div className=" flex justify-center items-center h-[5%] w-full">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
 
-                <button
-                  onClick={(e) => {
-                     e.preventDefault()
-                    setLanguageType("hindi")}}
-                  className={LanguageType==="hindi"? "rounded-xl bg-green-700 w-[20%] h-[90%]" : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"}
-                >
-                   {Language?.[LanguageType]?.hinditext}
-                </button>
-            </div>
+                setLanguageType("english");
+              }}
+              className={
+                LanguageType === "english"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.englishtext}
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setLanguageType("hindi");
+              }}
+              className={
+                LanguageType === "hindi"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.hinditext}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* <div>this is login page testing {Language?.[LanguageType]?.username} : {LanguageType} language</div> */}
     </div>
-  ) ;
+  );
 }
