@@ -13,8 +13,8 @@ export default function PharmacyLayout({ children }) {
   {/*Fetch Stock Script */}
   const fetchStock = async() =>{
    const res = await GetPharamacyStock(User?.id);
-   console.log(res)
-   if(res?.data?.length>0){
+   console.log(res?.data)
+   if(res?.data?.list && res?.data?.totalstock){
     setMedicineInventory(res?.data);
    }
   }
