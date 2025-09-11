@@ -1,30 +1,86 @@
-"use client"
-import { SideNavbar } from "@/Components/sidenavbar.components";
+"use client";
+import { SidePharmacyNavbar } from "@/Components/sidenavbar.components";
 import { useState } from "react";
-
+import { FetchMedicine, AddPharmacyStock } from "@/services/pharmacy.services";
+import toast, { Toaster } from "react-hot-toast";
+import { UserStore } from "@/hooks/userauth.hooks";
+import PharmacyStore from "@/store/pharmacy.store";
 
 export default function AddInventory() {
+  {
+    /*Store */
+  }
+  const { User } = UserStore();
+  const { setPharmacyRefresh } = PharmacyStore();
+  {
+    /*Custom Hook */
+  }
+  const [Medicineid, setMedicineid] = useState("");
+  const [MedicineName, setMedicineName] = useState("");
+  const [MedicineQuantity, setMedicineQuantity] = useState(1);
+  const [Medicine_MFG_Date, set_MFG_Date] = useState("");
+  const [Medicine_EXP_Date, set_EXP_Date] = useState("");
 
-  {/*Custom Hook */}
- const [Medicineid,setMedicineid] = useState("")
- const [MedicineName,setMedicineName] = useState("")
- const [MedicineQuantity,setMedicineQuantity] = useState(1)
- const [Medicine_MFG_Date,set_MFG_Date] = useState("")
- const [Medicine_EXP_Date,set_EXP_Date] = useState("")
 
 
- const handlerSubmit = (e)=>{
-  e.preventDefault()
-  console.log(
- Medicineid,MedicineName,MedicineQuantity,Medicine_EXP_Date,Medicine_MFG_Date
-  )
- }
+  const handlerSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      if (Medicineid.length <= 0) {
+        return toast.error("no medicine id");
+      }
+      if (MedicineName.length <= 0) {
+        return toast.error("no medicine name");
+      }
+      if (Medicine_EXP_Date.length <= 0 || Medicine_MFG_Date.length <= 0) {
+        return toast.error("Date field missing");
+      }
 
+      const res = await AddPharmacyStock(
+        User?.id,
+        MedicineName,
+        Medicineid,
+        Medicine_MFG_Date,
+        Medicine_EXP_Date,
+        MedicineQuantity
+      );
+      if (res) {
+        console.log(res)
+        setPharmacyRefresh(true);
+        setMedicineid("")
+        setMedicineName("")
+        setMedicineQuantity("")
+        set_EXP_Date("")
+        set_MFG_Date("")
+        return toast.success("added to stock successfully")
+      } else {
+        return toast.error("stock not added");
+      }
+    } catch (e) {
+      console.log(error);
+    }
+  };
+
+  const getMedicine = async () => {
+    try {
+      const res = await FetchMedicine(Number(Medicineid));
+      console.log(res);
+      if (res?.medicine_id) {
+        setMedicineName(res?.medicine_name);
+      } else {
+        setMedicineName("");
+        return toast.error("no medicine found");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div className="h-screen w-full flex justify-center items-center tracking-wider poppins text-black">
+      <Toaster />
       {/*Side Navbar */}
-      <SideNavbar height={100} width={20} />
+      <SidePharmacyNavbar height={100} width={20} />
 
       {/*Content Container*/}
       <div className="h-full w-[80%] flex flex-col justify-start items-center bg-white">
@@ -51,6 +107,7 @@ export default function AddInventory() {
             <div className="h-[10%] w-[90%] flex justify-center items-center space-x-6">
               <input
                 className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                value={Medicineid}
                 placeholder="Medicine Id"
                 type="number"
                 onChange={(e) => {
@@ -58,7 +115,13 @@ export default function AddInventory() {
                   setMedicineid(e.target.value);
                 }}
               ></input>
-              <button className="h-[80%] bg-[#7CBC27] p-[20px] flex justify-center items-center rounded-lg text-white hover:bg-[#0D7135]">
+              <button
+                className="h-[80%] bg-[#7CBC27] p-[20px] flex justify-center items-center rounded-lg text-white hover:bg-[#0D7135]"
+                onClick={(e) => {
+                  e.preventDefault();
+                  getMedicine();
+                }}
+              >
                 Search
               </button>
             </div>
@@ -67,6 +130,7 @@ export default function AddInventory() {
             <div className="h-[10%] w-[90%]">
               <input
                 className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                value={MedicineName}
                 placeholder="Medicine Name"
                 type="text"
                 onChange={(e) => {
@@ -80,6 +144,7 @@ export default function AddInventory() {
             <div className="h-[10%] w-[90%]">
               <input
                 className="h-full w-[15%] border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                value={MedicineQuantity}
                 placeholder="Quantity"
                 type="number"
                 onChange={(e) => {
@@ -93,6 +158,7 @@ export default function AddInventory() {
             <div className="h-[10%] w-[90%]">
               <input
                 className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                value={Medicine_MFG_Date}
                 placeholder="MFG Date"
                 type="date"
                 onChange={(e) => {
@@ -106,6 +172,7 @@ export default function AddInventory() {
             <div className="h-[10%] w-[90%]">
               <input
                 className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                value={Medicine_EXP_Date}
                 placeholder="EXP Date"
                 type="date"
                 onChange={(e) => {
@@ -117,7 +184,10 @@ export default function AddInventory() {
 
             {/*Submit Button */}
             <div className="h-[10%] w-[90%] flex justify-end">
-              <button className="h-full w-[20%] bg-[#7CBC27] rounded-lg text-white hover:bg-[#0D7135]">
+              <button
+                className="h-full w-[20%] bg-[#7CBC27] rounded-lg text-white hover:bg-[#0D7135]"
+                type="submit"
+              >
                 Submit
               </button>
             </div>

@@ -2,13 +2,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { House, BriefcaseMedical, SquareStack, LogOut } from 'lucide-react';
-
+import { UserStore } from "@/hooks/userauth.hooks";
 {
   /*Taking parameter <SideNavbar height={100} width={20}/> */
 }
-export const SideNavbar = ({ height, width }) => {
+export const SidePharmacyNavbar = ({ height, width }) => {
   const router = useRouter();
   const [currentPage, setPage] = useState("");
+  const  {User} = UserStore()
 
   // Get current path from window.location
   useEffect(() => {
@@ -54,7 +55,7 @@ export const SideNavbar = ({ height, width }) => {
               <span className="text-green-600 text-sm font-bold">👤</span>
             </div>
           </div>
-          <span className="text-white font-semibold text-lg">ABC Pharma</span>
+          <span className="text-white font-semibold text-lg">{User?.username}</span>
         </div>
         <h2 className="text-white text-xl font-medium">Pharmacy Dashboard</h2>
       </div>
