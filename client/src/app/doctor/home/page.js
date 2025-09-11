@@ -1,9 +1,6 @@
+import VideoCall from "@/Components/VideoCall";
 
-export default function Home(){
-    return(
-        <div className="h-screen w-full">
-            
-            doctor homepage
-            </div>
-    )
+
+export default function UserAPage() {
+  return <VideoCall userType="B" />;
 }
