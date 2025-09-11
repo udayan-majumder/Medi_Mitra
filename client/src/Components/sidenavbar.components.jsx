@@ -3,13 +3,23 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { House, BriefcaseMedical, SquareStack, LogOut } from 'lucide-react';
 import { UserStore } from "@/hooks/userauth.hooks";
-{
-  /*Taking parameter <SideNavbar height={100} width={20}/> */
+import { LogoutHandler } from "@/services/user.services";
+
+ {
+   /*Taking parameter <SideNavbar height={100} width={20}/> */
 }
 export const SidePharmacyNavbar = ({ height, width }) => {
   const router = useRouter();
   const [currentPage, setPage] = useState("");
-  const  {User} = UserStore()
+  const  {User,setUser} = UserStore()
+
+  const Logout = async()=>{
+    const res = await LogoutHandler()
+    if(res){
+      console.log(res)
+    }
+  }
+  
 
   // Get current path from window.location
   useEffect(() => {
@@ -118,7 +128,10 @@ export const SidePharmacyNavbar = ({ height, width }) => {
 
       {/*Logout*/}
       <div className="p-4">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-100 hover:bg-red-600 hover:bg-opacity-20 hover:text-red-200 transition-all duration-300 ease-in-out transform hover:translate-x-1 hover:shadow-md">
+        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-100 hover:bg-red-600 hover:bg-opacity-20 hover:text-red-200 transition-all duration-300 ease-in-out transform hover:translate-x-1 hover:shadow-md" onClick={()=>{
+          Logout()
+          setUser(null)
+        }}>
           <LogOut className="w-5 h-5" />
           Log out
         </button>
