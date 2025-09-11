@@ -6,7 +6,7 @@ const PharmacyStore = create((set)=>({
      
 
     setMedicineInventory:(data) => set({MedicineInventory:data}),
-    setPharmacyRefresh:(data)=>set({PharmacyStore:data})
+    setPharmacyRefresh:(data)=>set({PharmacyRefresh:data})
 }))
 
 export default PharmacyStore

@@ -27,6 +27,7 @@ export default function PharmacyLayout({ children }) {
 
   useEffect(() => {
     if(PharmacyRefresh){
+    console.log("triggered")
      fetchStock();
      setPharmacyRefresh(false)
     }

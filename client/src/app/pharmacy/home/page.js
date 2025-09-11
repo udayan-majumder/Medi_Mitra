@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { SideNavbar } from "@/Components/sidenavbar.components";
+import { SidePharmacyNavbar} from "@/Components/sidenavbar.components";
 import PharmacyStore from "@/store/pharmacy.store";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
     //main container
     <div className="h-screen w-full flex justify-center items-center tracking-wider poppins">
       {/*Side Navbar */}
-      <SideNavbar height={100} width={20} />
+      <SidePharmacyNavbar height={100} width={20} />
 
       {/*Content Container*/}
       <div className="h-full w-[80%] flex flex-col justify-start items-center bg-white">
@@ -37,10 +37,10 @@ export default function Home() {
             <div className="relative flex justify-center items-center">
               {/* Large outer circular background */}
               <div className="w-[500px] h-[500px] bg-gradient-to-br from-green-50 to-green-100 rounded-full opacity-30 absolute"></div>
-              
+
               {/* Medium circular background */}
               <div className="w-[400px] h-[400px] bg-gradient-to-br from-green-100 to-green-200 rounded-full opacity-50 absolute"></div>
-              
+
               {/* Inner circular background - main container */}
               <div className="w-[350px] h-[350px] bg-gradient-to-br from-green-200 to-green-300 rounded-full flex items-center justify-center shadow-xl relative z-10">
                 {/* Supply truck image */}
