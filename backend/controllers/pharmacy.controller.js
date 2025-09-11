@@ -1,5 +1,6 @@
 import pool from "../db/db.js";
 import { checkUserById } from "../models/user.models.js";
+import { CheckMedicine } from "../models/pharmacy.models.js";
 
 export const getPharmacyStock = async (req, res) => {
   try {
@@ -84,3 +85,23 @@ export const addPharmacyStock = async (req, res) => {
   }
 };
 
+export const isMedicine = async(req,res) => {
+  try{
+const {medicineid} = req.query
+  
+  if(!medicineid){
+    return res.status(400).json({param:false})
+  }
+
+  const Medicine = await CheckMedicine(medicineid)
+  if(!Medicine){
+    return res.status(400).json({exsist:false})
+  }
+  
+  return res.status(200).json({Medicine})
+  }
+  catch(e)
+{
+  return res.status(500).json({e})
+}
+}
