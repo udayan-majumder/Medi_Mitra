@@ -42,3 +42,14 @@ const reqbody = {"username":username,"email":email,"password":password,"location
         return {"errortype":e?.response?.data}
     }
 }
+
+export const LogoutHandler = async() =>{
+  try{
+   const res = await api.get("/user/logout")
+   if(res?.data?.logout && res?.status === 200){
+    return true
+   }
+  }catch(e){
+    return false
+  }
+}
