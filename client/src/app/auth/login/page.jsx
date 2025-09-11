@@ -12,7 +12,7 @@ import CapacitorInfoStore from "@/store/capacitorInfo.store";
 
 export default function LoginPage() {
   {/*Store variables */}
-  const { LanguageType,setUser } = UserStore();
+  const { LanguageType,setUser,setLanguageType } = UserStore();
   const { Language } = LanguageStore();
   const {IsMobileView} =CapacitorInfoStore()
 
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [Password, setPassword] = useState("");
   const [UserType, setUserType] = useState("patient");
   const [showPassword,setshowPassword] = useState(false)
+
   const router = useRouter()
 
   
@@ -55,7 +56,8 @@ export default function LoginPage() {
       <Toaster/>
       {/*image vector green curve */}
       <div className="h-[20%] sm:h-full w-full sm:w-[40%]">
-        <img src="/green-arc-desktop.png" className="h-screen w-full" />
+        <img src="/green-arc-desktop.png" className="h-screen w-full hidden sm:flex" />
+        <img src="/arc-mobile-view.png" className="h-full w-full flex sm:hidden" />
       </div>
 
       {/* Login Box */}
@@ -111,7 +113,9 @@ export default function LoginPage() {
               {
                   <button
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  onClick={()=> showPassword ? setshowPassword(false) : setshowPassword(true)}
+                  onClick={(e)=> {
+                    e.preventDefault()
+                    showPassword ? setshowPassword(false) : setshowPassword(true)}}
                 >
                   {showPassword ? <Eye/> : <EyeOff/>}
                 </button>
@@ -175,7 +179,40 @@ export default function LoginPage() {
             <button className="bg-green-700 h-9 w-28 rounded-2xl poppins">
               {Language?.[LanguageType]?.loginbtn}
             </button>
+            <div  className="flex items-center justify-center">
+              
+            </div>
           </form>
+            <div className=" flex justify-center items-center h-[5%] w-full">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+
+                setLanguageType("english");
+              }}
+              className={
+                LanguageType === "english"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.englishtext}
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setLanguageType("hindi");
+              }}
+              className={
+                LanguageType === "hindi"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.hinditext}
+            </button>
+          </div>
         </div>
       </div>
 

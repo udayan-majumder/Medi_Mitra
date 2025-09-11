@@ -1,5 +1,6 @@
 import pool from "../db/db.js";
 import { checkUserById } from "../models/user.models.js";
+import { CheckMedicine } from "../models/pharmacy.models.js";
 
 export const getPharmacyStock = async (req, res) => {
   try {
@@ -29,7 +30,17 @@ export const getPharmacyStock = async (req, res) => {
       [id]
     );
 
-    return res.send(fetchQuery.rows);
+    const StockQuery = await pool.query(
+      `SELECT
+    p.pharma_id,
+    sum(p.quantity) as TotalQuantity
+    FROM pharma p
+    JOIN medicine m ON p.medicine_id = m.medicine_id
+    WHERE p.pharma_id = $1 group by p.pharma_id` ,
+      [id]
+    );
+
+    return res.json({"list":fetchQuery?.rows,"totalstock":StockQuery?.rows});
   } catch (err) {
     console.error("Error fetching medicines:", err);
     throw err;
@@ -73,3 +84,24 @@ export const addPharmacyStock = async (req, res) => {
     throw err;
   }
 };
+
+export const isMedicine = async(req,res) => {
+  try{
+const {medicineid} = req.query
+  
+  if(!medicineid){
+    return res.status(400).json({param:false})
+  }
+
+  const Medicine = await CheckMedicine(medicineid)
+  if(!Medicine){
+    return res.status(400).json({exsist:false})
+  }
+  
+  return res.status(200).json({Medicine})
+  }
+  catch(e)
+{
+  return res.status(500).json({e})
+}
+}
