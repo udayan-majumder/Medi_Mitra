@@ -11,7 +11,7 @@ export default function PatientLayout({ children }) {
   //   if (!User?.id) {
   //     router.replace("/auth/login");
   //   }
-  // }, []);
+  // }, [User?.id]);
 
   return <>{children}</>;
 }
