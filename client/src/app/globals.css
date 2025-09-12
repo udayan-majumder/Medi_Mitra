@@ -49,3 +49,10 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #808080;
 }
+
+/* user chat box
+.user-chat-div{
+  height: 8%;
+  width: 50%;
+  background-color: blue;
+} */
