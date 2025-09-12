@@ -7,11 +7,11 @@ export default function PatientLayout({ children }) {
   const { User } = UserStore();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!User?.id) {
-      router.replace("/auth/login");
-    }
-  }, [User?.id]);
+  // useEffect(() => {
+  //   if (!User?.id) {
+  //     router.replace("/auth/login");
+  //   }
+  // }, [User?.id]);
 
   return <>{children}</>;
 }

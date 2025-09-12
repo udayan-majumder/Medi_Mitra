@@ -55,3 +55,19 @@ export const FetchMedicine = async (medicineid) => {
     return false;
   }
 };
+
+export const FetchPharmacyList = async (Searchparam) =>{
+  try{
+    const res = await api.get("/pharmacy/get-pharmacy",{
+      params:{
+        "Search":Searchparam
+      }
+    });
+    if(res?.data?.length<=0){
+      return false;
+    }
+    return res?.data;
+  }catch(e){
+    return false
+  }
+}
