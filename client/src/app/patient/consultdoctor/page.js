@@ -1,3 +1,5 @@
+import VideoCall from "@/Components/VideoCall";
+
 export default function VisitDoctor() {
-  return <div>visit doctor page</div>;
+   return <VideoCall userType="A" />;
 }
