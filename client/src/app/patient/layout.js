@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserStore } from "@/hooks/userauth.hooks";
+import MobileNavbarComponent from "@/Components/mobilenavbar.components";
 
 export default function PatientLayout({ children }) {
   const { User } = UserStore();
@@ -13,5 +14,10 @@ export default function PatientLayout({ children }) {
     }
   }, [User?.id]);
 
-  return <>{children}</>;
+  return (
+    <div className="h-screen w-full bg-white">
+      <div className="h-[90%] w-full ">{children}</div>
+      <MobileNavbarComponent height={10} width={100} />
+    </div>
+  );
 }

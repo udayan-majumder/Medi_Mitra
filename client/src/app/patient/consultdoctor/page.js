@@ -1,5 +1,5 @@
-import VideoCall from "@/Components/VideoCall";
+import VideoCallPatient from "@/Components/VideoCallPatient";
 
 export default function VisitDoctor() {
-   return <VideoCall userType="A" />;
+   return <VideoCallPatient />;
 }

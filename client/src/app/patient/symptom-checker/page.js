@@ -1,52 +1,36 @@
-"use client"
-
-import { ArrowLeft, SendHorizontal, Mic   } from "lucide-react"
-import MobileNavbarComponent from "@/Components/mobilenavbar.components"
-import { ModelSymptompAnalysis } from "@/services/model.services"
-import { useState,useEffect,useRef } from "react"
-
+"use client";
+import { ArrowLeft, SendHorizontal, Mic } from "lucide-react";
+import { ModelSymptompAnalysis } from "@/services/model.services";
+import { useState, useEffect, useRef } from "react";
 
 export default function Symptom() {
- 
-  const [UserInput,setUserInput] = useState("")
-  const [language,setlanguage] = useState("english")
-  const [tempchat,settempchat] = useState([])
+  const [UserInput, setUserInput] = useState("");
+  const [language, setlanguage] = useState("english");
+  const [tempchat, settempchat] = useState([]);
   const messagesEndRef = useRef(null);
 
-useEffect(() => {
-  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-}, [tempchat]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [tempchat]);
 
+  const AddChat = () => {
+    tempchat.length > 0
+      ? settempchat((prev) => [...prev, { type: "user", message: UserInput }])
+      : settempchat([{ type: "user", message: UserInput }]);
 
+    ChatFlow();
+  };
 
+  const ChatFlow = async () => {
+    const res = await ModelSymptompAnalysis(UserInput, language);
 
-  const AddChat = ()=>{
-       tempchat.length > 0
-         ? settempchat(prev => [
-             ...prev,
-             { type: "user", message: UserInput },
-           ])
-         : settempchat([{ type: "user", message: UserInput }]);
-
-     ChatFlow()    
-  }
-
-
-   
-  const ChatFlow = async() =>{
-  
-     const res = await ModelSymptompAnalysis(UserInput,language)
-
-     if(res?.response){
-        settempchat(prev =>[...prev, { type: "model", message: res?.response }]);
-     }
-  }
-   
-
-
-
-
-
+    if (res?.response) {
+      settempchat((prev) => [
+        ...prev,
+        { type: "model", message: res?.response },
+      ]);
+    }
+  };
 
   return (
     //main div
@@ -68,7 +52,7 @@ useEffect(() => {
                   ? "h-full w-[50%] flex justify-center items-center bg-green-500 text-white rounded-lg"
                   : "h-full w-[50%] flex justify-center items-center none text-white rounded-lg"
               }
-              onClick={()=>setlanguage("english")}
+              onClick={() => setlanguage("english")}
             >
               EN
             </button>
@@ -78,7 +62,7 @@ useEffect(() => {
                   ? "h-full w-[50%] flex justify-center items-center bg-green-500 text-white rounded-lg"
                   : "h-full w-[50%] flex justify-center items-center none text-white rounded-lg"
               }
-              onClick={()=>setlanguage("hindi")}
+              onClick={() => setlanguage("hindi")}
             >
               हि
             </button>
@@ -105,8 +89,8 @@ useEffect(() => {
                 <div
                   className={
                     items?.type === "model"
-                      ? "h-auto w-[70%] bg-amber-300 flex justify-start items-center p-2 rounded-[20px]"
-                      : "h-auto w-[70%] bg-blue-300 flex justify-start items-center p-2 rounded-[20px]"
+                      ? "h-auto w-[70%] bg-black flex justify-start items-center p-2 rounded-[20px]"
+                      : "h-auto w-[70%] bg-blue-500 flex justify-start items-center p-2 rounded-[20px]"
                   }
                 >
                   {items?.message}
@@ -151,7 +135,6 @@ useEffect(() => {
           </button>
         </div>
       </div>
-      <MobileNavbarComponent height={10} width={100} />
     </div>
   );
 }

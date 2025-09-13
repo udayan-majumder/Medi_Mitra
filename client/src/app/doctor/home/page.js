@@ -1,6 +1,6 @@
-import VideoCall from "@/Components/VideoCall";
+import VideoCallDoctor from "@/Components/VideoCallDoctor";
 
 
 export default function UserAPage() {
-  return <VideoCall userType="B" />;
+  return <VideoCallDoctor />;
 }
