@@ -145,3 +145,26 @@ export const UpdateStock = async (req, res) => {
     return res.status(500).json({ e });
   }
 };
+
+export const DeleteStock = async (req, res) => {
+  try {
+    const { id, medicine_id } = req.body;
+    if (!id || !medicine_id) {
+      return res.status(400).json({ message: "missing values in parameter" });
+    }
+
+    const userExists = checkUserById(id);
+    if (!userExists) {
+      return res.status(400).json({ message: "user does not exists" });
+    }
+
+    const fetchQuery = await pool.query(
+      "DELETE FROM pharma WHERE pharma_id = $1 AND medicine_id = $2",
+      [id, medicine_id]
+    );
+    return res.status(200).json({ message: "stock deleted successfully" });
+  } catch (e) {
+    console.error("Error deleting stock:", err);
+    return res.status(500).json({ err });
+  }
+};

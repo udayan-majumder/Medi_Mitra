@@ -5,6 +5,7 @@ import {
   isMedicine,
   SearchPharmacy,
   UpdateStock,
+  DeleteStock,
 } from "../controllers/pharmacy.controller.js";
 
 const pharmacyRouter = Router();
@@ -14,4 +15,5 @@ pharmacyRouter.post("/add-stock", addPharmacyStock);
 pharmacyRouter.get("/check-medicine", isMedicine);
 pharmacyRouter.get("/get-pharmacy", SearchPharmacy);
 pharmacyRouter.post("/update-stock", UpdateStock);
+pharmacyRouter.post("/delete-stock", DeleteStock);
 export default pharmacyRouter;
