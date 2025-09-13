@@ -1,30 +1,57 @@
 "use client";
 import { ArrowLeft, SendHorizontal, Mic } from "lucide-react";
-import { ModelSymptompAnalysis } from "@/services/model.services";
+import {
+  AddToChatHistory,
+  ModelSymptompAnalysis,
+  GetChatHistory,
+} from "@/services/model.services";
 import { useState, useEffect, useRef } from "react";
+import { UserStore } from "@/hooks/userauth.hooks";
 
 export default function Symptom() {
   const [UserInput, setUserInput] = useState("");
   const [language, setlanguage] = useState("english");
   const [tempchat, settempchat] = useState([]);
   const messagesEndRef = useRef(null);
+  const { User } = UserStore();
+
+  const loadChatHistory = async () => {
+    if (User?.id) {
+      try {
+        const chatData = await GetChatHistory(User.id);
+        if (chatData?.chat && chatData.chat.length > 0) {
+          const formattedChat = chatData.chat.map((chat) => ({
+            type: chat.sender,
+            message: chat.message,
+          }));
+          settempchat(formattedChat);
+        }
+      } catch (error) {
+        console.error("Error loading chat history:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [tempchat]);
 
-  const AddChat = () => {
+  useEffect(() => {
+    loadChatHistory();
+  }, [User?.id]);
+
+  const AddChat = async () => {
     tempchat.length > 0
       ? settempchat((prev) => [...prev, { type: "user", message: UserInput }])
       : settempchat([{ type: "user", message: UserInput }]);
-
+    await AddToChatHistory(User?.id, "user", UserInput);
     ChatFlow();
   };
 
   const ChatFlow = async () => {
     const res = await ModelSymptompAnalysis(UserInput, language);
-
     if (res?.response) {
+      await AddToChatHistory(User?.id, "model", res?.response);
       settempchat((prev) => [
         ...prev,
         { type: "model", message: res?.response },
