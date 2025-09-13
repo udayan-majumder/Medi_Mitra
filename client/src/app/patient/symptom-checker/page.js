@@ -1,5 +1,5 @@
 "use client";
-import { SendHorizontal, Mic, Trash2 } from "lucide-react";
+import { SendHorizontal, Mic, Trash2, MicOff } from "lucide-react";
 import {
   AddToChatHistory,
   ModelSymptompAnalysis,
@@ -13,7 +13,10 @@ export default function Symptom() {
   const [UserInput, setUserInput] = useState("");
   const [language, setlanguage] = useState("english");
   const [tempchat, settempchat] = useState([]);
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
   const { User } = UserStore();
 
   const loadChatHistory = async () => {
@@ -41,6 +44,49 @@ export default function Symptom() {
     loadChatHistory();
   }, [User?.id]);
 
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        setSpeechSupported(true);
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = language === "hindi" ? "hi-IN" : "en-US";
+
+        recognition.onstart = () => {
+          setIsListening(true);
+        };
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          setUserInput((prev) => prev + (prev ? " " : "") + transcript);
+        };
+
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+
+        recognition.onerror = (event) => {
+          console.error("Speech recognition error:", event.error);
+          setIsListening(false);
+          alert(`Speech recognition error: ${event.error}`);
+        };
+
+        recognitionRef.current = recognition;
+      }
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [language]);
+
   const AddChat = async () => {
     tempchat.length > 0
       ? settempchat((prev) => [...prev, { type: "user", message: UserInput }])
@@ -59,9 +105,13 @@ export default function Symptom() {
       ]);
     }
   };
-  
+
   const handleDeleteChat = async () => {
-    if (window.confirm("Are you sure you want to delete all chat history? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete all chat history? This action cannot be undone."
+      )
+    ) {
       try {
         const result = await DeleteChatHistory(User?.id);
         if (result) {
@@ -74,6 +124,21 @@ export default function Symptom() {
         console.error("Error deleting chat history:", error);
         alert("An error occurred while deleting chat history.");
       }
+    }
+  };
+
+  const toggleSpeechRecognition = () => {
+    if (!speechSupported) {
+      alert(
+        "Speech recognition is not supported in your browser. Please use Chrome or Edge."
+      );
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      recognitionRef.current?.start();
     }
   };
 
@@ -178,8 +243,21 @@ export default function Symptom() {
             <SendHorizontal strokeWidth={"1.5px"} />
           </button>
           {/* voice button */}
-          <button className="bg-black h-10 w-10 rounded-4xl flex justify-center items-center">
-            <Mic strokeWidth={"1.5px"} />
+          <button
+            className={`h-10 w-10 rounded-4xl flex justify-center items-center transition-colors duration-200 ${
+              isListening
+                ? "bg-red-500 hover:bg-red-600 animate-pulse"
+                : "bg-black hover:bg-gray-800"
+            }`}
+            onClick={toggleSpeechRecognition}
+            title={isListening ? "Stop listening" : "Start voice input"}
+            disabled={!speechSupported}
+          >
+            {isListening ? (
+              <MicOff className="text-white" strokeWidth={"1.5px"} />
+            ) : (
+              <Mic className="text-white" strokeWidth={"1.5px"} />
+            )}
           </button>
         </div>
       </div>
