@@ -44,3 +44,22 @@ export const AddToChatHistory = async (req, res) => {
     return res.status(500).json({ e });
   }
 };
+
+export const DeleteChatHistory = async (req, res) => {
+  try {
+    const { id } = req.body;
+    if (!id) {
+      return res.status(400).json({ message: "missing values in parameter" });
+    }
+
+    const fetchQuery = await pool.query(
+      "DELETE FROM chat_history WHERE user_id = $1",
+      [id]
+    );
+    
+    return res.status(200).json({ message: "chat history deleted successfully" });
+  } catch (e) {
+    console.error("Error deleting chat history:", e);
+    return res.status(500).json({ e });
+  }
+};
