@@ -1,9 +1,10 @@
 "use client";
-import { ArrowLeft, SendHorizontal, Mic } from "lucide-react";
+import { SendHorizontal, Mic, Trash2 } from "lucide-react";
 import {
   AddToChatHistory,
   ModelSymptompAnalysis,
   GetChatHistory,
+  DeleteChatHistory,
 } from "@/services/model.services";
 import { useState, useEffect, useRef } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
@@ -58,6 +59,23 @@ export default function Symptom() {
       ]);
     }
   };
+  
+  const handleDeleteChat = async () => {
+    if (window.confirm("Are you sure you want to delete all chat history? This action cannot be undone.")) {
+      try {
+        const result = await DeleteChatHistory(User?.id);
+        if (result) {
+          settempchat([]);
+          alert("Chat history deleted successfully!");
+        } else {
+          alert("Failed to delete chat history. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error deleting chat history:", error);
+        alert("An error occurred while deleting chat history.");
+      }
+    }
+  };
 
   return (
     //main div
@@ -67,9 +85,12 @@ export default function Symptom() {
         {/* upper navbar div */}
         <div className="h-[10%] w-full bg-white flex justify-between items-center">
           <div className="h-full w-[20%] flex justify-center items-center">
-            <button>
-              {" "}
-              <ArrowLeft className="text-black" size={"35px"} />{" "}
+            <button
+              className="bg-red-500 hover:bg-red-600 h-10 w-10 rounded-full flex justify-center items-center transition-colors duration-200"
+              onClick={handleDeleteChat}
+              title="Delete Chat History"
+            >
+              <Trash2 className="text-white" size={"20px"} />
             </button>
           </div>
           <div className="h-[40%] w-[30%] text-black flex justify-center items-center bg-gray-300 rounded-lg">

@@ -6,6 +6,7 @@ import UserDetailsFunction from "../controllers/userdetails.controller.js";
 import LogoutFunction from "../controllers/logout.controller.js";
 import {
   AddToChatHistory,
+  DeleteChatHistory,
   GetChatFunction,
 } from "../controllers/chat.controller.js";
 const userRouter = Router();
@@ -16,4 +17,5 @@ userRouter.get("/userdetails", MiddleWareFunction, UserDetailsFunction);
 userRouter.get("/logout", LogoutFunction);
 userRouter.get("/get-chat", MiddleWareFunction, GetChatFunction);
 userRouter.post("/add-chat", MiddleWareFunction, AddToChatHistory);
+userRouter.post("/delete-chat", MiddleWareFunction, DeleteChatHistory);
 export default userRouter;
