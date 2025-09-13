@@ -133,9 +133,6 @@ catch(e){
           )}
         </div>
       </div>
-
-      {/*Navbar Component */}
-      <MobileNavbarComponent height={10} width={100}/>
     </div>
   );
 }

@@ -16,7 +16,9 @@ export class QueueService {
   }
 
   removeUserA(socketId) {
-    const index = this.userAQueue.findIndex(user => user.socketId === socketId);
+    const index = this.userAQueue.findIndex(
+      (user) => user.socketId === socketId
+    );
     if (index !== -1) {
       return this.userAQueue.splice(index, 1)[0];
     }
@@ -24,7 +26,9 @@ export class QueueService {
   }
 
   removeUserB(socketId) {
-    const index = this.userBQueue.findIndex(user => user.socketId === socketId);
+    const index = this.userBQueue.findIndex(
+      (user) => user.socketId === socketId
+    );
     if (index !== -1) {
       return this.userBQueue.splice(index, 1)[0];
     }
@@ -32,8 +36,8 @@ export class QueueService {
   }
 
   findUserInQueues(socketId) {
-    const inA = this.userAQueue.find(user => user.socketId === socketId);
-    const inB = this.userBQueue.find(user => user.socketId === socketId);
+    const inA = this.userAQueue.find((user) => user.socketId === socketId);
+    const inB = this.userBQueue.find((user) => user.socketId === socketId);
     return { inA, inB };
   }
 
@@ -63,15 +67,15 @@ export class QueueService {
     return {
       userAQueue: this.userAQueue.length,
       userBQueue: this.userBQueue.length,
-      consumedUserA: this.consumedUserA.size
+      consumedUserA: this.consumedUserA.size,
     };
   }
 
   getDebugInfo() {
     return {
-      userAQueue: this.userAQueue.map(u => u.socketId),
-      userBQueue: this.userBQueue.map(u => u.socketId),
-      consumedUserA: Array.from(this.consumedUserA)
+      userAQueue: this.userAQueue.map((u) => u.socketId),
+      userBQueue: this.userBQueue.map((u) => u.socketId),
+      consumedUserA: Array.from(this.consumedUserA),
     };
   }
 }

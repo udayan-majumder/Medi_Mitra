@@ -1,9 +1,11 @@
-'use client';
-import React, { useCallback } from 'react';
-import { useSocket } from '../hooks/useSocket';
-import { useWebRTC } from '../hooks/useWebRTC';
+"use client";
+import React, { useCallback } from "react";
+import { useSocket } from "../hooks/useSocket";
+import { useWebRTC } from "../hooks/useWebRTC";
+import { UserStore } from "@/hooks/userauth.hooks";
+import Image from "next/image";
 
-const VideoCall = ({ userType }) => {
+const VideoCallDoctor = () => {
   const {
     localVideoRef,
     remoteVideoRef,
@@ -15,13 +17,19 @@ const VideoCall = ({ userType }) => {
   } = useWebRTC();
 
   // Memoize handlers to prevent socket reconnections
-  const onMatched = useCallback((data) => {
-    initializeWebRTC(data.roomId, data.userType, socketRef.current);
-  }, [initializeWebRTC]);
+  const onMatched = useCallback(
+    (data) => {
+      initializeWebRTC(data.roomId, data.userType, socketRef.current);
+    },
+    [initializeWebRTC]
+  );
 
-  const onWebRTCOfferHandler = useCallback((data) => {
-    handleWebRTCOffer(data, socketRef.current);
-  }, [handleWebRTCOffer]);
+  const onWebRTCOfferHandler = useCallback(
+    (data) => {
+      handleWebRTCOffer(data, socketRef.current);
+    },
+    [handleWebRTCOffer]
+  );
 
   const {
     userState,
@@ -36,7 +44,10 @@ const VideoCall = ({ userType }) => {
   } = useSocket({
     onMatched,
     onSkipped: cleanupWebRTC,
-    onSessionEnded: cleanupWebRTC,
+    onSessionEnded: () => {
+      cleanupWebRTC();
+      disconnect();
+    },
     onPartnerDisconnected: cleanupWebRTC,
     onWebRTCOffer: onWebRTCOfferHandler,
     onWebRTCAnswer: handleWebRTCAnswer,
@@ -50,11 +61,7 @@ const VideoCall = ({ userType }) => {
   }, [socket]);
 
   const handleJoin = () => {
-    if (userType === 'A') {
-      joinAsUserA();
-    } else {
-      joinAsUserB();
-    }
+    joinAsUserB();
   };
 
   return (
@@ -72,25 +79,19 @@ const VideoCall = ({ userType }) => {
             {!userState.type ? (
               <div className="space-y-4">
                 <h2 className="text-2xl font-semibold text-center mb-6">
-                  Join as {userType==='A' ? 'Patient' : 'Doctor'}
+                  Join as Doctor
                 </h2>
                 <button
                   onClick={handleJoin}
                   disabled={!userState.isConnected}
-                  className={`w-full ${
-                    userType === 'A' 
-                      ? 'bg-blue-600 hover:bg-blue-700' 
-                      : 'bg-green-600 hover:bg-green-700'
-                  } disabled:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors`}
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
                 >
-                  Join as User {userType==='A' ? 'Patient' : 'Doctor'}
+                  Join as Doctor
                 </button>
               </div>
             ) : (
               <div className="text-center">
-                <p className="text-lg mb-4">
-                  Waiting for a match as {userState.type === 'A' ? 'Patient' : 'Doctor'}...
-                </p>
+                <p className="text-lg mb-4">Waiting for a patient...</p>
                 {userState.position && (
                   <p className="text-gray-400">
                     Position in queue: {userState.position}
@@ -110,9 +111,7 @@ const VideoCall = ({ userType }) => {
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="bg-gray-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold mb-2">
-                  You ({userState.type === 'A' ? 'Patient' : 'Doctor'})
-                </h3>
+                <h3 className="text-lg font-semibold mb-2">You (Doctor)</h3>
                 <video
                   ref={localVideoRef}
                   autoPlay
@@ -123,7 +122,7 @@ const VideoCall = ({ userType }) => {
               </div>
 
               <div className="bg-gray-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold mb-2">Partner</h3>
+                <h3 className="text-lg font-semibold mb-2">Patient</h3>
                 <video
                   ref={remoteVideoRef}
                   autoPlay
@@ -134,22 +133,18 @@ const VideoCall = ({ userType }) => {
             </div>
 
             <div className="text-center space-x-4">
-              {userState.type === 'B' && (
-                <>
-                  <button
-                    onClick={skipUser}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-                  >
-                    Skip User
-                  </button>
-                  <button
-                    onClick={endSession}
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-                  >
-                    End Session
-                  </button>
-                </>
-              )}
+              <button
+                onClick={skipUser}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+              >
+                Skip User
+              </button>
+              <button
+                onClick={endSession}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+              >
+                End Session
+              </button>
               <button
                 onClick={disconnect}
                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
@@ -163,5 +158,4 @@ const VideoCall = ({ userType }) => {
     </div>
   );
 };
-
-export default VideoCall;
+export default VideoCallDoctor;

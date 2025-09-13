@@ -1,4 +1,4 @@
-import { generateRoomId } from '../utils/helpers.js';
+import { generateRoomId } from "../utils/helpers.js";
 
 export class MatchingService {
   constructor(queueService, sessionService) {
@@ -26,13 +26,15 @@ export class MatchingService {
     userB.socket.join(roomId);
 
     // Notify both users about the match
-    userA.socket.emit('matched', { roomId, userType: 'A', partnerType: 'B' });
-    userB.socket.emit('matched', { roomId, userType: 'B', partnerType: 'A' });
+    userA.socket.emit("matched", { roomId, userType: "A", partnerType: "B" });
+    userB.socket.emit("matched", { roomId, userType: "B", partnerType: "A" });
 
     // Mark User A as consumed
     this.queueService.markUserAConsumed(userA.socketId);
 
-    console.log(`Matched User A (${userA.socketId}) with User B (${userB.socketId}) in room ${roomId}`);
+    console.log(
+      `Matched User A (${userA.socketId}) with User B (${userB.socketId}) in room ${roomId}`
+    );
 
     return { userA: userA.socketId, userB: userB.socketId, roomId };
   }

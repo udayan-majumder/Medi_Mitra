@@ -1,23 +1,23 @@
-import { Router } from 'express';
+import { Router } from "express";
 
 export const createApiRoutes = (queueService, sessionService) => {
   const router = Router();
 
-  router.get('/health', (req, res) => {
+  router.get("/health", (req, res) => {
     const stats = queueService.getQueueStats();
-    res.json({ 
-      status: 'OK', 
+    res.json({
+      status: "OK",
       ...stats,
-      activeSessions: sessionService.getSessionCount()
+      activeSessions: sessionService.getSessionCount(),
     });
   });
 
-  router.get('/debug', (req, res) => {
+  router.get("/debug", (req, res) => {
     const queueDebug = queueService.getDebugInfo();
     const sessions = sessionService.getAllSessions();
     res.json({
       ...queueDebug,
-      activeSessions: sessions
+      activeSessions: sessions,
     });
   });
 

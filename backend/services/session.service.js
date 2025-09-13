@@ -7,8 +7,8 @@ export class SessionService {
     this.activeSessions.set(roomId, {
       userA: userA,
       userB: userB,
-      userAType: 'A',
-      userBType: 'B'
+      userAType: "A",
+      userBType: "B",
     });
   }
 

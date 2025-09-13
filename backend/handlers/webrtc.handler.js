@@ -7,11 +7,16 @@ export class WebRTCHandler {
     const { roomId, offer } = data;
     const session = this.sessionService.getSession(roomId);
 
-    if (session && (session.userA === socket.id || session.userB === socket.id)) {
+    if (
+      session &&
+      (session.userA === socket.id || session.userB === socket.id)
+    ) {
       console.log(`Relaying WebRTC offer in room ${roomId}`);
-      socket.to(roomId).emit('webrtc-offer', { roomId, offer });
+      socket.to(roomId).emit("webrtc-offer", { roomId, offer });
     } else {
-      console.log(`Invalid WebRTC offer attempt for room ${roomId} by ${socket.id}`);
+      console.log(
+        `Invalid WebRTC offer attempt for room ${roomId} by ${socket.id}`
+      );
     }
   }
 
@@ -19,11 +24,16 @@ export class WebRTCHandler {
     const { roomId, answer } = data;
     const session = this.sessionService.getSession(roomId);
 
-    if (session && (session.userA === socket.id || session.userB === socket.id)) {
+    if (
+      session &&
+      (session.userA === socket.id || session.userB === socket.id)
+    ) {
       console.log(`Relaying WebRTC answer in room ${roomId}`);
-      socket.to(roomId).emit('webrtc-answer', { roomId, answer });
+      socket.to(roomId).emit("webrtc-answer", { roomId, answer });
     } else {
-      console.log(`Invalid WebRTC answer attempt for room ${roomId} by ${socket.id}`);
+      console.log(
+        `Invalid WebRTC answer attempt for room ${roomId} by ${socket.id}`
+      );
     }
   }
 
@@ -31,8 +41,11 @@ export class WebRTCHandler {
     const { roomId, candidate } = data;
     const session = this.sessionService.getSession(roomId);
 
-    if (session && (session.userA === socket.id || session.userB === socket.id)) {
-      socket.to(roomId).emit('webrtc-ice-candidate', { roomId, candidate });
+    if (
+      session &&
+      (session.userA === socket.id || session.userB === socket.id)
+    ) {
+      socket.to(roomId).emit("webrtc-ice-candidate", { roomId, candidate });
     }
   }
 }
