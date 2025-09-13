@@ -6,18 +6,34 @@ export class SocketManager {
   }
 
   initialize() {
-    this.io.on('connection', (socket) => {
+    this.io.on("connection", (socket) => {
       console.log(`User connected: ${socket.id}`);
-      
-      socket.on('join-as-A', () => this.connectionHandler.handleJoinAsA(socket));
-      socket.on('join-as-B', () => this.connectionHandler.handleJoinAsB(socket));
-      socket.on('skip-user', (data) => this.connectionHandler.handleSkipUser(socket, data));
-      socket.on('end-session', (data) => this.connectionHandler.handleEndSession(socket, data));
-      socket.on('disconnect', () => this.connectionHandler.handleDisconnect(socket));
-      
-      socket.on('webrtc-offer', (data) => this.webrtcHandler.handleOffer(socket, data));
-      socket.on('webrtc-answer', (data) => this.webrtcHandler.handleAnswer(socket, data));
-      socket.on('webrtc-ice-candidate', (data) => this.webrtcHandler.handleIceCandidate(socket, data));
+
+      socket.on("join-as-A", () =>
+        this.connectionHandler.handleJoinAsA(socket)
+      );
+      socket.on("join-as-B", () =>
+        this.connectionHandler.handleJoinAsB(socket)
+      );
+      socket.on("skip-user", (data) =>
+        this.connectionHandler.handleSkipUser(socket, data)
+      );
+      socket.on("end-session", (data) =>
+        this.connectionHandler.handleEndSession(socket, data)
+      );
+      socket.on("disconnect", () =>
+        this.connectionHandler.handleDisconnect(socket)
+      );
+
+      socket.on("webrtc-offer", (data) =>
+        this.webrtcHandler.handleOffer(socket, data)
+      );
+      socket.on("webrtc-answer", (data) =>
+        this.webrtcHandler.handleAnswer(socket, data)
+      );
+      socket.on("webrtc-ice-candidate", (data) =>
+        this.webrtcHandler.handleIceCandidate(socket, data)
+      );
     });
   }
 }

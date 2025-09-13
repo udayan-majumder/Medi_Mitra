@@ -8,6 +8,6 @@ const userRouter = Router();
 
 userRouter.post("/login", LoginFunction);
 userRouter.post("/register", RegisterFunction);
-userRouter.get("/userdetails",MiddleWareFunction,UserDetailsFunction)
-userRouter.get("/logout",LogoutFunction)
+userRouter.get("/userdetails", MiddleWareFunction, UserDetailsFunction);
+userRouter.get("/logout", LogoutFunction);
 export default userRouter;
