@@ -6,6 +6,8 @@ import { FetchPharmacyList } from "@/services/pharmacy.services";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
 import PharmacyStore from "@/store/pharmacy.store";
+import MobileNavbarComponent from "@/Components/mobilenavbar.components";
+
 export default function Pharmacy() {
 {/*Default hook */}
   const {User} = UserStore()
@@ -49,9 +51,9 @@ catch(e){
       {/*sub div */}
       <div className="h-[90%] w-full flex flex-col justify-start items-start">
         {/*Back Button */}
-        <div className="h-[6%] w-full flex justify-left items-center p-[10px]">
+        <button className="h-[6%] w-full flex justify-left items-center p-[10px]" onClick={()=>router.push("/patient/home")}>
           <ChevronLeft color="black" />
-        </div>
+        </button>
 
         {/*search Form */}
         <form
@@ -60,7 +62,7 @@ catch(e){
         >
           <input
             className="h-[60%] w-[80%] border border-gray-300 p-[10px] rounded-[100px] placeholder-gray-400 text-black focus:outline-green-500"
-            placeholder="search pharamacy name"
+            placeholder="search pharmacy name"
             onChange={(e) => {
               if (e.target.value.length <= 0) {
                 setSearchParam(null);
@@ -133,7 +135,7 @@ catch(e){
       </div>
 
       {/*Navbar Component */}
-      <div className="h-[10%] w-full bg-blue-500"></div>
+      <MobileNavbarComponent height={10} width={100}/>
     </div>
   );
 }
