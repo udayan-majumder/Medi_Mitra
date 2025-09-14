@@ -27,11 +27,15 @@ const Wrapper = ({ children }) => {
     const handleUser = async()=>{
         const res = await GetUserDetails();
         setUser(res)
-         if(res?.type === 'patient'){
-            const patientres = await GetPatientInfo(res?.id)
-            console.log(patientres[0]?.age)
-            setAge(patientres[0]?.age)
-            setDiseases(patientres[0]?.diseases)
+    }
+
+    const fetchPatientInfo = async (userId) => {
+        if (userId) {
+            const patientDetails = await GetPatientInfo(userId);
+            if (patientDetails && patientDetails[0]) {
+                setAge(patientDetails[0]?.age);
+                setDiseases(patientDetails[0]?.diseases);
+            }
         }
     }
 
@@ -48,6 +52,17 @@ const Wrapper = ({ children }) => {
     useEffect(() => {
         localStorage.setItem("languagetype", LanguageType);
     }, [LanguageType]);
+
+    // Fetch patient details once the user logs in
+    useEffect(() => {
+        if (User && User.type === 'patient' && User.id) {
+            fetchPatientInfo(User.id);
+        } else if (!User) {
+            // Clear patient info after log out
+            setAge(null);
+            setDiseases([]);
+        }
+    }, [User]);
 
     return (
         <UserContext.Provider value={{ User, setUser, LanguageType , setLanguageType,Age,setAge,Diseases,setDiseases }}>
