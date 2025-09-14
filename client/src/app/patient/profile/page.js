@@ -180,9 +180,9 @@ const handleLogout = async () => {
 
               {/*Prescription heading*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Pescription</div>
+                <div className="text-base">Prescription</div>
                 <div className="text-[10px] text-gray-500">
-                  view and manage your pescription
+                  View and manage your prescription
                 </div>
               </div>
 
