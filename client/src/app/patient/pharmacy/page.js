@@ -6,7 +6,7 @@ import { FetchPharmacyList } from "@/services/pharmacy.services";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
 import PharmacyStore from "@/store/pharmacy.store";
-import MobileNavbarComponent from "@/Components/mobilenavbar.components";
+
 
 export default function Pharmacy() {
 {/*Default hook */}
