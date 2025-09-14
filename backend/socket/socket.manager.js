@@ -9,11 +9,11 @@ export class SocketManager {
     this.io.on("connection", (socket) => {
       console.log(`User connected: ${socket.id}`);
 
-      socket.on("join-as-A", () =>
-        this.connectionHandler.handleJoinAsA(socket)
+      socket.on("join-as-A", (data) =>
+        this.connectionHandler.handleJoinAsA(socket, data)
       );
-      socket.on("join-as-B", () =>
-        this.connectionHandler.handleJoinAsB(socket)
+      socket.on("join-as-B", (data) =>
+        this.connectionHandler.handleJoinAsB(socket, data)
       );
       socket.on("skip-user", (data) =>
         this.connectionHandler.handleSkipUser(socket, data)

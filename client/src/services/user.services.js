@@ -7,7 +7,7 @@ export const GetUserDetails = async() => {
       return res?.data?.user;
     }
   } catch (e) {
-    return null;
+    return false;
   }
 };
 

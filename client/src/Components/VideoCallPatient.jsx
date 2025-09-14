@@ -7,6 +7,9 @@ import Image from "next/image";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { useRouter } from "next/navigation";
 const VideoCallPatient = () => {
+  // Get user info from UserStore
+  const { User } = UserStore();
+  
   const {
     localVideoRef,
     remoteVideoRef,
@@ -53,7 +56,7 @@ const VideoCallPatient = () => {
     onWebRTCOffer: onWebRTCOfferHandler,
     onWebRTCAnswer: handleWebRTCAnswer,
     onWebRTCIceCandidate: handleWebRTCIceCandidate,
-  });
+  }, User);
 
   // Store socket reference for use in callbacks
   const socketRef = React.useRef(socket);
@@ -62,11 +65,17 @@ const VideoCallPatient = () => {
   }, [socket]);
 
   const handleJoin = () => {
-      joinAsUserA();
+    console.log("Patient joining with User:", User);
+    if (!User) {
+      console.error("No user data available for patient");
+      alert("Please log in first");
+      return;
+    }
+    joinAsUserA();
   };
   
   const router = useRouter()
-  const { User,LanguageType } = UserStore();
+  const { LanguageType } = UserStore();
   const {Language} = LanguageStore()
   // Patient UI
   return (

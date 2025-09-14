@@ -1,4 +1,5 @@
 import { generateRoomId } from "../utils/helpers.js";
+import { GetCompletePatientInfo } from "../models/user.models.js";
 
 export class MatchingService {
   constructor(queueService, sessionService) {
@@ -6,7 +7,7 @@ export class MatchingService {
     this.sessionService = sessionService;
   }
 
-  matchUsers() {
+  async matchUsers() {
     if (!this.queueService.hasAvailableUsers()) {
       return null;
     }
@@ -25,9 +26,33 @@ export class MatchingService {
     userA.socket.join(roomId);
     userB.socket.join(roomId);
 
+    // Get patient data if userA is a patient
+    let patientData = null;
+    console.log("UserA socket userInfo:", userA.socket.userInfo);
+    if (userA.socket.userInfo && userA.socket.userInfo.id) {
+      try {
+        patientData = await GetCompletePatientInfo(userA.socket.userInfo.id);
+        console.log("Patient data retrieved:", patientData);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    } else {
+      console.log("No userInfo found for userA or missing ID");
+    }
+
     // Notify both users about the match
-    userA.socket.emit("matched", { roomId, userType: "A", partnerType: "B" });
-    userB.socket.emit("matched", { roomId, userType: "B", partnerType: "A" });
+    userA.socket.emit("matched", { 
+      roomId, 
+      userType: "A", 
+      partnerType: "B",
+      patientData: patientData 
+    });
+    userB.socket.emit("matched", { 
+      roomId, 
+      userType: "B", 
+      partnerType: "A",
+      patientData: patientData 
+    });
 
     // Mark User A as consumed
     this.queueService.markUserAConsumed(userA.socketId);

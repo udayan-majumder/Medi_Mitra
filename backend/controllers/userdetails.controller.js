@@ -1,4 +1,4 @@
-import { GetPatientInfo } from "../models/user.models.js"
+import { GetPatientInfo, GetCompletePatientInfo } from "../models/user.models.js"
 
 export const UserDetailsFunction = async(req,res)=>{
 
@@ -24,4 +24,16 @@ export const PatientInfoFunction = async(req,res)=>{
    }
 
    return res.status(200).json({Patient})
+}
+
+export const CompletePatientInfoFunction = async(req,res)=>{
+   const {id} = req.query
+
+   const Patient = await GetCompletePatientInfo(id)
+
+   if(!Patient){
+    return res.status(400).json({patient:false})
+   }
+
+   return res.status(200).json({patient:Patient})
 }
