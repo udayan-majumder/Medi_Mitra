@@ -1,0 +1,46 @@
+import bcrypt from "bcrypt";
+import { CheckUserFunction } from "../models/user.models.js";
+import { AddUserFunction } from "../models/user.models.js";
+import { AddPatientFunction } from "../models/user.models.js";
+
+const RegisterFunction = async (req, res) => {
+  try {
+    const { username, password, email, location, type, diseases, age } =
+      req.body;
+    const isUserExsists = await CheckUserFunction(email, type);
+
+    if (isUserExsists) {
+      return res.status(400).json({ message: "user exists" });
+    }
+
+    const hassPassword = await bcrypt.hash(password, 10);
+    const resInsertUser = await AddUserFunction(
+      username,
+      email,
+      hassPassword,
+      location,
+      type
+    );
+
+    if (!resInsertUser) {
+      return res.status(400).json({ message: "missing values in parameter" });
+    }
+
+    if (type === "patient") {
+      const isadd = await AddPatientFunction(
+        resInsertUser?.data?.id,
+        diseases,
+        age
+      );
+      if (!isadd) {
+        return res.status(400).json({ message: "missing values in parameter" });
+      }
+    }
+
+    return res.status(200).json({ message: "User added successfully" });
+  } catch (e) {
+    return res.status(500).json({ message: e });
+  }
+};
+
+export default RegisterFunction;
