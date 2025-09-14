@@ -18,8 +18,8 @@ const Wrapper = ({ children }) => {
   const [LanguageType, setLanguageType] = useState("english");
   const [Age, setAge] = useState(null);
   const [Diseases, setDiseases] = useState([]);
+  const [Prescription_URLS,setPrescription_URLS] = useState([])
   const [isLoading, setIsLoading] = useState(true);
-
   const handleUser = async () => {
     try {
       setIsLoading(true);
@@ -39,6 +39,7 @@ const Wrapper = ({ children }) => {
       if (patientDetails && patientDetails[0]) {
         setAge(patientDetails[0]?.age);
         setDiseases(patientDetails[0]?.diseases);
+        setPrescription_URLS(patientDetails[0]?.prescription_urls)
       }
     }
   };
@@ -59,8 +60,8 @@ const Wrapper = ({ children }) => {
 
   // Fetch patient details once the user logs in
   useEffect(() => {
-    if (User && User.type === "patient" && User.id) {
-      fetchPatientInfo(User.id);
+    if (User && User?.type === "patient" && User?.id) {
+      fetchPatientInfo(User?.id);
     } else if (!User) {
       // Clear patient info after log out
       setAge(null);
@@ -80,6 +81,8 @@ const Wrapper = ({ children }) => {
         Diseases,
         setDiseases,
         isLoading,
+        Prescription_URLS,
+        setPrescription_URLS
       }}
     >
       {children}

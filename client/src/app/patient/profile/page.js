@@ -4,32 +4,46 @@ import { useState,useEffect, useRef } from "react";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus, LogOut } from "lucide-react";
+import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus, LogOut, X } from "lucide-react";
 import { UploadPatientPescription, LogoutHandler } from "@/services/user.services";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function CheckPatientProfile(){
 {/*Default hooks */}
 const {Language} = LanguageStore()
-const {LanguageType,User,Age,Diseases,setUser} = UserStore()
+const {LanguageType,User,Age,Diseases,setUser,Prescription_URLS,setPrescription_URLS} = UserStore()
 const router = useRouter()
 
 {/*custom hooks */}
 const fileinputRef = useRef(null)
-
+const [SelectedImage,setSelectedImage] = useState(null)
 
 const handleButtonClick = ()=>{
     fileinputRef.current.click()
 }
 
 const listenFileChanges = async(e) =>{
-    const file = e.target.files[0]
+  try{
+   toast.loading("Uploading")
+   const file = e.target.files[0]
     const formData = new FormData();
     formData.append("file", file);
-   
+    formData.append("id",User?.id)
     const res = await UploadPatientPescription(formData)
-     
-    console.log(res)
+    if(!res){
+      return toast.error("File no uploaded")
+    }  
+   
+    setPrescription_URLS(prev => [...prev,res])
+    toast.dismissAll()
+    toast.success("File Uploaded Successfully")
+   
+    e.target.value = null
+  }
+  catch(e){
+    console.log(e)
+  }
+   
 }
 
 const handleLogout = async () => {
@@ -67,7 +81,7 @@ const handleLogout = async () => {
             </button> */}
             <div className="text-xl">{Language?.[LanguageType]?.profile}</div>
           </div>
-          <button 
+          <button
             onClick={handleLogout}
             className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
           >
@@ -164,21 +178,71 @@ const handleLogout = async () => {
                 <ClipboardList size={40} strokeWidth={1} color="gray" />
               </div>
 
-              {/*Age*/}
+              {/*Prescription heading*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
                 <div className="text-base">Pescription</div>
-                <div className="text-[10px] text-gray-500">view and manage your pescription</div>
+                <div className="text-[10px] text-gray-500">
+                  view and manage your pescription
+                </div>
               </div>
 
               {/*edit */}
               <div className="w-[10%] h-full flex justify-center items-center">
-                <button><CirclePlus strokeWidth={1} onClick={handleButtonClick}/></button>
-                <input type="file" ref={fileinputRef} onChange={listenFileChanges} style={{display:"none"}}/>
+                <button>
+                  <CirclePlus strokeWidth={1} onClick={handleButtonClick} />
+                </button>
+                <input
+                  type="file"
+                  ref={fileinputRef}
+                  onChange={listenFileChanges}
+                  style={{ display: "none" }}
+                />
               </div>
+            </div>
+            <div className="h-[70%] w-full grid grid-cols-3 p-4 gap-4 overflow-y-scroll">
+              {Prescription_URLS?.length > 0 ? (
+                Prescription_URLS?.map((items) => (
+                  <button
+                    key={items}
+                    onClick={() => {
+                      setSelectedImage(items);
+                    }}
+                  >
+                    <img
+                      className="rounded-lg max-h-[100px] min-h-[80px] min-w-[80px] max-w-[100px]"
+                      src={items}
+                    ></img>
+                  </button>
+                ))
+              ) : (
+                <div className="h-full w-full flex items-center justify center text-xl">
+                  {" "}
+                  no items here
+                </div>
+              )}
             </div>
           </div>
         </div>
-
+        {SelectedImage ? (
+          <div
+            className="h-full w-full absolute top-0 left-0 flex flex-col justify-start items-end 
+                bg-black/30 backdrop-blur-sm z-50"
+          >
+            <div className="h-[10%] flex justify-center items-left p-2">
+              <button
+              className="max-h-[50px] min-w-[50px] rounded-lg flex justify-center items-center"
+                onClick={() => {
+                  setSelectedImage(null);
+                }}
+              >
+                <X color="white"/>
+              </button>
+            </div>
+            <div className="h-[90%] w-full flex justify-center items-center">
+              <img className="h-[70%] p-2 rounded-[20px]" src={SelectedImage} />
+            </div>
+          </div>
+        ) : null}
       </div>
     );
 }

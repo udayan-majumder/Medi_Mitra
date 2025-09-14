@@ -40,9 +40,10 @@ export const AddUserFunction = async (
 export const AddPatientFunction = async (id, diseases = [], age = null) => {
   try {
     if (diseases.length > 0 && age !== null) {
+      const pescription_urls = []
       const AddQuery = await pool.query(
-        "insert into patient_table values($1,$2,$3)",
-        [id, diseases, age]
+        "insert into patient_table values($1,$2,$3,$4)",
+        [id, diseases, age,pescription_urls]
       );
       return true;
     } else {
@@ -141,4 +142,14 @@ export const GetCompletePatientInfo = async (id) => {
   }
 }
 
+export const UploadPescriptionToDB = async(id,new_url)=>{
+  try{
+   const getAllPescription = await pool.query("select prescription_urls from patient_table where id=$1",[id])
+   const new_urls = [...getAllPescription?.rows[0]?.prescription_urls,new_url]
+   const addAllPescription = await pool.query("update patient_table set prescription_urls = $1 where id=$2",[new_urls,id])
+   return true
+  }catch(e){
+  return false
+  }
+}
 
