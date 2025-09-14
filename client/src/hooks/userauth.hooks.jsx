@@ -6,6 +6,7 @@ import {
     useEffect,
 } from "react";
 import { GetUserDetails } from "@/services/user.services";
+import { GetPatientInfo } from "@/services/user.services";
 
 export const UserContext = createContext(null);
 
@@ -19,11 +20,19 @@ export const UserStore = () => {
 
 const Wrapper = ({ children }) => {
     const [User, setUser] = useState(null);
-    const [LanguageType, setLanguageType] = useState(null);
+    const [LanguageType, setLanguageType] = useState("english");
+    const [Age,setAge] = useState(null)
+    const  [Diseases,setDiseases] = useState([])
 
     const handleUser = async()=>{
         const res = await GetUserDetails();
         setUser(res)
+         if(res?.type === 'patient'){
+            const patientres = await GetPatientInfo(res?.id)
+            console.log(patientres[0]?.age)
+            setAge(patientres[0]?.age)
+            setDiseases(patientres[0]?.diseases)
+        }
     }
 
     useEffect(() => {
@@ -41,7 +50,7 @@ const Wrapper = ({ children }) => {
     }, [LanguageType]);
 
     return (
-        <UserContext.Provider value={{ User, setUser, LanguageType , setLanguageType }}>
+        <UserContext.Provider value={{ User, setUser, LanguageType , setLanguageType,Age,setAge,Diseases,setDiseases }}>
             {children}
         </UserContext.Provider>
     );

@@ -66,3 +66,24 @@ export const checkUserById = async (id) => {
     throw err;
   }
 };
+
+export const GetPatientInfo = async (id) =>{
+  try{
+  if(!id){
+    return false
+  }
+
+  const res = await pool.query("select * from patient_table where id=$1",[id])
+
+  if(res?.rows.length<=0){
+    return false
+  }
+  return res?.rows
+  }
+  catch(e){
+    return false
+  }
+  
+}
+
+

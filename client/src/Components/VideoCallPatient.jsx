@@ -4,7 +4,8 @@ import { useSocket } from "../hooks/useSocket";
 import { useWebRTC } from "../hooks/useWebRTC";
 import { UserStore } from "@/hooks/userauth.hooks";
 import Image from "next/image";
-
+import { LanguageStore } from "@/store/Dictionary.store";
+import { useRouter } from "next/navigation";
 const VideoCallPatient = () => {
   const {
     localVideoRef,
@@ -63,23 +64,29 @@ const VideoCallPatient = () => {
   const handleJoin = () => {
       joinAsUserA();
   };
-
-  const { User } = UserStore();
-
+  
+  const router = useRouter()
+  const { User,LanguageType } = UserStore();
+  const {Language} = LanguageStore()
   // Patient UI
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white poppins">
       {/* User Profile Section */}
-      <div className="px-4 py-4">
-        <div className="flex items-center space-x-3">
+      <div className="px-1 py-4">
+        <div className="flex justify-center items-center space-x-6">
           <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
             <span className="text-gray-600 text-lg">👤</span>
           </div>
           <div>
             <h1 className="text-xl font-semibold text-gray-800">
-              Hi, {User?.username}
+              {Language?.[LanguageType]?.hello}, {User?.username}
             </h1>
             <p className="text-gray-500">{User?.location}</p>
+          </div>
+          <div className="h-full w-[40%] flex justify-center items-center">
+            <button className="border border-green-500 text-gray-400 p-1 rounded-lg active:bg-green-500 active:text-white" onClick={()=>{
+              router.push("/patient/profile")
+            }}>{Language?.[LanguageType]?.checkprofile}</button>
           </div>
         </div>
       </div>
@@ -103,10 +110,10 @@ const VideoCallPatient = () => {
                 style={{ backgroundColor: "#9CDB6C", opacity: 0.6 }}
               >
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  Need help?
+                  {Language?.[LanguageType]?.headinghelp}
                 </h2>
                 <p className="text-gray-700 mb-6">
-                  Connect instantly with a doctor near you.
+                  {Language?.[LanguageType]?.headinghomepatient}
                 </p>
 
                 {/* Medical Consultation Illustration */}
@@ -127,7 +134,7 @@ const VideoCallPatient = () => {
                   className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-4 px-6 rounded-xl transition-colors"
                   style={{ backgroundColor: "#378E31" }}
                 >
-                  Connect Now
+                  {Language?.[LanguageType]?.connectnowbtn}
                 </button>
               </div>
             ) : (
