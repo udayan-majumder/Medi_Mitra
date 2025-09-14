@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
-export const useSocket = (handlers = {}) => {
+export const useSocket = (handlers = {}, userInfo = null) => {
   const [userState, setUserState] = useState({
     type: null,
     isConnected: false,
@@ -102,16 +102,18 @@ export const useSocket = (handlers = {}) => {
   }, []); 
 
   const joinAsUserA = useCallback(() => {
-    socketRef.current?.emit('join-as-A');
+    console.log("Joining as User A with userInfo:", userInfo);
+    socketRef.current?.emit('join-as-A', { userInfo });
     setUserState((prev) => ({ ...prev, type: 'A' }));
     setStatus('Joining as User A...');
-  }, []);
+  }, [userInfo]);
 
   const joinAsUserB = useCallback(() => {
-    socketRef.current?.emit('join-as-B');
+    console.log("Joining as User B with userInfo:", userInfo);
+    socketRef.current?.emit('join-as-B', { userInfo });
     setUserState((prev) => ({ ...prev, type: 'B' }));
     setStatus('Joining as User B...');
-  }, []);
+  }, [userInfo]);
 
   const skipUser = useCallback(() => {
     if (socketRef.current && userState.roomId) {

@@ -6,8 +6,13 @@ export class ConnectionHandler {
     this.io = io;
   }
 
-  handleJoinAsA(socket) {
+  handleJoinAsA(socket, data = {}) {
     console.log(`User ${socket.id} joined as User A`);
+    console.log("Data received:", data);
+    
+    // Store user info in socket for later use
+    socket.userInfo = data.userInfo;
+    console.log("Stored userInfo in socket:", socket.userInfo);
 
     if (this.queueService.isUserAConsumed(socket.id)) {
       socket.emit("error", { message: "User A can only connect once" });
@@ -28,8 +33,11 @@ export class ConnectionHandler {
     this.matchingService.matchUsers();
   }
 
-  handleJoinAsB(socket) {
+  handleJoinAsB(socket, data = {}) {
     console.log(`User ${socket.id} joined as User B`);
+    
+    // Store user info in socket for later use
+    socket.userInfo = data.userInfo;
 
     const { inA, inB } = this.queueService.findUserInQueues(socket.id);
     const inSession = this.sessionService.isInActiveSession(socket.id);
