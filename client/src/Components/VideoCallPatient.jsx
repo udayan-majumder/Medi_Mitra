@@ -72,8 +72,8 @@ const VideoCallPatient = () => {
   return (
     <div className="min-h-screen bg-white poppins">
       {/* User Profile Section */}
-      <div className="px-1 py-4">
-        <div className="flex justify-center items-center space-x-6">
+      <div className="px-4 py-4">
+        <div className="flex items-center space-x-3">
           <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
             <span className="text-gray-600 text-lg">👤</span>
           </div>
@@ -82,11 +82,6 @@ const VideoCallPatient = () => {
               {Language?.[LanguageType]?.hello}, {User?.username}
             </h1>
             <p className="text-gray-500">{User?.location}</p>
-          </div>
-          <div className="h-full w-[40%] flex justify-center items-center">
-            <button className="border border-green-500 text-gray-400 p-1 rounded-lg active:bg-green-500 active:text-white" onClick={()=>{
-              router.push("/patient/profile")
-            }}>{Language?.[LanguageType]?.checkprofile}</button>
           </div>
         </div>
       </div>
