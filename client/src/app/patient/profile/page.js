@@ -3,13 +3,16 @@
 import { useState,useEffect, useRef } from "react";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { UserStore } from "@/hooks/userauth.hooks";
-import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus } from "lucide-react";
-import { UploadPatientPescription } from "@/services/user.services";
+import { useRouter } from "next/navigation";
+import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus, LogOut } from "lucide-react";
+import { UploadPatientPescription, LogoutHandler } from "@/services/user.services";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function CheckPatientProfile(){
 {/*Default hooks */}
 const {Language} = LanguageStore()
-const {LanguageType,User,Age,Diseases} = UserStore()
+const {LanguageType,User,Age,Diseases,setUser} = UserStore()
+const router = useRouter()
 
 {/*custom hooks */}
 const fileinputRef = useRef(null)
@@ -29,15 +32,48 @@ const listenFileChanges = async(e) =>{
     console.log(res)
 }
 
+const handleLogout = async () => {
+    try {
+        toast.loading("Logging out...");
+        const logoutSuccess = await LogoutHandler();
+        if (logoutSuccess) {
+            toast.dismissAll();
+            toast.success("Logged out successfully");
+            setUser(null);
+            localStorage.removeItem("languagetype");
+            setTimeout(() => {
+                router.push("/auth/login");
+            }, 1000);
+        } else {
+            toast.dismissAll();
+            toast.error("Logout failed. Please try again.");
+        }
+    } catch (error) {
+        toast.dismissAll();
+        toast.error("Something went wrong. Please try again.");
+        console.error("Logout error:", error);
+    }
+};
+
     return (
       //main div
       <div className="h-full w-full space-y-8 poppins bg-[#EEEEEE] text-black">
+        <Toaster position="top-center" />
         {/*Heading Navbar */}
-        <div className="h-[8%] w-full flex justify-left items-center p-4 space-x-2">
-          <button>
-            <ChevronLeft />
+        <div className="h-[8%] w-full flex justify-between items-center p-4">
+          <div className="flex items-center px-2 space-x-2">
+            {/* <button>
+              <ChevronLeft />
+            </button> */}
+            <div className="text-xl">{Language?.[LanguageType]?.profile}</div>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
+          >
+            <LogOut size={18} strokeWidth={1.5} />
+            <span className="text-sm font-medium">Logout</span>
           </button>
-          <div className="text-xl">{Language?.[LanguageType]?.profile}</div>
         </div>
 
         {/*User Profile */}
@@ -142,6 +178,7 @@ const listenFileChanges = async(e) =>{
             </div>
           </div>
         </div>
+
       </div>
     );
 }

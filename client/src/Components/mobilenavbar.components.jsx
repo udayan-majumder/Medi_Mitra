@@ -1,5 +1,5 @@
 "use client";
-import { ClipboardPen, House, Store } from "lucide-react";
+import { ClipboardPen, House, Store, User } from "lucide-react";
 import { useRouter,usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 export default function MobileNavbarComponent({ height, width }) {
@@ -54,6 +54,19 @@ export default function MobileNavbarComponent({ height, width }) {
         }}
       >
         <Store size={33} color="white" strokeWidth={1.5} />
+      </button>
+      <button
+        className={
+          currentRoute === "/patient/profile"
+            ? "h-[70%] w-[15%] bg-black rounded-4xl flex justify-center items-center"
+            : "h-[70%] w-[15%] bg-none rounded-4xl flex justify-center items-center"
+        }
+        onClick={()=>{
+          router.push("/patient/profile")
+          setcurrentRoute("/patient/profile")
+        }}
+      >
+        <User size={33} color="white" strokeWidth={1.5} />
       </button>
     </div>
   );
