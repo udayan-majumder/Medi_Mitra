@@ -25,3 +25,5 @@ export const PatientInfoFunction = async(req,res)=>{
 
    return res.status(200).json({Patient})
 }
+
+
