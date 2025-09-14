@@ -87,6 +87,61 @@ export const GetPatientInfo = async (id) =>{
   
 }
 
+export const GetCompletePatientInfo = async (id) => {
+  try {
+    console.log("GetCompletePatientInfo called with id:", id);
+    if (!id) {
+      console.log("No ID provided");
+      return false;
+    }
+
+    // Get user basic info and patient specific info in one query
+    const res = await pool.query(`
+      SELECT 
+        u.id,
+        u.username,
+        u.email,
+        u.location,
+        u.type,
+        p.diseases,
+        p.age
+      FROM userinfo u
+      LEFT JOIN patient_table p ON u.id = p.id
+      WHERE u.id = $1 AND u.type = 'patient'
+    `, [id]);
+
+    console.log("Database query result:", res.rows);
+
+    if (res?.rows.length <= 0) {
+      console.log("No patient found with ID:", id);
+      return false;
+    }
+
+    const patientData = res.rows[0];
+    console.log("Patient data from DB:", patientData);
+    
+    // Get prescriptions if any (assuming there's a prescriptions table)
+    // For now, we'll return empty array as prescription handling might be different
+    const prescriptions = []; // TODO: Implement prescription fetching if needed
+
+    const result = {
+      id: patientData.id,
+      name: patientData.username,
+      email: patientData.email,
+      location: patientData.location,
+      age: patientData.age,
+      medicalConditions: patientData.diseases || [],
+      prescriptions: prescriptions
+    };
+
+    console.log("Returning patient info:", result);
+    return result;
+  } catch (e) {
+    console.error("Error getting complete patient info:", e);
+    return false;
+  }
+}
+
 export const UploadPescriptionToDB = async(id,new_url)=>{
   try{
    const getAllPescription = await pool.query("select prescription_urls from patient_table where id=$1",[id])
