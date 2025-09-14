@@ -53,3 +53,42 @@ export const LogoutHandler = async() =>{
     return false
   }
 }
+
+export const GetPatientInfo = async(id)=>{
+
+try{
+const res  =await api.get("/user/patient-info",{
+  params:{
+    "id":id
+  }
+})
+ 
+if(!res?.data?.Patient){
+  return false
+}
+return res?.data?.Patient
+
+}
+catch(e){
+return false
+}
+}
+
+export const UploadPatientPescription = async(formData) =>{
+ try{
+
+  const res = await api.post("/user/upload-pescription",formData,{
+    headers:{
+      'Content-Type':'multipart/form-data',
+    },
+  })
+
+  if(!res?.data?.url){
+    return false
+  }
+
+  return res?.data?.url
+ }catch(e){
+return false
+ }
+}

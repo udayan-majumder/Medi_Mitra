@@ -1,6 +1,6 @@
+import { GetPatientInfo } from "../models/user.models.js"
 
-
-const UserDetailsFunction = async(req,res)=>{
+export const UserDetailsFunction = async(req,res)=>{
 
     const user = req.user
     
@@ -11,4 +11,17 @@ const UserDetailsFunction = async(req,res)=>{
 
 }
 
-export default UserDetailsFunction
+
+
+export const PatientInfoFunction = async(req,res)=>{
+
+   const {id} = req.query
+
+   const Patient = await GetPatientInfo(id)
+
+   if(!Patient){
+    return res.status(400).json({user:false})
+   }
+
+   return res.status(200).json({Patient})
+}
