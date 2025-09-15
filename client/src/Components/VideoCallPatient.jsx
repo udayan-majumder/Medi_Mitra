@@ -79,7 +79,7 @@ const VideoCallPatient = () => {
   const {Language} = LanguageStore()
   // Patient UI
   return (
-    <div className="min-h-screen bg-white poppins">
+    <div className="min-h-screen bg-gray-800 poppins py-12">
       {/* User Profile Section */}
       <div className="px-4 py-4">
         <div className="flex items-center space-x-3">
@@ -87,10 +87,10 @@ const VideoCallPatient = () => {
             <span className="text-gray-600 text-lg">👤</span>
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-gray-800">
+            <h1 className="text-xl font-semibold text-white-800">
               {Language?.[LanguageType]?.hello}, {User?.username}
             </h1>
-            <p className="text-gray-500">{User?.location}</p>
+            <p className="text-gray-300">{User?.location}</p>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ const VideoCallPatient = () => {
       {/* Status Messages */}
       {status && (
         <div className="px-4 mb-4">
-          <p className="text-center text-gray-600">{status}</p>
+          <p className="text-center text-gray-300">{status}</p>
           {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         </div>
       )}

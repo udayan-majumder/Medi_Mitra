@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: "medimitra",
   webDir: "public",
   server: {
-    url: "https://development-medimitra.udayan.fyi/",
+    url: "http://192.168.1.3:3000/",
   },
 };
 

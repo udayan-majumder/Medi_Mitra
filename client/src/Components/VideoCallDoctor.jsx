@@ -230,12 +230,12 @@ const VideoCallDoctor = () => {
               <h3 className="text-xl font-bold text-black mb-4">Prescription:</h3>
               <div className="grid grid-cols-2 gap-3">
                 {patientInfo.prescriptions.length > 0 ? (
-                  patientInfo.prescriptions.map((prescription) => (
-                    <div key={prescription.id} className="w-full h-20 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer">
-                      {prescription.image ? (
+                  patientInfo.prescriptions.map((prescriptionImage, index) => (
+                    <div key={index} className="w-full h-20 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer">
+                      {prescriptionImage ? (
                         <img 
-                          src={prescription.image} 
-                          alt={prescription.name}
+                          src={prescriptionImage} 
+                          alt={`Prescription ${index + 1}`}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (

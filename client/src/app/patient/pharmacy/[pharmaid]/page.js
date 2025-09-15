@@ -53,28 +53,28 @@ const handleSubmit = async(e) =>{
 
     return (
       //main div
-      <div className="h-screen w-full bg-white text-black poppins">
-        <div className="h-[90%] w-full ">
+      <div className="h-screen w-full bg-gray-900 text-white poppins">
+        <div className="h-[90%] w-full py-8">
           {/*Back Button */}
-          <div
-            className="h-[6%] w-full flex justify-left items-center p-[10px]"
+          <button
+            className="h-[8%] w-full flex justify-left items-center p-[15px]"
             onClick={() => {
               router.push("/patient/pharmacy");
             }}
           >
-            <ChevronLeft color="black" />
-          </div>
+            <ChevronLeft color="white" />
+          </button>
 
           {/*Profile Current*/}
-          <div className="h-[12%] w-full flex justify-center items-center border-b border-gray-300">
-            <div className="h-full w-[70%] flex flex-col justify-start items-start text-black ">
+          <div className="h-[12%] w-full flex justify-center items-center border-b border-gray-600">
+            <div className="h-full w-[70%] flex flex-col justify-start items-start text-white ">
               <div className="w-full text-left text-[22px]">
                 {User?.username}
               </div>
               <div className="w-full text-left text-[16px]">
                 {User?.location}
               </div>
-              <div className="w-full text-left text-[13px] text-gray-400">
+              <div className="w-full text-left text-[13px] text-gray-300">
                 {User?.location === currentProfile?.location
                   ? "Available in your city"
                   : "Not available in your city"}
@@ -103,7 +103,7 @@ const handleSubmit = async(e) =>{
             className="h-[8%] w-full flex justify-center items-center space-x-2"
           >
             <input
-              className="h-[60%] w-[80%] border border-gray-300 p-[10px] rounded-[100px] placeholder-gray-400 text-black focus:outline-green-500"
+              className="h-[60%] w-[80%] border border-gray-600 bg-gray-800 p-[10px] rounded-[100px] placeholder-gray-400 text-white focus:outline-green-500"
               placeholder="search pharamacy name"
               onChange={(e) => {
                 if (e.target.value.length <= 0) {
@@ -115,7 +115,7 @@ const handleSubmit = async(e) =>{
             ></input>
             <button
               type="submit"
-              className="h-[60%] w-[9%] bg-black rounded-[300px] flex justify-center items-center"
+              className="h-[60%] w-[9%] bg-gray-700 hover:bg-gray-600 rounded-[300px] flex justify-center items-center"
             >
               <Search color="white" />
             </button>
@@ -133,28 +133,28 @@ const handleSubmit = async(e) =>{
               ).map((items) => (
                 <div
                   key={items?.medicine_id}
-                  className="min-h-[60px] w-full flex justify-center items-center border-b border-gray-300"
+                  className="min-h-[60px] w-full flex justify-center items-center border-b border-gray-600"
                 >
                   <div className="h-full w-[70%] space-y-1">
-                    <div className="text-sm font-medium">
+                    <div className="text-sm font-medium text-white">
                       {items?.medicine_name}
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-gray-300">
                       Availablility : {items?.quantity}
                     </div>
                   </div>
                   <div className="h-full w-[30%]">
-                    <div className="w-full flex justify-center items-right text-xl font-semibold">
+                    <div className="w-full flex justify-center items-right text-xl font-semibold text-white">
                       ₹{items?.price}/-
                     </div>
-                    <div className="w-full flex justify-center items-right  text-xs text-gray-400">
+                    <div className="w-full flex justify-center items-right  text-xs text-gray-300">
                       per strip
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div> loading...</div>
+              <div className="text-white"> loading...</div>
             )}
           </div>
         </div>
