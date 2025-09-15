@@ -47,12 +47,12 @@ catch(e){
 
   return (
     //main div
-    <div className="h-screen w-full bg-white poppins">
+    <div className="h-screen w-full bg-gray-900 poppins">
       {/*sub div */}
-      <div className="h-[90%] w-full flex flex-col justify-start items-start">
+      <div className="h-[90%] w-full flex flex-col justify-start items-start py-12 ">
         {/*Back Button */}
-        <button className="h-[6%] w-full flex justify-left items-center p-[10px]" onClick={()=>router.push("/patient/home")}>
-          <ChevronLeft color="black" />
+        <button className="h-[6%] w-full flex justify-left items-center p-[15px]" onClick={()=>router.push("/patient/home")}>
+          <ChevronLeft color="white" />
         </button>
 
         {/*search Form */}
@@ -61,7 +61,7 @@ catch(e){
           className="h-[8%] w-full flex justify-center items-center space-x-2"
         >
           <input
-            className="h-[60%] w-[80%] border border-gray-300 p-[10px] rounded-[100px] placeholder-gray-400 text-black focus:outline-green-500"
+            className="h-[60%] w-[80%] border border-gray-600 bg-gray-800 p-[10px] rounded-[100px] placeholder-gray-400 text-white focus:outline-green-500"
             placeholder="search pharmacy name"
             onChange={(e) => {
               if (e.target.value.length <= 0) {
@@ -73,7 +73,7 @@ catch(e){
           ></input>
           <button
             type="submit"
-            className="h-[60%] w-[9%] bg-black rounded-[300px] flex justify-center items-center"
+            className="h-[60%] w-[9%] bg-gray-700 hover:bg-gray-600 rounded-[300px] flex justify-center items-center"
           >
             <Search color="white" />
           </button>
@@ -92,20 +92,20 @@ catch(e){
             } ).map((items) => (
               <button
                 key={items?.id}
-                className="min-h-[90px] w-full flex justify-center items-center shadow-[0_0_2px_2px_rgba(0,0,0,0.2)] rounded-lg pt-[10px] active:bg-gray-200"
+                className="min-h-[90px] w-full flex justify-center items-center shadow-[0_0_2px_2px_rgba(255,255,255,0.1)] bg-gray-800 rounded-lg pt-[10px] active:bg-gray-700 hover:bg-gray-750"
                 onClick={()=> router.push(`/patient/pharmacy/${items?.id}`) }
               >
                 <div className="h-full w-[15%] flex justify-center items-start">
-                  <Store color="black" size={40} strokeWidth={0.8} />
+                  <Store color="white" size={40} strokeWidth={0.8} />
                 </div>
-                <div className="h-full w-[60%] flex flex-col justify-start items-start text-black space-y-1">
+                <div className="h-full w-[60%] flex flex-col justify-start items-start text-white space-y-1">
                   <div className="w-full text-left text-[15px]">
                     {items?.username}
                   </div>
                   <div className="w-full text-left text-[12px]">
                      {items?.location}
                   </div>
-                  <div className="w-full text-left text-[11px] text-gray-400">
+                  <div className="w-full text-left text-[11px] text-gray-300">
                     {items?.location === User?.location ? "Available in your city" : "Not available in your city"}
                   </div>
                 </div>
@@ -127,7 +127,7 @@ catch(e){
               </button>
             ))
           ) : (
-            <div className="h-full w-full flex justify-center items-center text-black">
+            <div className="h-full w-full flex justify-center items-center text-white">
               no store Available
             </div>
           )}

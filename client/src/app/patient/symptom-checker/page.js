@@ -144,11 +144,11 @@ export default function Symptom() {
 
   return (
     //main div
-    <div className="h-screen w-full bg-gray-300 flex flex-col justify-start items-center poppins">
+    <div className="h-screen w-full bg-gray-800 flex flex-col justify-start items-center poppins">
       {/* sub-main div left space for navbar */}
       <div className="h-[90%] w-full flex flex-col justify-between">
         {/* upper navbar div */}
-        <div className="h-[10%] w-full bg-white flex justify-between items-center">
+        <div className="h-[10%] w-full bg-white flex justify-between items-center mt-15">
           <div className="h-full w-[20%] flex justify-center items-center">
             <button
               className="bg-red-500 hover:bg-red-600 h-10 w-10 rounded-full flex justify-center items-center transition-colors duration-200"

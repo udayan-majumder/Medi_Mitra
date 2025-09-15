@@ -71,7 +71,7 @@ const handleLogout = async () => {
 
     return (
       //main div
-      <div className="h-full w-full space-y-8 poppins bg-[#EEEEEE] text-black">
+      <div className="h-full w-full space-y-8 poppins bg-gray-900 text-white pt-12">
         <Toaster position="top-center" />
         {/*Heading Navbar */}
         <div className="h-[8%] w-full flex justify-between items-center p-4">
@@ -92,18 +92,18 @@ const handleLogout = async () => {
 
         {/*User Profile */}
         <div className="h-[10%] w-full flex justify-center items-center">
-          <div className="h-full w-[90%] rounded-lg bg-white flex">
+          <div className="h-full w-[90%] rounded-lg bg-gray-800 flex">
             {/*User Icon */}
             <div className=" h-full w-[20%] flex justify-center items-center p-1">
-              <div className="h-[80%] w-[90%] bg-gray-200 rounded-[100px] flex justify-center items-center">
-                <UserRoundCog size={40} strokeWidth={1} color="gray" />
+              <div className="h-[80%] w-[90%] bg-gray-600 rounded-[100px] flex justify-center items-center">
+                <UserRoundCog size={40} strokeWidth={1} color="white" />
               </div>
             </div>
 
             {/*UserName */}
             <div className="h-full w-[60%] flex flex-col justify-center">
-              <div className="text-base">{User?.username}</div>
-              <div className="text-xs text-gray-500">{User?.email}</div>
+              <div className="text-base text-white">{User?.username}</div>
+              <div className="text-xs text-gray-300">{User?.email}</div>
             </div>
 
             {/*edit */}
@@ -113,18 +113,18 @@ const handleLogout = async () => {
 
         {/*User Details */}
         <div className="h-[30%] w-full flex flex-col justify-center items-center ">
-          <div className="h-full w-[90%] flex flex-col justify-center items-center bg-white rounded-lg">
+          <div className="h-full w-[90%] flex flex-col justify-center items-center bg-gray-800 rounded-lg">
             {/*Age Div */}
             <div className="h-[30%] w-[95%] flex space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <Calendar size={40} strokeWidth={1} color="gray" />
+                <Calendar size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*Age*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Age</div>
-                <div className="text-xs text-gray-500">{Age}</div>
+                <div className="text-base text-white">Age</div>
+                <div className="text-xs text-gray-300">{Age}</div>
               </div>
 
               {/*edit */}
@@ -135,13 +135,13 @@ const handleLogout = async () => {
             <div className="h-[30%] w-[95%] flex space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <MapPin size={40} strokeWidth={1} color="gray" />
+                <MapPin size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*UserName */}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Location</div>
-                <div className="text-xs text-gray-500">{User?.location}</div>
+                <div className="text-base text-white">Location</div>
+                <div className="text-xs text-gray-300">{User?.location}</div>
               </div>
 
               {/*edit */}
@@ -152,13 +152,13 @@ const handleLogout = async () => {
             <div className="h-[30%] w-[95%] flex space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <ClipboardPlus size={40} strokeWidth={1} color="gray" />
+                <ClipboardPlus size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*Medical Condition*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Medical Condition</div>
-                <div className="text-[9px] text-gray-500">
+                <div className="text-base text-white">Medical Condition</div>
+                <div className="text-[9px] text-gray-300">
                   {Diseases?.map((items) => items)}
                 </div>
               </div>
@@ -171,17 +171,17 @@ const handleLogout = async () => {
 
         {/*Pescription Div */}
         <div className="h-[50%] w-full flex justify-center items-start ">
-          <div className="h-[70%] w-[90%] bg-white rounded-lg">
+          <div className="h-[70%] w-[90%] bg-gray-800 rounded-lg">
             <div className="h-[30%] w-[95%] flex justify-center items-center space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <ClipboardList size={40} strokeWidth={1} color="gray" />
+                <ClipboardList size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*Prescription heading*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Prescription</div>
-                <div className="text-[10px] text-gray-500">
+                <div className="text-base text-white">Prescription</div>
+                <div className="text-[10px] text-gray-300">
                   View and manage your prescription
                 </div>
               </div>
@@ -189,7 +189,7 @@ const handleLogout = async () => {
               {/*edit */}
               <div className="w-[10%] h-full flex justify-center items-center">
                 <button>
-                  <CirclePlus strokeWidth={1} onClick={handleButtonClick} />
+                  <CirclePlus strokeWidth={1} color="white" onClick={handleButtonClick} />
                 </button>
                 <input
                   type="file"
@@ -215,7 +215,7 @@ const handleLogout = async () => {
                   </button>
                 ))
               ) : (
-                <div className="h-full w-full flex items-center justify center text-xl">
+                <div className="h-full w-full flex items-center justify center text-xl text-white">
                   {" "}
                   no items here
                 </div>
@@ -226,11 +226,11 @@ const handleLogout = async () => {
         {SelectedImage ? (
           <div
             className="h-full w-full absolute top-0 left-0 flex flex-col justify-start items-end 
-                bg-black/30 backdrop-blur-sm z-50"
+                bg-black/50 backdrop-blur-sm z-50 pt-12"
           >
             <div className="h-[10%] flex justify-center items-left p-2">
               <button
-              className="max-h-[50px] min-w-[50px] rounded-lg flex justify-center items-center"
+              className="max-h-[50px] min-w-[50px] rounded-lg flex justify-center items-center bg-gray-800 hover:bg-gray-700"
                 onClick={() => {
                   setSelectedImage(null);
                 }}

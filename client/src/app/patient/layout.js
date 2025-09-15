@@ -29,8 +29,8 @@ export default function PatientLayout({ children }) {
 
   return (
     <div className="h-screen w-full bg-white">
-      <div className="h-[90%] w-full ">{children}</div>
-      <MobileNavbarComponent height={10} width={100} />
+        <div className="h-[90%] w-full ">{children}</div>
+        <MobileNavbarComponent height={10} width={100} />
     </div>
   );
 }
