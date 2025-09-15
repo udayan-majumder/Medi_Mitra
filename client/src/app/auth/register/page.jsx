@@ -330,7 +330,7 @@ export default function RegisterPage() {
             </div>
 
             <button className="bg-green-700 h-9 w-28 rounded-2xl poppins">
-              {Language?.[LanguageType]?.loginbtn}
+              {Language?.[LanguageType]?.signupbtn}
             </button>
           </form>
           <div className=" flex justify-center items-center h-[5%] w-full">
