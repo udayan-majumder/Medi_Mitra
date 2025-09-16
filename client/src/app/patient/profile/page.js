@@ -22,49 +22,54 @@ const handleButtonClick = ()=>{
     fileinputRef.current.click()
 }
 
-const listenFileChanges = async(e) =>{
-  try{
-   toast.loading("Uploading")
-   const file = e.target.files[0]
+const listenFileChanges = async (e) => {
+  try {
+    toast.loading(Language?.[LanguageType]?.Uploading);
+
+    const file = e.target.files[0];
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("id",User?.id)
-    const res = await UploadPatientPescription(formData)
-    if(!res){
-      return toast.error("File no uploaded")
-    }  
-   
-    setPrescription_URLS(prev => [...prev,res])
-    toast.dismissAll()
-    toast.success("File Uploaded Successfully")
-   
-    e.target.value = null
+    formData.append("id", User?.id);
+
+    const res = await UploadPatientPescription(formData);
+
+    if (!res) {
+      toast.dismissAll();
+      return toast.error(Language?.[LanguageType]?.FileUploadFailed);
+    }
+
+    setPrescription_URLS((prev) => [...prev, res]);
+    toast.dismissAll();
+    toast.success(Language?.[LanguageType]?.FileUploadSuccess);
+
+    e.target.value = null;
+  } catch (e) {
+    toast.dismissAll();
+    toast.error(Language?.[LanguageType]?.FileUploadFailed);
+    console.log(e);
   }
-  catch(e){
-    console.log(e)
-  }
-   
-}
+};
 
 const handleLogout = async () => {
     try {
-        toast.loading("Logging out...");
+        toast.loading(Language?.[LanguageType]?.LoggingOut);
         const logoutSuccess = await LogoutHandler();
         if (logoutSuccess) {
             toast.dismissAll();
-            toast.success("Logged out successfully");
-            setUser(null);
+            toast.success(Language?.[LanguageType]?.LogoutSuccess);
             localStorage.removeItem("languagetype");
+            
             setTimeout(() => {
+                setUser(null);
                 router.push("/auth/login");
-            }, 1000);
+            }, 1500);
         } else {
             toast.dismissAll();
-            toast.error("Logout failed. Please try again.");
+            toast.error(Language?.[LanguageType]?.LogoutFailed);
         }
     } catch (error) {
         toast.dismissAll();
-        toast.error("Something went wrong. Please try again.");
+        toast.error(Language?.[LanguageType]?.LogoutError);
         console.error("Logout error:", error);
     }
 };
@@ -86,7 +91,9 @@ const handleLogout = async () => {
             className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
           >
             <LogOut size={18} strokeWidth={1.5} />
-            <span className="text-sm font-medium">Logout</span>
+            <span className="text-sm font-medium">
+              {Language?.[LanguageType]?.LogOut}
+            </span>
           </button>
         </div>
 
@@ -123,7 +130,9 @@ const handleLogout = async () => {
 
               {/*Age*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base text-white">Age</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.age}
+                </div>
                 <div className="text-xs text-gray-300">{Age}</div>
               </div>
 
@@ -140,7 +149,9 @@ const handleLogout = async () => {
 
               {/*UserName */}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base text-white">Location</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.location}
+                </div>
                 <div className="text-xs text-gray-300">{User?.location}</div>
               </div>
 
@@ -157,7 +168,9 @@ const handleLogout = async () => {
 
               {/*Medical Condition*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base text-white">Medical Condition</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.medicalCondition}
+                </div>
                 <div className="text-[9px] text-gray-300">
                   {Diseases?.map((items) => items)}
                 </div>
@@ -180,16 +193,22 @@ const handleLogout = async () => {
 
               {/*Prescription heading*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base text-white">Prescription</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.prescription}
+                </div>
                 <div className="text-[10px] text-gray-300">
-                  View and manage your prescription
+                  {Language?.[LanguageType]?.viewAndManagePrescription}
                 </div>
               </div>
 
               {/*edit */}
               <div className="w-[10%] h-full flex justify-center items-center">
                 <button>
-                  <CirclePlus strokeWidth={1} color="white" onClick={handleButtonClick} />
+                  <CirclePlus
+                    strokeWidth={1}
+                    color="white"
+                    onClick={handleButtonClick}
+                  />
                 </button>
                 <input
                   type="file"
@@ -230,12 +249,12 @@ const handleLogout = async () => {
           >
             <div className="h-[10%] flex justify-center items-left p-2">
               <button
-              className="max-h-[50px] min-w-[50px] rounded-lg flex justify-center items-center bg-gray-800 hover:bg-gray-700"
+                className="max-h-[50px] min-w-[50px] rounded-lg flex justify-center items-center bg-gray-800 hover:bg-gray-700"
                 onClick={() => {
                   setSelectedImage(null);
                 }}
               >
-                <X color="white"/>
+                <X color="white" />
               </button>
             </div>
             <div className="h-[90%] w-full flex justify-center items-center">

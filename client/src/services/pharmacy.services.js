@@ -71,3 +71,24 @@ export const FetchPharmacyList = async (Searchparam) =>{
     return false
   }
 }
+
+export const FetchPharmacyDetails = async(id)=>{
+  try{
+    if(!id){
+      return false
+    }
+    const res =  await api.get("/pharmacy/get-info",{
+      params:{
+        "id":id
+      }
+    })
+
+    if(!res?.data){
+      return false
+    }
+    return res?.data
+  }
+  catch(e){
+  return false
+  }
+}

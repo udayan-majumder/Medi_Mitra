@@ -6,17 +6,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { ChevronLeft, Search, Store, MapPinCheck, MapPinX } from "lucide-react";
-import { GetPharamacyStock } from "@/services/pharmacy.services";
+import { FetchPharmacyDetails, GetPharamacyStock } from "@/services/pharmacy.services";
+import { LanguageStore } from "@/store/Dictionary.store";
+import MedicalLoader from "@/Components/MedicalLoader";
 
 export default function PharmacyStockpage(){
 {/*default hooks */}
 const {PharmacyList,MedicineInventory,setMedicineInventory} = PharmacyStore()
 const { pharmaid } = useParams();
-const {User} = UserStore()
+const {User,LanguageType} = UserStore()
 const router = useRouter()
+const {Language} = LanguageStore()
 
 {/*Custom hook */}
 const [currentProfile, setCurrentProfile] = useState([])
+const  [currentProfileDetails,setCurrentProfileDetails] = useState([])
 const  [SearchParam,setSearchParam] = useState(null)
 useEffect(()=>{
     if(PharmacyList?.length<=0){
@@ -38,10 +42,16 @@ if(currentProfile?.id){
 const FetchStock = async()=>{
     try{
        const res = await GetPharamacyStock(currentProfile?.id)
+       const newres = await FetchPharmacyDetails(currentProfile?.id)
+       
        if(!res){
         setMedicineInventory([])
        }
+       if(!newres?.isPharmacy){
+        router.push("/patient/pharmacy")
+       }
        setMedicineInventory(res?.data?.list)
+       setCurrentProfileDetails(newres?.isPharmacy)
     }catch(e){
     console.log(e)
     }
@@ -69,26 +79,26 @@ const handleSubmit = async(e) =>{
           <div className="h-[12%] w-full flex justify-center items-center border-b border-gray-600">
             <div className="h-full w-[70%] flex flex-col justify-start items-start text-white ">
               <div className="w-full text-left text-[22px]">
-                {User?.username}
+                {currentProfileDetails?.username}
               </div>
               <div className="w-full text-left text-[16px]">
-                {User?.location}
+                {currentProfileDetails?.location}
               </div>
               <div className="w-full text-left text-[13px] text-gray-300">
-                {User?.location === currentProfile?.location
-                  ? "Available in your city"
-                  : "Not available in your city"}
+                {User?.location === currentProfileDetails?.location
+                  ? Language?.[LanguageType]?.AvailableInYourCity
+                  : Language?.[LanguageType]?.NotAvailableInYourCity}
               </div>
             </div>
             <div className="h-full w-[20%] flex justify-center items-start pt-[10px]">
               <div
                 className={
-                  User?.location === currentProfile?.location
+                  User?.location === currentProfileDetails?.location
                     ? "h-[55%] w-[60%] rounded-[100px] bg-green-400 flex justify-center items-center"
                     : "h-[55%] w-[60%] rounded-[100px] bg-red-500 flex justify-center items-center"
                 }
               >
-                {User?.location === currentProfile?.location ? (
+                {User?.location === currentProfileDetails?.location ? (
                   <MapPinCheck color="white" />
                 ) : (
                   <MapPinX color="white" />
@@ -104,7 +114,7 @@ const handleSubmit = async(e) =>{
           >
             <input
               className="h-[60%] w-[80%] border border-gray-600 bg-gray-800 p-[10px] rounded-[100px] placeholder-gray-400 text-white focus:outline-green-500"
-              placeholder="search pharamacy name"
+              placeholder={Language?.[LanguageType]?.placeholderMedicine}
               onChange={(e) => {
                 if (e.target.value.length <= 0) {
                   setSearchParam(null);
@@ -140,7 +150,8 @@ const handleSubmit = async(e) =>{
                       {items?.medicine_name}
                     </div>
                     <div className="text-xs text-gray-300">
-                      Availablility : {items?.quantity}
+                      {Language?.[LanguageType]?.Availability} :{" "}
+                      {items?.quantity}
                     </div>
                   </div>
                   <div className="h-full w-[30%]">
@@ -148,13 +159,19 @@ const handleSubmit = async(e) =>{
                       ₹{items?.price}/-
                     </div>
                     <div className="w-full flex justify-center items-right  text-xs text-gray-300">
-                      per strip
+                      {Language?.[LanguageType]?.PerStrip}
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-white"> loading...</div>
+              <div className="h-full w-full flex flex-col justify-center items-center space-y-3">
+                {/* Spinner */}
+                <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+
+                {/* Text */}
+                <div className="text-white text-sm">{Language?.[LanguageType]?.FetchMedicine}</div>
+              </div>
             )}
           </div>
         </div>

@@ -4,7 +4,7 @@ import React from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { Mail, Lock,Eye,EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {useRouter} from "next/navigation";
 import { LoginHandler } from "@/services/user.services";
 import toast,{Toaster} from "react-hot-toast";
@@ -25,31 +25,35 @@ export default function LoginPage() {
   const router = useRouter()
 
   
-  const handleSubmit = async(e) =>{
-    e.preventDefault()
-    try{
-      toast.loading("authenticating")
-      const res = await LoginHandler(Email,Password,UserType)
-      
-      if(res?.errortype){
-        toast.dismissAll()  
-        return toast.error("invalid email / password")
-      }
-       
-        setTimeout(()=>{
-       toast.dismissAll()  
-       toast.success("Login succesfull") 
-       },1000)
-
-       setTimeout(()=>{
-       setUser(res)
-       },2000)
-      
-    }
-    catch(e){
-      console.log(e)
-    }
+  useEffect(() => {
+  if (UserType !== "patient" && (LanguageType === "hindi" || LanguageType === 'punjabi')) {
+    setLanguageType("english");
   }
+}, [UserType, LanguageType]);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    toast.loading(Language?.[LanguageType]?.Authenticating);
+    const res = await LoginHandler(Email, Password, UserType);
+
+    if (res?.errortype) {
+      toast.dismissAll();
+      return toast.error(Language?.[LanguageType]?.InvalidEmailPassword);
+    }
+
+    setTimeout(() => {
+      toast.dismissAll();
+      toast.success(Language?.[LanguageType]?.LoginSuccess);
+    }, 1000);
+
+    setTimeout(() => {
+      setUser(res);
+    }, 2000);
+  } catch (e) {
+    console.log(e);
+  }
+};
 
   return (
     <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
@@ -65,7 +69,7 @@ export default function LoginPage() {
         <div className="h-full sm:h-[70%] w-full sm:w-[50%] bg-white rounded-none sm:rounded-xl shadow-xl p-8 flex flex-col justify-center items-center space-y-5">
           {/*Medicare Logo */}
           <img src="/logo.png" className="h-24" />
-          <button className="text-gray-500 text-center text-sm cursor-pointer hover:text-black hover:border-b-1" onClick={()=>{
+          <button className="text-gray-500 text-center text-sm cursor-pointer hover:text-black border-b border-gray-300 hover:border-b-1" onClick={()=>{
             router.push("/auth/register")
           }}>
             {Language?.[LanguageType]?.loginheading}
@@ -184,6 +188,7 @@ export default function LoginPage() {
             </div>
           </form>
             <div className=" flex justify-center items-center h-[5%] w-full">
+           
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -199,6 +204,7 @@ export default function LoginPage() {
               {Language?.[LanguageType]?.englishtext}
             </button>
 
+            {UserType === 'patient' ? 
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -212,7 +218,24 @@ export default function LoginPage() {
             >
               {Language?.[LanguageType]?.hinditext}
             </button>
+            :null}
+            {UserType === 'patient' ? 
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setLanguageType("punjabi");
+              }}
+              className={
+                LanguageType === "punjabi"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.punjabtext}
+            </button>
+            :null}
           </div>
+          
         </div>
       </div>
 
