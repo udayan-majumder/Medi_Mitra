@@ -168,3 +168,25 @@ export const DeleteStock = async (req, res) => {
     return res.status(500).json({ err });
   }
 };
+
+export const getPharmacyDetails = async(req,res) =>{
+  try{
+   const {id} = req.query
+
+  if(!id){
+    return res.status(400).json({id:false})
+  }
+   
+  const isPharmacy = await checkUserById(id)
+
+  if(!isPharmacy){
+    return res.status(400).json({user:false})
+  }
+  return res.status(200).json({isPharmacy})
+  }
+  catch(e){
+    return res.status(400).json({error:true})
+  }
+
+
+}

@@ -6,12 +6,14 @@ import { FetchPharmacyList } from "@/services/pharmacy.services";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
 import PharmacyStore from "@/store/pharmacy.store";
+import { LanguageStore } from "@/store/Dictionary.store";
 
 
 export default function Pharmacy() {
 {/*Default hook */}
-  const {User} = UserStore()
+  const {User,LanguageType} = UserStore()
   const  router = useRouter()
+  const {Language} = LanguageStore()
   {/*Custom hook */}
   const [SearchParam,setSearchParam] = useState(null)
   const {PharmacyList,setPharmacyList} = PharmacyStore()
@@ -51,7 +53,10 @@ catch(e){
       {/*sub div */}
       <div className="h-[90%] w-full flex flex-col justify-start items-start py-12 ">
         {/*Back Button */}
-        <button className="h-[6%] w-full flex justify-left items-center p-[15px]" onClick={()=>router.push("/patient/home")}>
+        <button
+          className="h-[6%] w-full flex justify-left items-center p-[15px]"
+          onClick={() => router.push("/patient/home")}
+        >
           <ChevronLeft color="white" />
         </button>
 
@@ -62,7 +67,7 @@ catch(e){
         >
           <input
             className="h-[60%] w-[80%] border border-gray-600 bg-gray-800 p-[10px] rounded-[100px] placeholder-gray-400 text-white focus:outline-green-500"
-            placeholder="search pharmacy name"
+            placeholder={Language?.[LanguageType]?.placeholderPharmacy}
             onChange={(e) => {
               if (e.target.value.length <= 0) {
                 setSearchParam(null);
@@ -82,18 +87,23 @@ catch(e){
         {/*All pharamacy list div*/}
         <div className="h-[85%] w-full flex flex-col justify-start items-center space-y-6 p-[20px] overflow-y-scroll">
           {PharmacyList?.length > 0 ? (
-            PharmacyList?.sort((prev,next)=> {
-
-              if (prev.location === User?.location && next?.location !== User?.location)
+            PharmacyList?.sort((prev, next) => {
+              if (
+                prev.location === User?.location &&
+                next?.location !== User?.location
+              )
                 return -1;
-              if (prev?.location !== User?.location && next?.location === User?.location)
+              if (
+                prev?.location !== User?.location &&
+                next?.location === User?.location
+              )
                 return 1;
               return 0;
-            } ).map((items) => (
+            }).map((items) => (
               <button
                 key={items?.id}
                 className="min-h-[90px] w-full flex justify-center items-center shadow-[0_0_2px_2px_rgba(255,255,255,0.1)] bg-gray-800 rounded-lg pt-[10px] active:bg-gray-700 hover:bg-gray-750"
-                onClick={()=> router.push(`/patient/pharmacy/${items?.id}`) }
+                onClick={() => router.push(`/patient/pharmacy/${items?.id}`)}
               >
                 <div className="h-full w-[15%] flex justify-center items-start">
                   <Store color="white" size={40} strokeWidth={0.8} />
@@ -103,10 +113,12 @@ catch(e){
                     {items?.username}
                   </div>
                   <div className="w-full text-left text-[12px]">
-                     {items?.location}
+                    {items?.location}
                   </div>
                   <div className="w-full text-left text-[11px] text-gray-300">
-                    {items?.location === User?.location ? "Available in your city" : "Not available in your city"}
+                    {items?.location === User?.location
+                      ? Language?.[LanguageType]?.AvailableInYourCity
+                      : Language?.[LanguageType]?.NotAvailableInYourCity}
                   </div>
                 </div>
                 <div className="h-full w-[20%] flex justify-center items-start">
@@ -127,8 +139,12 @@ catch(e){
               </button>
             ))
           ) : (
-            <div className="h-full w-full flex justify-center items-center text-white">
-              no store Available
+            <div className="h-full w-full flex flex-col justify-center items-center space-y-3">
+              {/* Spinner */}
+              <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+
+              {/* Text */}
+              <div className="text-white text-sm">{Language?.[LanguageType]?.FetchingStore}</div>
             </div>
           )}
         </div>
