@@ -91,6 +91,11 @@ export default function Symptom() {
   }, [language]);
 
   const AddChat = async () => {
+
+    if (!UserInput || !/[a-zA-Z0-9]/.test(UserInput.trim())) {
+      return; // Exit if message is empty or contains no alphanumeric characters
+    }
+    
     setchatTrigger(true)
     tempchat.length > 0
       ? settempchat((prev) => [...prev, { type: "user", message: UserInput }])
