@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
 import CapacitorInfoStore from "@/store/capacitorInfo.store";
@@ -32,46 +32,55 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (Password !== RePassword) {
-        return toast.error("Password Don't Match");
-      }
-      if (UserType === "patient") {
-        if (DiseasesType.length <= 0 || Age === null || Age <= 0) {
-          return toast.error("All fields are mandatory");
-        }
-      }
-      toast.loading("Registering");
-      const res = await RegisterHandler(
-        Username,
-        Email,
-        Password,
-        Location,
-        UserType,
-        DiseasesType,
-        Age
-      );
-      if (res?.errortype) {
-        toast.dismissAll();
-        return toast.error("Invalid email/password ");
-      }
 
-      if (res?.status === 200) {
-        toast.dismissAll();
-        toast.success("User Registered Successfully");
+  useEffect(() => {
+ if (UserType !== "patient" && (LanguageType === "hindi" || LanguageType === 'punjabi')){
+    setLanguageType("english");
+  }
+}, [UserType, LanguageType]);
 
-        setTimeout(() => {
-          router.replace("/auth/login");
-        }, 1500);
-      }
-    } catch (e) {
-      toast.dismissAll();
-      toast.error("Something went wrong");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    if (Password !== RePassword) {
+      return toast.error(Language?.[LanguageType]?.PasswordMismatch);
     }
-  };
 
+    if (UserType === "patient") {
+      if (DiseasesType.length <= 0 || Age === null || (Age <= 0 || Age<=18)) {
+        return toast.error(Language?.[LanguageType]?.AllFieldsMandatory);
+      }
+    }
+
+    toast.loading(Language?.[LanguageType]?.Registering);
+    const res = await RegisterHandler(
+      Username,
+      Email,
+      Password,
+      Location,
+      UserType,
+      DiseasesType,
+      Age
+    );
+
+    if (res?.errortype) {
+      toast.dismissAll();
+      return toast.error(Language?.[LanguageType]?.InvalidEmailPassword);
+    }
+
+    if (res?.status === 200) {
+      toast.dismissAll();
+      toast.success(Language?.[LanguageType]?.UserRegisteredSuccess);
+
+      setTimeout(() => {
+        router.replace("/auth/login");
+      }, 1500);
+    }
+  } catch (e) {
+    toast.dismissAll();
+    toast.error(Language?.[LanguageType]?.SomethingWentWrong);
+  }
+};
   return (
     <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
       <Toaster />
@@ -93,7 +102,7 @@ export default function RegisterPage() {
           {/*Medicare Logo */}
           <img src="/logo.png" className="h-20" />
           <button
-            className="text-gray-500 text-center text-sm cursor-pointer hover:text-black hover:border-b-1"
+            className="text-gray-500 text-center text-sm cursor-pointer hover:text-black border-b border-gray-300 hover:border-b-1"
             onClick={() => {
               router.push("/auth/login");
             }}
@@ -266,15 +275,9 @@ export default function RegisterPage() {
                   value={Age}
                   placeholder={Language?.[LanguageType]?.agetext}
                   className="w-[20%] p-2 border border-gray-300 rounded-lg"
-                  min={18}
                   onChange={(e)=>{
                     e.preventDefault()
-                    if(Number(e.target.value)<18){
-                      setAge(18)
-                    }
-                    else{
-                      setAge(Number(e.target.value))
-                    }
+                    setAge(e.target.value)
                   }}
                 ></input>
               </div>
@@ -330,7 +333,7 @@ export default function RegisterPage() {
             </div>
 
             <button className="bg-green-700 h-9 w-28 rounded-2xl poppins">
-              {Language?.[LanguageType]?.loginbtn}
+              {Language?.[LanguageType]?.signupbtn}
             </button>
           </form>
           <div className=" flex justify-center items-center h-[5%] w-full">
@@ -348,7 +351,7 @@ export default function RegisterPage() {
             >
               {Language?.[LanguageType]?.englishtext}
             </button>
-
+         {UserType === 'patient' ? 
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -361,7 +364,21 @@ export default function RegisterPage() {
               }
             >
               {Language?.[LanguageType]?.hinditext}
-            </button>
+            </button> : null}
+            {UserType === 'patient' ? 
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setLanguageType("punjabi");
+              }}
+              className={
+                LanguageType === "punjabi"
+                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+              }
+            >
+              {Language?.[LanguageType]?.punjabtext}
+            </button> : null}
           </div>
         </div>
       </div>

@@ -4,60 +4,79 @@ import { useState,useEffect, useRef } from "react";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus, LogOut } from "lucide-react";
+import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus, LogOut, X } from "lucide-react";
 import { UploadPatientPescription, LogoutHandler } from "@/services/user.services";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function CheckPatientProfile(){
 {/*Default hooks */}
 const {Language} = LanguageStore()
-const {LanguageType,User,Age,Diseases,setUser} = UserStore()
+const {LanguageType,User,Age,Diseases,setUser,Prescription_URLS,setPrescription_URLS} = UserStore()
 const router = useRouter()
 
 {/*custom hooks */}
 const fileinputRef = useRef(null)
-
+const [SelectedImage,setSelectedImage] = useState(null)
 
 const handleButtonClick = ()=>{
     fileinputRef.current.click()
 }
 
-const listenFileChanges = async(e) =>{
-    const file = e.target.files[0]
+const listenFileChanges = async (e) => {
+  try {
+    toast.loading(Language?.[LanguageType]?.Uploading);
+
+    const file = e.target.files[0];
     const formData = new FormData();
     formData.append("file", file);
-   
-    const res = await UploadPatientPescription(formData)
-     
-    console.log(res)
-}
+    formData.append("id", User?.id);
+
+    const res = await UploadPatientPescription(formData);
+
+    if (!res) {
+      toast.dismissAll();
+      return toast.error(Language?.[LanguageType]?.FileUploadFailed);
+    }
+
+    setPrescription_URLS((prev) => [...prev, res]);
+    toast.dismissAll();
+    toast.success(Language?.[LanguageType]?.FileUploadSuccess);
+
+    e.target.value = null;
+  } catch (e) {
+    toast.dismissAll();
+    toast.error(Language?.[LanguageType]?.FileUploadFailed);
+    console.log(e);
+  }
+};
 
 const handleLogout = async () => {
     try {
-        toast.loading("Logging out...");
+        toast.loading(Language?.[LanguageType]?.LoggingOut);
         const logoutSuccess = await LogoutHandler();
         if (logoutSuccess) {
             toast.dismissAll();
-            toast.success("Logged out successfully");
-            setUser(null);
+            toast.success(Language?.[LanguageType]?.LogoutSuccess);
             localStorage.removeItem("languagetype");
+            
             setTimeout(() => {
+                setUser(null);
                 router.push("/auth/login");
-            }, 1000);
+            }, 1500);
         } else {
             toast.dismissAll();
-            toast.error("Logout failed. Please try again.");
+            toast.error(Language?.[LanguageType]?.LogoutFailed);
         }
     } catch (error) {
         toast.dismissAll();
-        toast.error("Something went wrong. Please try again.");
+        toast.error(Language?.[LanguageType]?.LogoutError);
         console.error("Logout error:", error);
     }
 };
 
     return (
       //main div
-      <div className="h-full w-full space-y-8 poppins bg-[#EEEEEE] text-black">
+      <div className="h-full w-full space-y-8 poppins bg-gray-900 text-white pt-12">
         <Toaster position="top-center" />
         {/*Heading Navbar */}
         <div className="h-[8%] w-full flex justify-between items-center p-4">
@@ -67,29 +86,31 @@ const handleLogout = async () => {
             </button> */}
             <div className="text-xl">{Language?.[LanguageType]?.profile}</div>
           </div>
-          <button 
+          <button
             onClick={handleLogout}
             className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
           >
             <LogOut size={18} strokeWidth={1.5} />
-            <span className="text-sm font-medium">Logout</span>
+            <span className="text-sm font-medium">
+              {Language?.[LanguageType]?.LogOut}
+            </span>
           </button>
         </div>
 
         {/*User Profile */}
         <div className="h-[10%] w-full flex justify-center items-center">
-          <div className="h-full w-[90%] rounded-lg bg-white flex">
+          <div className="h-full w-[90%] rounded-lg bg-gray-800 flex">
             {/*User Icon */}
             <div className=" h-full w-[20%] flex justify-center items-center p-1">
-              <div className="h-[80%] w-[90%] bg-gray-200 rounded-[100px] flex justify-center items-center">
-                <UserRoundCog size={40} strokeWidth={1} color="gray" />
+              <div className="h-[80%] w-[90%] bg-gray-600 rounded-[100px] flex justify-center items-center">
+                <UserRoundCog size={40} strokeWidth={1} color="white" />
               </div>
             </div>
 
             {/*UserName */}
             <div className="h-full w-[60%] flex flex-col justify-center">
-              <div className="text-base">{User?.username}</div>
-              <div className="text-xs text-gray-500">{User?.email}</div>
+              <div className="text-base text-white">{User?.username}</div>
+              <div className="text-xs text-gray-300">{User?.email}</div>
             </div>
 
             {/*edit */}
@@ -99,18 +120,20 @@ const handleLogout = async () => {
 
         {/*User Details */}
         <div className="h-[30%] w-full flex flex-col justify-center items-center ">
-          <div className="h-full w-[90%] flex flex-col justify-center items-center bg-white rounded-lg">
+          <div className="h-full w-[90%] flex flex-col justify-center items-center bg-gray-800 rounded-lg">
             {/*Age Div */}
             <div className="h-[30%] w-[95%] flex space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <Calendar size={40} strokeWidth={1} color="gray" />
+                <Calendar size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*Age*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Age</div>
-                <div className="text-xs text-gray-500">{Age}</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.age}
+                </div>
+                <div className="text-xs text-gray-300">{Age}</div>
               </div>
 
               {/*edit */}
@@ -121,13 +144,15 @@ const handleLogout = async () => {
             <div className="h-[30%] w-[95%] flex space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <MapPin size={40} strokeWidth={1} color="gray" />
+                <MapPin size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*UserName */}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Location</div>
-                <div className="text-xs text-gray-500">{User?.location}</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.location}
+                </div>
+                <div className="text-xs text-gray-300">{User?.location}</div>
               </div>
 
               {/*edit */}
@@ -138,13 +163,15 @@ const handleLogout = async () => {
             <div className="h-[30%] w-[95%] flex space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <ClipboardPlus size={40} strokeWidth={1} color="gray" />
+                <ClipboardPlus size={40} strokeWidth={1} color="white" />
               </div>
 
               {/*Medical Condition*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Medical Condition</div>
-                <div className="text-[9px] text-gray-500">
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.medicalCondition}
+                </div>
+                <div className="text-[9px] text-gray-300">
                   {Diseases?.map((items) => items)}
                 </div>
               </div>
@@ -157,28 +184,84 @@ const handleLogout = async () => {
 
         {/*Pescription Div */}
         <div className="h-[50%] w-full flex justify-center items-start ">
-          <div className="h-[70%] w-[90%] bg-white rounded-lg">
+          <div className="h-[70%] w-[90%] bg-gray-800 rounded-lg">
             <div className="h-[30%] w-[95%] flex justify-center items-center space-x-3">
               {/*Icon */}
               <div className=" h-full w-[15%] flex justify-center items-center p-1">
-                <ClipboardList size={40} strokeWidth={1} color="gray" />
+                <ClipboardList size={40} strokeWidth={1} color="white" />
               </div>
 
-              {/*Age*/}
+              {/*Prescription heading*/}
               <div className="h-full w-[60%] flex flex-col justify-center">
-                <div className="text-base">Pescription</div>
-                <div className="text-[10px] text-gray-500">view and manage your pescription</div>
+                <div className="text-base text-white">
+                  {Language?.[LanguageType]?.prescription}
+                </div>
+                <div className="text-[10px] text-gray-300">
+                  {Language?.[LanguageType]?.viewAndManagePrescription}
+                </div>
               </div>
 
               {/*edit */}
               <div className="w-[10%] h-full flex justify-center items-center">
-                <button><CirclePlus strokeWidth={1} onClick={handleButtonClick}/></button>
-                <input type="file" ref={fileinputRef} onChange={listenFileChanges} style={{display:"none"}}/>
+                <button>
+                  <CirclePlus
+                    strokeWidth={1}
+                    color="white"
+                    onClick={handleButtonClick}
+                  />
+                </button>
+                <input
+                  type="file"
+                  ref={fileinputRef}
+                  onChange={listenFileChanges}
+                  style={{ display: "none" }}
+                />
               </div>
+            </div>
+            <div className="h-[70%] w-full grid grid-cols-3 p-4 gap-4 overflow-y-scroll">
+              {Prescription_URLS?.length > 0 ? (
+                Prescription_URLS?.map((items) => (
+                  <button
+                    key={items}
+                    onClick={() => {
+                      setSelectedImage(items);
+                    }}
+                  >
+                    <img
+                      className="rounded-lg max-h-[100px] min-h-[80px] min-w-[80px] max-w-[100px]"
+                      src={items}
+                    ></img>
+                  </button>
+                ))
+              ) : (
+                <div className="h-full w-full flex items-center justify center text-xl text-white">
+                  {" "}
+                  no items here
+                </div>
+              )}
             </div>
           </div>
         </div>
-
+        {SelectedImage ? (
+          <div
+            className="h-full w-full absolute top-0 left-0 flex flex-col justify-start items-end 
+                bg-black/50 backdrop-blur-sm z-50 pt-12"
+          >
+            <div className="h-[10%] flex justify-center items-left p-2">
+              <button
+                className="max-h-[50px] min-w-[50px] rounded-lg flex justify-center items-center bg-gray-800 hover:bg-gray-700"
+                onClick={() => {
+                  setSelectedImage(null);
+                }}
+              >
+                <X color="white" />
+              </button>
+            </div>
+            <div className="h-[90%] w-full flex justify-center items-center">
+              <img className="h-[70%] p-2 rounded-[20px]" src={SelectedImage} />
+            </div>
+          </div>
+        ) : null}
       </div>
     );
 }

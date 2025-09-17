@@ -79,7 +79,7 @@ const VideoCallPatient = () => {
   const {Language} = LanguageStore()
   // Patient UI
   return (
-    <div className="min-h-screen bg-white poppins">
+    <div className="min-h-screen bg-gray-800 poppins py-12">
       {/* User Profile Section */}
       <div className="px-4 py-4">
         <div className="flex items-center space-x-3">
@@ -87,10 +87,10 @@ const VideoCallPatient = () => {
             <span className="text-gray-600 text-lg">👤</span>
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-gray-800">
+            <h1 className="text-xl font-semibold text-white-800">
               {Language?.[LanguageType]?.hello}, {User?.username}
             </h1>
-            <p className="text-gray-500">{User?.location}</p>
+            <p className="text-gray-300">{User?.location}</p>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ const VideoCallPatient = () => {
       {/* Status Messages */}
       {status && (
         <div className="px-4 mb-4">
-          <p className="text-center text-gray-600">{status}</p>
+          <p className="text-center text-gray-300">{status}</p>
           {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         </div>
       )}
@@ -147,15 +147,15 @@ const VideoCallPatient = () => {
                 style={{ backgroundColor: "#9CDB6C", opacity: 0.6 }}
               >
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                  Connecting...
+                 {Language?.[LanguageType]?.Connecting}
                 </h2>
                 <p className="text-gray-700 mb-6">
-                  Finding a doctor for you...
+                 {Language?.[LanguageType]?.FindingDoctor}
                 </p>
 
                 {userState.position && (
                   <p className="text-gray-600 mb-4">
-                    Position in queue: {userState.position}
+                   {Language?.[LanguageType]?.PositionInQueue} : {userState.position}
                   </p>
                 )}
 
@@ -167,15 +167,15 @@ const VideoCallPatient = () => {
                   onClick={disconnect}
                   className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
-                  Cancel
+                  {Language?.[LanguageType]?.Cancel}
                 </button>
               </div>
             )}
           </div>
         ) : (
           // Video Call Interface for Patient
-          <div className="space-y-6">
-            <div className="bg-green-100 rounded-2xl p-6">
+          <div className="space-y-1">
+            <div className="bg-green-100 max-h-145 rounded-2xl p-3 relative">
               <h2 className="text-xl font-bold text-gray-800 mb-4">
                 Connected with Doctor
               </h2>
@@ -190,7 +190,7 @@ const VideoCallPatient = () => {
                     autoPlay
                     muted
                     playsInline
-                    className="w-full h-48 bg-gray-100 rounded-lg"
+                    className="w-full h-44 bg-gray-100 rounded-lg"
                   />
                 </div>
 
@@ -202,17 +202,22 @@ const VideoCallPatient = () => {
                     ref={remoteVideoRef}
                     autoPlay
                     playsInline
-                    className="w-full h-48 bg-gray-100 rounded-lg"
+                    className="w-full h-44 bg-gray-100 rounded-lg"
                   />
                 </div>
               </div>
 
-              <button
-                onClick={disconnect}
-                className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
+              <div
+               
+                className="absolute bottom-0 left-0 h-10 w-full flex justify-center items-end p-1"
               >
+               <button 
+                onClick={disconnect}
+                className="w-30 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-1 rounded-lg transition-colors text-sm"
+               >
                 End Call
-              </button>
+               </button>
+              </div>
             </div>
           </div>
         )}

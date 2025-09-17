@@ -8,6 +8,7 @@ import {
 } from "@/services/model.services";
 import { useState, useEffect, useRef } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
+import { LanguageStore } from "@/store/Dictionary.store";
 
 export default function Symptom() {
   const [UserInput, setUserInput] = useState("");
@@ -17,7 +18,9 @@ export default function Symptom() {
   const [speechSupported, setSpeechSupported] = useState(false);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const { User } = UserStore();
+  const { User, LanguageType } = UserStore();
+  const { Language } = LanguageStore();
+  const [chatTriggered,setchatTrigger] = useState(false)
 
   const loadChatHistory = async () => {
     if (User?.id) {
@@ -88,6 +91,7 @@ export default function Symptom() {
   }, [language]);
 
   const AddChat = async () => {
+    setchatTrigger(true)
     tempchat.length > 0
       ? settempchat((prev) => [...prev, { type: "user", message: UserInput }])
       : settempchat([{ type: "user", message: UserInput }]);
@@ -103,14 +107,13 @@ export default function Symptom() {
         ...prev,
         { type: "model", message: res?.response },
       ]);
+      setchatTrigger(false)
     }
   };
 
   const handleDeleteChat = async () => {
     if (
-      window.confirm(
-        "Are you sure you want to delete all chat history? This action cannot be undone."
-      )
+      window.confirm(Language?.[LanguageType]?.DeleteChatHistoryConfirmation)
     ) {
       try {
         const result = await DeleteChatHistory(User?.id);
@@ -129,9 +132,7 @@ export default function Symptom() {
 
   const toggleSpeechRecognition = () => {
     if (!speechSupported) {
-      alert(
-        "Speech recognition is not supported in your browser. Please use Chrome or Edge."
-      );
+      alert(Language?.[LanguageType]?.SpeechRecognitionNotSupported);
       return;
     }
 
@@ -144,11 +145,11 @@ export default function Symptom() {
 
   return (
     //main div
-    <div className="h-screen w-full bg-gray-300 flex flex-col justify-start items-center poppins">
+    <div className="h-screen w-full bg-gray-800 flex flex-col justify-start items-center poppins">
       {/* sub-main div left space for navbar */}
       <div className="h-[90%] w-full flex flex-col justify-between">
         {/* upper navbar div */}
-        <div className="h-[10%] w-full bg-white flex justify-between items-center">
+        <div className="h-[10%] w-full bg-white flex justify-between items-center mt-15">
           <div className="h-full w-[20%] flex justify-center items-center">
             <button
               className="bg-red-500 hover:bg-red-600 h-10 w-10 rounded-full flex justify-center items-center transition-colors duration-200"
@@ -193,36 +194,45 @@ export default function Symptom() {
             tempchat?.map((items, index) => (
               <div
                 key={index}
-                className={
-                  items?.type === "model"
-                    ? "h-auto w-full flex justify-start items-center rounded-3xl text-xl pl-4"
-                    : "h-auto w-full flex justify-end items-center rounded-3xl text-xl pl-4"
-                }
+                className={`w-full flex items-center my-2 relative ${
+                  items?.type === "model" ? "justify-start" : "justify-end"
+                }`}
               >
                 <div
-                  className={
-                    items?.type === "model"
-                      ? "h-auto w-[70%] bg-black flex justify-start items-center p-2 rounded-[20px]"
-                      : "h-auto w-[70%] bg-blue-500 flex justify-start items-center p-2 rounded-[20px]"
-                  }
+                  className={`h-auto max-w-[70%] px-4 py-2 rounded-2xl text-base shadow-md break-words tracking-wide
+          ${
+            items?.type === "model"
+              ? "bg-green-100 text-green-800" // incoming
+              : "bg-green-500 text-white" // outgoing
+          }
+        `}
                 >
                   {items?.message}
                 </div>
+
+                {/* Loading indicator for last message */}
+                {chatTriggered && index === tempchat.length - 1 && (
+                  <div className="absolute -bottom-10 left-2 px-3 py-2 bg-green-600 text-white rounded flex space-x-1 items-center">
+                    <span className="w-2 h-2 bg-white rounded-full animate-bounce delay-75"></span>
+                    <span className="w-2 h-2 bg-white rounded-full animate-bounce delay-150"></span>
+                    <span className="w-2 h-2 bg-white rounded-full animate-bounce delay-300"></span>
+                  </div>
+                )}
               </div>
             ))
           ) : (
-            <div className="h-[100%] w-full text-gray-950 text-2xl flex flex-col justify-center items-center font-semibold">
-              {" "}
-              How can I assist you today?{" "}
+            <div className="h-[100%] w-full text-gray-950 text-xl flex flex-col justify-center items-center font-semibold">
+              {Language?.[LanguageType]?.HowCanIAssistYouToday}
             </div>
           )}
+
           <div ref={messagesEndRef} />
         </div>
         {/* chat input div */}
         <div className="h-[10%] w-full flex flex-row justify-center items-center gap-3.5 ">
           <input
             className="h-[60%] w-[65%] p-5 border-none  rounded-4xl bg-gray-100 text-gray-900 text-lg shadow-md shadow-gray-800 focus:outline-green-400"
-            placeholder="Ask me anything"
+            placeholder={Language?.[LanguageType]?.AskMeAnything}
             onChange={(e) => setUserInput(e.target.value)}
             value={UserInput}
             onKeyDown={(e) => {
