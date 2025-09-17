@@ -21,8 +21,6 @@ export default function AddInventory() {
   const [Medicine_MFG_Date, set_MFG_Date] = useState("");
   const [Medicine_EXP_Date, set_EXP_Date] = useState("");
 
-
-
   const handlerSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -45,14 +43,14 @@ export default function AddInventory() {
         MedicineQuantity
       );
       if (res) {
-        console.log(res)
+        console.log(res);
         setPharmacyRefresh(true);
-        setMedicineid("")
-        setMedicineName("")
-        setMedicineQuantity("")
-        set_EXP_Date("")
-        set_MFG_Date("")
-        return toast.success("added to stock successfully")
+        setMedicineid("");
+        setMedicineName("");
+        setMedicineQuantity("");
+        set_EXP_Date("");
+        set_MFG_Date("");
+        return toast.success("added to stock successfully");
       } else {
         return toast.error("stock not added");
       }
@@ -104,34 +102,42 @@ export default function AddInventory() {
             className="h-[80%] w-[60%] bg-[#E9F7E0] flex flex-col justify-center items-center space-y-6 p-[20px] rounded-lg shadow-md"
           >
             {/*Medicine Id input */}
-            <div className="h-[10%] w-[90%] flex justify-center items-center space-x-6">
-              <input
-                className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
-                value={Medicineid}
-                placeholder="Medicine Id"
-                type="number"
-                onChange={(e) => {
-                  e.preventDefault();
-                  setMedicineid(e.target.value);
-                }}
-              ></input>
-              <button
-                className="h-[80%] bg-[#7CBC27] p-[20px] flex justify-center items-center rounded-lg text-white hover:bg-[#0D7135]"
-                onClick={(e) => {
-                  e.preventDefault();
-                  getMedicine();
-                }}
-              >
-                Search
-              </button>
+            <div className="h-[12%] w-[90%] flex flex-col justify-center items-start space-y-2">
+              <label className="text-black font-medium text-sm">
+                Medicine ID
+              </label>
+              <div className="h-[60%] w-full flex justify-center items-center space-x-6">
+                <input
+                  className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                  value={Medicineid}
+                  placeholder="Enter Medicine ID"
+                  type="number"
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setMedicineid(e.target.value);
+                  }}
+                ></input>
+                <button
+                  className="h-[80%] bg-[#7CBC27] p-[20px] flex justify-center items-center rounded-lg text-white hover:bg-[#0D7135]"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    getMedicine();
+                  }}
+                >
+                  Search
+                </button>
+              </div>
             </div>
 
             {/*Medicine Name input */}
-            <div className="h-[10%] w-[90%]">
+            <div className="h-[12%] w-[90%] flex flex-col justify-center items-start space-y-2">
+              <label className="text-black font-medium text-sm">
+                Medicine Name
+              </label>
               <input
-                className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                className="h-[60%] w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
                 value={MedicineName}
-                placeholder="Medicine Name"
+                placeholder="Enter Medicine Name"
                 type="text"
                 onChange={(e) => {
                   e.preventDefault();
@@ -141,11 +147,12 @@ export default function AddInventory() {
             </div>
 
             {/*Medicine quantity input */}
-            <div className="h-[10%] w-[90%]">
+            <div className="h-[12%] w-[90%] flex flex-col justify-center items-start space-y-2">
+              <label className="text-black font-medium text-sm">Quantity</label>
               <input
-                className="h-full w-[15%] border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                className="h-[60%] w-[15%] border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
                 value={MedicineQuantity}
-                placeholder="Quantity"
+                placeholder="Enter Quantity"
                 type="number"
                 onChange={(e) => {
                   e.preventDefault();
@@ -155,11 +162,14 @@ export default function AddInventory() {
             </div>
 
             {/*Medicine MFG Date input */}
-            <div className="h-[10%] w-[90%]">
+            <div className="h-[12%] w-[90%] flex flex-col justify-center items-start space-y-2">
+              <label className="text-black font-medium text-sm">
+                Manufacturing Date
+              </label>
               <input
-                className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                className="h-[60%] w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
                 value={Medicine_MFG_Date}
-                placeholder="MFG Date"
+                placeholder="Select Manufacturing Date"
                 type="date"
                 onChange={(e) => {
                   e.preventDefault();
@@ -169,11 +179,14 @@ export default function AddInventory() {
             </div>
 
             {/*Medicine EXP Date input */}
-            <div className="h-[10%] w-[90%]">
+            <div className="h-[12%] w-[90%] flex flex-col justify-center items-start space-y-2">
+              <label className="text-black font-medium text-sm">
+                Expiry Date
+              </label>
               <input
-                className="h-full w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
+                className="h-[60%] w-full border border-gray-300 rounded-lg px-3 bg-white text-black outline-none focus:border-[#7CBC27]"
                 value={Medicine_EXP_Date}
-                placeholder="EXP Date"
+                placeholder="Select Expiry Date"
                 type="date"
                 onChange={(e) => {
                   e.preventDefault();
