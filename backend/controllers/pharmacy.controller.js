@@ -28,7 +28,7 @@ export const getPharmacyStock = async (req, res) => {
     p.quantity
     FROM pharma p
     JOIN medicine m ON p.medicine_id = m.medicine_id
-    WHERE p.pharma_id = $1`,
+    WHERE p.pharma_id = $1 AND p.quantity > 0`,
       [id]
     );
 
@@ -38,7 +38,7 @@ export const getPharmacyStock = async (req, res) => {
     sum(p.quantity) as TotalQuantity
     FROM pharma p
     JOIN medicine m ON p.medicine_id = m.medicine_id
-    WHERE p.pharma_id = $1 group by p.pharma_id`,
+    WHERE p.pharma_id = $1 AND p.quantity > 0 group by p.pharma_id`,
       [id]
     );
 
@@ -127,8 +127,12 @@ export const UpdateStock = async (req, res) => {
   try {
     const { id, medicine_id, quantity } = req.body;
 
-    if (!id || !medicine_id || !quantity) {
+    if (!id || !medicine_id || quantity === undefined || quantity === null) {
       return res.status(400).json({ message: "missing values in parameter" });
+    }
+
+    if (quantity < 0) {
+      return res.status(400).json({ message: "quantity cannot be negative" });
     }
 
     const userExists = checkUserById(id);
