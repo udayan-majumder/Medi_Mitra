@@ -104,7 +104,8 @@ export const GetCompletePatientInfo = async (id) => {
         u.location,
         u.type,
         p.diseases,
-        p.age
+        p.age,
+        p.prescription_urls
       FROM userinfo u
       LEFT JOIN patient_table p ON u.id = p.id
       WHERE u.id = $1 AND u.type = 'patient'
@@ -120,9 +121,8 @@ export const GetCompletePatientInfo = async (id) => {
     const patientData = res.rows[0];
     console.log("Patient data from DB:", patientData);
     
-    // Get prescriptions if any (assuming there's a prescriptions table)
-    // For now, we'll return empty array as prescription handling might be different
-    const prescriptions = []; // TODO: Implement prescription fetching if needed
+    // Get prescriptions from the prescription_urls column
+    const prescriptions = patientData.prescription_urls || [];
 
     const result = {
       id: patientData.id,

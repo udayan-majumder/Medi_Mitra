@@ -92,3 +92,19 @@ export const FetchPharmacyDetails = async(id)=>{
   return false
   }
 }
+
+export const UpdatePharmacyStock = async (id, medicine_id, quantity) => {
+  try {
+    const res = await api.post("/pharmacy/update-stock", {
+      id: id,
+      medicine_id: medicine_id,
+      quantity: quantity
+    });
+    if (res?.status === 200) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+};

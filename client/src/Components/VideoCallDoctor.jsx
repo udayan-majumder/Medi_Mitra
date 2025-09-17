@@ -231,11 +231,18 @@ const VideoCallDoctor = () => {
               <div className="grid grid-cols-2 gap-3">
                 {patientInfo.prescriptions.length > 0 ? (
                   patientInfo.prescriptions.map((prescriptionImage, index) => (
-                    <div key={index} className="w-full h-20 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer">
+                    <div 
+                      key={index} 
+                      className="w-full h-20 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                      onClick={() => window.open(prescriptionImage, '_blank')}
+                      title="Click to view full size"
+                    >
                       {prescriptionImage ? (
-                        <img 
+                        <Image
                           src={prescriptionImage} 
                           alt={`Prescription ${index + 1}`}
+                          width={100}
+                          height={100}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       ) : (

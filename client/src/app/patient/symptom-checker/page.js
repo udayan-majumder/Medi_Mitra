@@ -91,6 +91,11 @@ export default function Symptom() {
   }, [language]);
 
   const AddChat = async () => {
+
+    if (!UserInput || !/[a-zA-Z0-9]/.test(UserInput.trim())) {
+      return; // Exit if message is empty or contains no alphanumeric characters
+    }
+    
     setchatTrigger(true)
     tempchat.length > 0
       ? settempchat((prev) => [...prev, { type: "user", message: UserInput }])
@@ -221,7 +226,7 @@ export default function Symptom() {
               </div>
             ))
           ) : (
-            <div className="h-[100%] w-full text-gray-950 text-xl flex flex-col justify-center items-center font-semibold">
+            <div className="h-[100%] w-full text-white text-xl flex flex-col justify-center items-center font-semibold">
               {Language?.[LanguageType]?.HowCanIAssistYouToday}
             </div>
           )}
