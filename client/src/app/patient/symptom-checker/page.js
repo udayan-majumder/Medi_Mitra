@@ -92,8 +92,8 @@ export default function Symptom() {
 
   const AddChat = async () => {
 
-    if (!UserInput || !/[a-zA-Z0-9]/.test(UserInput.trim())) {
-      return; // Exit if message is empty or contains no alphanumeric characters
+    if (!UserInput || !/[a-zA-Z0-9\u0900-\u097F\u0A00-\u0A7F]/.test(UserInput.trim())) {
+      return; // Exit if message is empty or contains no alphanumeric characters including Hindi and Punjabi
     }
     
     setchatTrigger(true)
