@@ -20,13 +20,14 @@ export const AddUserFunction = async (
   email = null,
   hassPassword = null,
   location = null,
-  type = null
+  type = null,
+  coordinates = null
 ) => {
   try {
     if (username && email && hassPassword && location && type) {
       const AddQuery = await pool.query(
-        "insert into userinfo(username,email,password,location,type) values($1,$2,$3,$4,$5) returning id",
-        [username, email, hassPassword, location, type]
+        "insert into userinfo(username,email,password,location,type,coordinates) values($1,$2,$3,$4,$5,$6) returning id",
+        [username, email, hassPassword, location, type,coordinates]
       );
       return { data: AddQuery.rows[0] };
     } else {

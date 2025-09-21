@@ -37,6 +37,7 @@ const LoginFunction = async (req, res) => {
       email: isUserExsists.email,
       location: isUserExsists.location,
       type: isUserExsists.type,
+      coordinates:isUserExsists.coordinates
     });
   } catch (e) {
     return res.status(500).json({ message: e });
