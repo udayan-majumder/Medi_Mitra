@@ -5,9 +5,10 @@ import PharmacyStore from "@/store/pharmacy.store";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserStore } from "@/hooks/userauth.hooks";
-import { ChevronLeft, Search, Store, MapPinCheck, MapPinX } from "lucide-react";
+import { ChevronLeft, Search, Store, MapPinCheck, MapPinX, X } from "lucide-react";
 import { FetchPharmacyDetails, GetPharamacyStock } from "@/services/pharmacy.services";
 import { LanguageStore } from "@/store/Dictionary.store";
+import { Map ,Marker} from "@vis.gl/react-google-maps";
 import MedicalLoader from "@/Components/MedicalLoader";
 
 export default function PharmacyStockpage(){
@@ -22,6 +23,7 @@ const {Language} = LanguageStore()
 const [currentProfile, setCurrentProfile] = useState([])
 const  [currentProfileDetails,setCurrentProfileDetails] = useState([])
 const  [SearchParam,setSearchParam] = useState(null)
+const   [MapShow,setMapShow] = useState(false)
 useEffect(()=>{
     if(PharmacyList?.length<=0){
      router.push("/patient/pharmacy")
@@ -63,7 +65,7 @@ const handleSubmit = async(e) =>{
 
     return (
       //main div
-      <div className="h-screen w-full bg-gray-900 text-white poppins">
+      <div className="h-screen w-full bg-gray-900 text-white poppins relative">
         <div className="h-[90%] w-full py-8">
           {/*Back Button */}
           <button
@@ -90,8 +92,9 @@ const handleSubmit = async(e) =>{
                   : Language?.[LanguageType]?.NotAvailableInYourCity}
               </div>
             </div>
-            <div className="h-full w-[20%] flex justify-center items-start pt-[10px]">
-              <div
+            <div className="h-full w-[20%] flex flex-col justify-start items-center pt-[10px] space-y-2">
+              <button
+                onClick={() => setMapShow(true)}
                 className={
                   User?.location === currentProfileDetails?.location
                     ? "h-[55%] w-[60%] rounded-[100px] bg-green-400 flex justify-center items-center"
@@ -103,7 +106,8 @@ const handleSubmit = async(e) =>{
                 ) : (
                   <MapPinX color="white" />
                 )}
-              </div>
+              </button>
+              <div className="text-xs">{Language?.[LanguageType]?.Seemap}</div>
             </div>
           </div>
 
@@ -170,11 +174,46 @@ const handleSubmit = async(e) =>{
                 <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
 
                 {/* Text */}
-                <div className="text-white text-sm">{Language?.[LanguageType]?.FetchMedicine}</div>
+                <div className="text-white text-sm">
+                  {Language?.[LanguageType]?.FetchMedicine}
+                </div>
               </div>
             )}
           </div>
         </div>
+        {MapShow ? (
+          <div className="h-full w-full backdrop-blur-md absolute top-0 left-0 space-y-2">
+            <div className="h-[5%] w-full flex justify-start items-center">
+              <button className="h-[80%] min-w-[40px] bg-green-500 rounded-lg m-2 flex justify-center items-center" onClick={()=>setMapShow(false)}>
+                <X color="white" strokeWidth={2}/>
+              </button>
+            </div>
+            <Map
+              defaultZoom={5}
+              defaultCenter={{ lat: 20.5937, lng: 78.9629 }} // India center
+              style={{ width: "100%", height: "80%" }}
+            >
+              <Marker
+                position={{
+                  lat: currentProfileDetails?.coordinates?.lat,
+                  lng: currentProfileDetails?.coordinates?.lng,
+                }}
+                icon={{
+                  url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                }}
+              />
+              <Marker
+                position={{
+                  lat: User?.coordinates?.lat,
+                  lng: User?.coordinates?.lng,
+                }}
+                icon={{
+                  url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                }}
+              />
+            </Map>
+          </div>
+        ) : null}
       </div>
     );
 

@@ -30,9 +30,9 @@ export const LoginHandler = async(email,password,type) =>{
     }
 }
 
-export const RegisterHandler = async(username,email,password,location,type,diseases=[],age=null) =>{
+export const RegisterHandler = async(username,email,password,location,type,diseases=[],age=null,coordinates) =>{
     try{
-const reqbody = {"username":username,"email":email,"password":password,"location":location,"type":type,"diseases":diseases,"age":age}
+const reqbody = {"username":username,"email":email,"password":password,"location":location,"type":type,"diseases":diseases,"age":age,"coordinates":coordinates}
     const res = await api.post("/user/register",reqbody)
     if(res.status === 200){
         return res

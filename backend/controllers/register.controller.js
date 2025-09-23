@@ -5,7 +5,7 @@ import { AddPatientFunction } from "../models/user.models.js";
 
 const RegisterFunction = async (req, res) => {
   try {
-    const { username, password, email, location, type, diseases, age } =
+    const { username, password, email, location, type, diseases, age ,coordinates } =
       req.body;
     const isUserExsists = await CheckUserFunction(email, type);
 
@@ -19,7 +19,8 @@ const RegisterFunction = async (req, res) => {
       email,
       hassPassword,
       location,
-      type
+      type,
+      coordinates
     );
 
     if (!resInsertUser) {

@@ -1,13 +1,24 @@
 "use client";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
 import CapacitorInfoStore from "@/store/capacitorInfo.store";
 import { useRouter } from "next/navigation";
 import { RegisterHandler } from "@/services/user.services";
 import toast, { Toaster } from "react-hot-toast";
-import { Mail, Eye, EyeOff, Lock, UserRound, MapPin,Check,X } from "lucide-react";
+import {
+  Mail,
+  Eye,
+  EyeOff,
+  Lock,
+  UserRound,
+  MapPin,
+  Check,
+  X,
+  MapPlus
+} from "lucide-react";
 import DiseasesStore from "@/store/Diseases.store";
+import { Map, Marker } from "@vis.gl/react-google-maps";
 export default function RegisterPage() {
   {
     /*Store variables */
@@ -29,60 +40,86 @@ export default function RegisterPage() {
   const [Age, setAge] = useState(18);
   const [showPassword, setshowPassword] = useState(false);
   const [showRePassword, setshowRePassword] = useState(false);
+  const [showMap, setshowMap] = useState(false);
+  const [Coords, setCoords] = useState({});
 
   const router = useRouter();
 
+  useEffect(() => {
+    if (
+      UserType !== "patient" &&
+      (LanguageType === "hindi" || LanguageType === "punjabi")
+    ) {
+      setLanguageType("english");
+    }
+  }, [UserType, LanguageType]);
 
   useEffect(() => {
- if (UserType !== "patient" && (LanguageType === "hindi" || LanguageType === 'punjabi')){
-    setLanguageType("english");
-  }
-}, [UserType, LanguageType]);
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setCoords({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      });
+    });
+  }, []);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    if (Password !== RePassword) {
-      return toast.error(Language?.[LanguageType]?.PasswordMismatch);
-    }
-
-    if (UserType === "patient") {
-      if (DiseasesType.length <= 0 || Age === null || (Age <= 0 || Age<=18)) {
-        return toast.error(Language?.[LanguageType]?.AllFieldsMandatory);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (Password !== RePassword) {
+        return toast.error(Language?.[LanguageType]?.PasswordMismatch);
       }
-    }
 
-    toast.loading(Language?.[LanguageType]?.Registering);
-    const res = await RegisterHandler(
-      Username,
-      Email,
-      Password,
-      Location,
-      UserType,
-      DiseasesType,
-      Age
-    );
+      if(!Coords?.lat || !Coords?.lng){
+        return toast.error("Select map for location")
+      }
 
-    if (res?.errortype) {
+      if (UserType === "patient") {
+        if (DiseasesType.length <= 0 || Age === null || Age <= 0 || Age <= 18) {
+          return toast.error(Language?.[LanguageType]?.AllFieldsMandatory);
+        }
+      }
+
+      toast.loading(Language?.[LanguageType]?.Registering);
+      const res = await RegisterHandler(
+        Username,
+        Email,
+        Password,
+        Location,
+        UserType,
+        DiseasesType,
+        Age,
+        Coords
+      );
+
+      if (res?.errortype) {
+        toast.dismissAll();
+        return toast.error(Language?.[LanguageType]?.InvalidEmailPassword);
+      }
+
+      if (res?.status === 200) {
+        toast.dismissAll();
+        toast.success(Language?.[LanguageType]?.UserRegisteredSuccess);
+
+        setTimeout(() => {
+          router.replace("/auth/login");
+        }, 1500);
+      }
+    } catch (e) {
       toast.dismissAll();
-      return toast.error(Language?.[LanguageType]?.InvalidEmailPassword);
+      toast.error(Language?.[LanguageType]?.SomethingWentWrong);
     }
+  };
 
-    if (res?.status === 200) {
-      toast.dismissAll();
-      toast.success(Language?.[LanguageType]?.UserRegisteredSuccess);
+  const handleMapEvent = (e) => {
+    setCoords({
+      lat: e.detail.latLng.lat,
+      lng: e.detail.latLng.lng,
+    });
+  };
 
-      setTimeout(() => {
-        router.replace("/auth/login");
-      }, 1500);
-    }
-  } catch (e) {
-    toast.dismissAll();
-    toast.error(Language?.[LanguageType]?.SomethingWentWrong);
-  }
-};
   return (
-    <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
+    <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide relative ">
       <Toaster />
       {/*image vector green curve */}
       <div className="h-[20%] sm:h-full w-full sm:w-[40%]">
@@ -234,6 +271,15 @@ const handleSubmit = async (e) => {
                 className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm  focus:border-green-700 focus:ring-1 focus:ring-green-500 text-gray-800 pl-10 outline-none"
                 required
               />
+              <button
+                className="h-[70%] w-[40px] absolute right-1 top-2 bg-green-400 rounded-lg flex justify-center items-center"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setshowMap(true);
+                }}
+              >
+                <MapPlus color="white" strokeWidth={1.2}/>
+              </button>
             </div>
             {/* Forgot Password*/}
             <div className="flex justify-end mt-2">
@@ -252,20 +298,27 @@ const handleSubmit = async (e) => {
               <div className="w-full h-[10%] flex justify-center items-center text-gray-900 space-x-5 ">
                 <select
                   className="w-[60%] text-sm border-gray-300 border p-2 rounded-lg"
-
-                  onChange={(e)=>{
-                    e.preventDefault()
-                    if(!DiseasesType?.includes(e.target.value)){
-                      setDiseasesType((prev)=>[...prev,e.target.value])
+                  onChange={(e) => {
+                    e.preventDefault();
+                    if (!DiseasesType?.includes(e.target.value)) {
+                      setDiseasesType((prev) => [...prev, e.target.value]);
                     }
-                    console.log(DiseasesType)
+                    console.log(DiseasesType);
                   }}
                 >
                   <option value="" disabled>
                     Medical Condition
                   </option>
                   {DiseasesList.map((item, index) => (
-                    <option key={index} value={item} className={DiseasesType?.includes(item) ? "bg-green-500 text-white":""}>
+                    <option
+                      key={index}
+                      value={item}
+                      className={
+                        DiseasesType?.includes(item)
+                          ? "bg-green-500 text-white"
+                          : ""
+                      }
+                    >
                       {item}
                     </option>
                   ))}
@@ -275,16 +328,15 @@ const handleSubmit = async (e) => {
                   value={Age}
                   placeholder={Language?.[LanguageType]?.agetext}
                   className="w-[20%] p-2 border border-gray-300 rounded-lg"
-                  onChange={(e)=>{
-                    e.preventDefault()
-                    setAge(e.target.value)
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setAge(e.target.value);
                   }}
                 ></input>
               </div>
             ) : (
               <div></div>
             )}
-
 
             {/* Toggle usertype*/}
             <div className="w-full max-w-md mx-auto">
@@ -351,38 +403,83 @@ const handleSubmit = async (e) => {
             >
               {Language?.[LanguageType]?.englishtext}
             </button>
-         {UserType === 'patient' ? 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setLanguageType("hindi");
-              }}
-              className={
-                LanguageType === "hindi"
-                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
-                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
-              }
-            >
-              {Language?.[LanguageType]?.hinditext}
-            </button> : null}
-            {UserType === 'patient' ? 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setLanguageType("punjabi");
-              }}
-              className={
-                LanguageType === "punjabi"
-                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
-                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
-              }
-            >
-              {Language?.[LanguageType]?.punjabtext}
-            </button> : null}
+            {UserType === "patient" ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLanguageType("hindi");
+                }}
+                className={
+                  LanguageType === "hindi"
+                    ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                    : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+                }
+              >
+                {Language?.[LanguageType]?.hinditext}
+              </button>
+            ) : null}
+            {UserType === "patient" ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLanguageType("punjabi");
+                }}
+                className={
+                  LanguageType === "punjabi"
+                    ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                    : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+                }
+              >
+                {Language?.[LanguageType]?.punjabtext}
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
 
+      {showMap ? (
+        <div className="h-full w-full absolute top-0 right-0 flex flex-col space-y-2 backdrop-blur-sm">
+          <button
+            className="h-[5%] w-[10%] sm:h-[5%] sm:w-[3%] bg-red-500 m-2 text-black flex items-center justify-center rounded-lg"
+            onClick={() => {
+              setshowMap(false);
+            }}
+          >
+            <X color="white" strokeWidth={2}/>
+          </button>
+          <Map
+            defaultZoom={5}
+            defaultCenter={{ lat: 20.5937, lng: 78.9629 }} // India center
+            style={{ width: "100%", height: "85%" }}
+            onClick={(e) => handleMapEvent(e)}
+          >
+            <Marker position={Coords} />
+          </Map>
+          <div className="h-[5%] w-full flex justify-center items-center space-x-3">
+            <button
+              className="h-[90%] min-w-[200px] bg-red-500 cursor-pointer rounded-lg"
+              onClick={() => {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                  setCoords({
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude,
+                  });
+                });
+              }}
+            >
+              {Language?.[LanguageType]?.CurrentLocation}
+            </button>
+            <button
+              className="h-[90%] min-w-[200px] bg-green-500 cursor-pointer rounded-lg"
+              onClick={() => {
+                setshowMap(false);
+              }}
+            >
+              {Language?.[LanguageType]?.Done}
+            </button>
+          </div>
+        </div>
+      ) : null}
       {/* <div>this is login page testing {Language?.[LanguageType]?.username} : {LanguageType} language</div> */}
     </div>
   );
