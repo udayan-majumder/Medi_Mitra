@@ -11,37 +11,25 @@ import {
   Eye,
   EyeOff,
   Lock,
-  UserRound,
-  MapPin,
-  Check,
-  X,
-  MapPlus
+
 } from "lucide-react";
-import DiseasesStore from "@/store/Diseases.store";
-import { Map, Marker } from "@vis.gl/react-google-maps";
+
 export default function RegisterPage() {
   {
     /*Store variables */
   }
   const { LanguageType, setLanguageType } = UserStore();
   const { Language } = LanguageStore();
-  const { IsMobileView } = CapacitorInfoStore();
-  const { DiseasesList } = DiseasesStore();
   {
     /*Custom Hooks */
   }
-  const [Username, setUsername] = useState("");
+ 
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [RePassword, setRePassword] = useState("");
-  const [Location, setLocation] = useState("");
   const [UserType, setUserType] = useState("patient");
-  const [DiseasesType, setDiseasesType] = useState([]);
-  const [Age, setAge] = useState(18);
   const [showPassword, setshowPassword] = useState(false);
   const [showRePassword, setshowRePassword] = useState(false);
-  const [showMap, setshowMap] = useState(false);
-  const [Coords, setCoords] = useState({});
 
   const router = useRouter();
 
@@ -54,14 +42,6 @@ export default function RegisterPage() {
     }
   }, [UserType, LanguageType]);
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setCoords({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      });
-    });
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,26 +50,11 @@ export default function RegisterPage() {
         return toast.error(Language?.[LanguageType]?.PasswordMismatch);
       }
 
-      if(!Coords?.lat || !Coords?.lng){
-        return toast.error("Select map for location")
-      }
-
-      if (UserType === "patient") {
-        if (DiseasesType.length <= 0 || Age === null || Age <= 0 || Age <= 18) {
-          return toast.error(Language?.[LanguageType]?.AllFieldsMandatory);
-        }
-      }
-
       toast.loading(Language?.[LanguageType]?.Registering);
       const res = await RegisterHandler(
-        Username,
         Email,
         Password,
-        Location,
-        UserType,
-        DiseasesType,
-        Age,
-        Coords
+        UserType
       );
 
       if (res?.errortype) {
@@ -153,22 +118,7 @@ export default function RegisterPage() {
             className="space-y-3  flex flex-col justify-center items-center w-[90%]"
           >
             {/* name input container */}
-            <div className="relative space-x-2">
-              {Username.length > 0 ? null : (
-                <UserRound
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-              )}
-              <input
-                type="text"
-                value={Username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder={Language?.[LanguageType]?.usernametext}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm  focus:border-green-700 focus:ring-1 focus:ring-green-500 text-gray-800 pl-10 outline-none"
-                required
-              />
-            </div>
+            
 
             {/* Email Input Container*/}
             <div className="relative space-x-2">
@@ -256,31 +206,6 @@ export default function RegisterPage() {
             </div>
 
             {/* location input container */}
-            <div className="relative space-x-2">
-              {Location.length > 0 ? null : (
-                <MapPin
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-              )}
-              <input
-                type="text"
-                value={Location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder={Language?.[LanguageType]?.locationtext}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm  focus:border-green-700 focus:ring-1 focus:ring-green-500 text-gray-800 pl-10 outline-none"
-                required
-              />
-              <button
-                className="h-[70%] w-[40px] absolute right-1 top-2 bg-green-400 rounded-lg flex justify-center items-center"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setshowMap(true);
-                }}
-              >
-                <MapPlus color="white" strokeWidth={1.2}/>
-              </button>
-            </div>
             {/* Forgot Password*/}
             <div className="flex justify-end mt-2">
               <a
@@ -291,52 +216,6 @@ export default function RegisterPage() {
                 {Language?.[LanguageType]?.forgotpassword}
               </a>
             </div>
-
-            {/*Diseases and Age Div */}
-
-            {UserType === "patient" ? (
-              <div className="w-full h-[10%] flex justify-center items-center text-gray-900 space-x-5 ">
-                <select
-                  className="w-[60%] text-sm border-gray-300 border p-2 rounded-lg"
-                  onChange={(e) => {
-                    e.preventDefault();
-                    if (!DiseasesType?.includes(e.target.value)) {
-                      setDiseasesType((prev) => [...prev, e.target.value]);
-                    }
-                    console.log(DiseasesType);
-                  }}
-                >
-                  <option value="" disabled>
-                    Medical Condition
-                  </option>
-                  {DiseasesList.map((item, index) => (
-                    <option
-                      key={index}
-                      value={item}
-                      className={
-                        DiseasesType?.includes(item)
-                          ? "bg-green-500 text-white"
-                          : ""
-                      }
-                    >
-                      {item}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  value={Age}
-                  placeholder={Language?.[LanguageType]?.agetext}
-                  className="w-[20%] p-2 border border-gray-300 rounded-lg"
-                  onChange={(e) => {
-                    e.preventDefault();
-                    setAge(e.target.value);
-                  }}
-                ></input>
-              </div>
-            ) : (
-              <div></div>
-            )}
 
             {/* Toggle usertype*/}
             <div className="w-full max-w-md mx-auto">
@@ -437,49 +316,6 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {showMap ? (
-        <div className="h-full w-full absolute top-0 right-0 flex flex-col space-y-2 backdrop-blur-sm">
-          <button
-            className="h-[5%] w-[10%] sm:h-[5%] sm:w-[3%] bg-red-500 m-2 text-black flex items-center justify-center rounded-lg"
-            onClick={() => {
-              setshowMap(false);
-            }}
-          >
-            <X color="white" strokeWidth={2}/>
-          </button>
-          <Map
-            defaultZoom={5}
-            defaultCenter={{ lat: 20.5937, lng: 78.9629 }} // India center
-            style={{ width: "100%", height: "85%" }}
-            onClick={(e) => handleMapEvent(e)}
-          >
-            <Marker position={Coords} />
-          </Map>
-          <div className="h-[5%] w-full flex justify-center items-center space-x-3">
-            <button
-              className="h-[90%] min-w-[200px] bg-red-500 cursor-pointer rounded-lg"
-              onClick={() => {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                  setCoords({
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude,
-                  });
-                });
-              }}
-            >
-              {Language?.[LanguageType]?.CurrentLocation}
-            </button>
-            <button
-              className="h-[90%] min-w-[200px] bg-green-500 cursor-pointer rounded-lg"
-              onClick={() => {
-                setshowMap(false);
-              }}
-            >
-              {Language?.[LanguageType]?.Done}
-            </button>
-          </div>
-        </div>
-      ) : null}
       {/* <div>this is login page testing {Language?.[LanguageType]?.username} : {LanguageType} language</div> */}
     </div>
   );

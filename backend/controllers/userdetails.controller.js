@@ -15,9 +15,9 @@ export const UserDetailsFunction = async(req,res)=>{
 
 export const PatientInfoFunction = async(req,res)=>{
 
-   const {id} = req.query
-
-   const Patient = await GetPatientInfo(id)
+   const {profileid,userid} = req.query
+   
+   const Patient = await GetPatientInfo(profileid,userid)
 
    if(!Patient){
     return res.status(400).json({user:false})

@@ -7,11 +7,8 @@ export const GenerateToken = (payload) => {
   try {
     const newpaylaod = {
       id: payload.id,
-      username: payload.username,
       email: payload.email,
-      location: payload.location,
       type: payload.type,
-      coordinates:payload.coordinates
     };
 
     const token = jwt.sign(newpaylaod, process.env.JWT_SECRET, {

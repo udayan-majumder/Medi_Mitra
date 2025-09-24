@@ -6,10 +6,11 @@ import { UserStore } from "@/hooks/userauth.hooks";
 import Image from "next/image";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { useRouter } from "next/navigation";
+import { usePatientStore } from "@/hooks/usePatient.hooks";
 const VideoCallPatient = () => {
   // Get user info from UserStore
   const { User } = UserStore();
-  
+  const  {PatientProfile} = usePatientStore()
   const {
     localVideoRef,
     remoteVideoRef,
@@ -88,7 +89,7 @@ const VideoCallPatient = () => {
           </div>
           <div>
             <h1 className="text-xl font-semibold text-white-800">
-              {Language?.[LanguageType]?.hello}, {User?.username}
+              {Language?.[LanguageType]?.hello}, {PatientProfile?.name}
             </h1>
             <p className="text-gray-300">{User?.location}</p>
           </div>

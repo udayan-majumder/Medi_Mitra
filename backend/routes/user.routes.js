@@ -11,6 +11,7 @@ import {
 } from "../controllers/chat.controller.js";
 import upload from "../middleware/multer.middleware.js";
 import { uploadFile } from "../controllers/imageupload.controller.js";
+import { CreateProfile, GetAllProfiles } from "../controllers/patient.controller.js";
 
 
 
@@ -26,5 +27,7 @@ userRouter.get("/get-chat", MiddleWareFunction, GetChatFunction);
 userRouter.post("/add-chat", MiddleWareFunction, AddToChatHistory);
 userRouter.post("/delete-chat", MiddleWareFunction, DeleteChatHistory);
 userRouter.post("/upload-pescription", upload.single("file"), uploadFile);
+userRouter.post("/add-profile",CreateProfile)
+userRouter.get("/all-profiles",GetAllProfiles)
 
 export default userRouter;

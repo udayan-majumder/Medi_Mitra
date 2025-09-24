@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
 import { CheckUserFunction } from "../models/user.models.js";
 import { AddUserFunction } from "../models/user.models.js";
-import { AddPatientFunction } from "../models/user.models.js";
 
 const RegisterFunction = async (req, res) => {
   try {
-    const { username, password, email, location, type, diseases, age ,coordinates } =
+    const {password, email ,type} =
       req.body;
+      console.log(password,email,type)
     const isUserExsists = await CheckUserFunction(email, type);
 
     if (isUserExsists) {
@@ -15,27 +15,13 @@ const RegisterFunction = async (req, res) => {
 
     const hassPassword = await bcrypt.hash(password, 10);
     const resInsertUser = await AddUserFunction(
-      username,
       email,
       hassPassword,
-      location,
-      type,
-      coordinates
+      type
     );
 
     if (!resInsertUser) {
       return res.status(400).json({ message: "missing values in parameter" });
-    }
-
-    if (type === "patient") {
-      const isadd = await AddPatientFunction(
-        resInsertUser?.data?.id,
-        diseases,
-        age
-      );
-      if (!isadd) {
-        return res.status(400).json({ message: "missing values in parameter" });
-      }
     }
 
     return res.status(200).json({ message: "User added successfully" });

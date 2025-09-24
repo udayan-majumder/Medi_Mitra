@@ -6,7 +6,7 @@ import { UploadPescriptionToDB } from "../models/user.models.js";
 export const uploadFile = async (req, res) => {
   try {
     const fileRoute = req.file.path
-    const {id} = req.body
+    const {profileid,userid} = req.body
 
     if (!fileRoute) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -26,7 +26,7 @@ export const uploadFile = async (req, res) => {
     // });
      
     //uploading
-    const isUploaded = await UploadPescriptionToDB(id,result?.secure_url)
+    const isUploaded = await UploadPescriptionToDB(profileid,userid,result?.secure_url)
     if(!isUploaded){
       return res.status(400).json({upload:false})
     }

@@ -30,9 +30,9 @@ export const LoginHandler = async(email,password,type) =>{
     }
 }
 
-export const RegisterHandler = async(username,email,password,location,type,diseases=[],age=null,coordinates) =>{
+export const RegisterHandler = async(email,password,type) =>{
     try{
-const reqbody = {"username":username,"email":email,"password":password,"location":location,"type":type,"diseases":diseases,"age":age,"coordinates":coordinates}
+const reqbody = {"email":email,"password":password,"type":type}
     const res = await api.post("/user/register",reqbody)
     if(res.status === 200){
         return res
@@ -54,19 +54,20 @@ export const LogoutHandler = async() =>{
   }
 }
 
-export const GetPatientInfo = async(id)=>{
+export const GetPatientInfo = async(profileid,userid)=>{
 
 try{
 const res  =await api.get("/user/patient-info",{
   params:{
-    "id":id
+    "profileid":profileid,
+    "userid":userid
   }
 })
  
 if(!res?.data?.Patient){
   return false
 }
-return res?.data?.Patient
+return res?.data?.Patient[0]
 
 }
 catch(e){
@@ -83,10 +84,10 @@ export const UploadPatientPescription = async(formData) =>{
     },
   })
 
-  if(!res?.data?.url){
-    return false
-  }
-
+  // if(!res?.data?.url){
+  //   return false
+  // }
+  console.log(res?.data)
   return res?.data?.url
  }catch(e){
 return false
