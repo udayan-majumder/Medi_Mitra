@@ -1,9 +1,10 @@
+
 import pool from "../db/db.js";
 
 export const CheckUserFunction = async (email, type) => {
   try {
     const isUserExsists = await pool.query(
-      "select * from userinfo where email=$1 and type=$2",
+      "select * from userinfo2 where email=$1 and type=$2",
       [email, type]
     );
     if (isUserExsists.rows.length > 0) {
@@ -16,17 +17,15 @@ export const CheckUserFunction = async (email, type) => {
 };
 
 export const AddUserFunction = async (
-  username = null,
   email = null,
   hassPassword = null,
-  location = null,
   type = null
 ) => {
   try {
-    if (username && email && hassPassword && location && type) {
+    if (email && hassPassword && type) {
       const AddQuery = await pool.query(
-        "insert into userinfo(username,email,password,location,type) values($1,$2,$3,$4,$5) returning id",
-        [username, email, hassPassword, location, type]
+        "insert into userinfo2(email,password,type) values($1,$2,$3) returning id",
+        [email, hassPassword, type]
       );
       return { data: AddQuery.rows[0] };
     } else {
@@ -37,20 +36,21 @@ export const AddUserFunction = async (
   }
 };
 
-export const AddPatientFunction = async (id, diseases = [], age = null) => {
+export const AddPatientFunction = async (id, name, diseases = [], age = null , prescription =[] , allergies = [] , coordinates = {}) => {
   try {
-    if (diseases.length > 0 && age !== null) {
-      const pescription_urls = []
+    if (diseases.length > 0 && age !== null && id && name.length>0 && coordinates?.lat) {
       const AddQuery = await pool.query(
-        "insert into patient_table values($1,$2,$3,$4)",
-        [id, diseases, age,pescription_urls]
+        "insert into patient_profile(userid,name,age,diseases,prescriptions,allergies,coordinates) values($1,$2,$3,$4,$5,$6,$7)",
+        [id,name,age,diseases,prescription,allergies,coordinates]
       );
       return true;
     } else {
-      await pool.query("delete from userinfo where id=$1", [id]);
+    
       return false;
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err)
+  }
 };
 
 export const checkUserById = async (id) => {
@@ -68,14 +68,13 @@ export const checkUserById = async (id) => {
   }
 };
 
-export const GetPatientInfo = async (id) =>{
+export const GetPatientInfo = async (profileid,userid) =>{
   try{
-  if(!id){
+  if(!profileid && !userid){
     return false
   }
 
-  const res = await pool.query("select * from patient_table where id=$1",[id])
-
+  const res = await pool.query("select * from patient_profile where profileid=$1 and userid=$2",[profileid,userid])
   if(res?.rows.length<=0){
     return false
   }
@@ -142,14 +141,33 @@ export const GetCompletePatientInfo = async (id) => {
   }
 }
 
-export const UploadPescriptionToDB = async(id,new_url)=>{
+export const UploadPescriptionToDB = async(profileid,userid,new_url)=>{
   try{
-   const getAllPescription = await pool.query("select prescription_urls from patient_table where id=$1",[id])
-   const new_urls = [...getAllPescription?.rows[0]?.prescription_urls,new_url]
-   const addAllPescription = await pool.query("update patient_table set prescription_urls = $1 where id=$2",[new_urls,id])
+    console.log(profileid, userid, new_url);
+   const getAllPescription = await pool.query("select prescriptions from patient_profile where userid=$1 and profileid=$2",[userid,profileid])
+  
+   const new_urls = [...getAllPescription?.rows[0]?.prescriptions,new_url]
+  
+   const addAllPescription = await pool.query("update patient_profile set prescriptions = $1 where userid=$2 and profileid = $3",[new_urls,userid,profileid])
    return true
   }catch(e){
   return false
   }
 }
 
+export const GetAllPatientProfiles = async(id)=>{
+  try{
+  if(!id){
+    return false
+  }
+  
+  const res = await pool.query("select * from patient_profile where userid=$1",[id])
+  if(!res?.rows){
+    return false
+  }
+  return res?.rows
+  }
+  catch{
+    return false
+  }
+}

@@ -1,88 +1,90 @@
 "use client";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LanguageStore } from "@/store/Dictionary.store";
 import CapacitorInfoStore from "@/store/capacitorInfo.store";
 import { useRouter } from "next/navigation";
 import { RegisterHandler } from "@/services/user.services";
 import toast, { Toaster } from "react-hot-toast";
-import { Mail, Eye, EyeOff, Lock, UserRound, MapPin,Check,X } from "lucide-react";
-import DiseasesStore from "@/store/Diseases.store";
+import {
+  Mail,
+  Eye,
+  EyeOff,
+  Lock,
+
+} from "lucide-react";
+
 export default function RegisterPage() {
   {
     /*Store variables */
   }
   const { LanguageType, setLanguageType } = UserStore();
   const { Language } = LanguageStore();
-  const { IsMobileView } = CapacitorInfoStore();
-  const { DiseasesList } = DiseasesStore();
   {
     /*Custom Hooks */
   }
-  const [Username, setUsername] = useState("");
+ 
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [RePassword, setRePassword] = useState("");
-  const [Location, setLocation] = useState("");
   const [UserType, setUserType] = useState("patient");
-  const [DiseasesType, setDiseasesType] = useState([]);
-  const [Age, setAge] = useState(18);
   const [showPassword, setshowPassword] = useState(false);
   const [showRePassword, setshowRePassword] = useState(false);
 
   const router = useRouter();
 
-
   useEffect(() => {
- if (UserType !== "patient" && (LanguageType === "hindi" || LanguageType === 'punjabi')){
-    setLanguageType("english");
-  }
-}, [UserType, LanguageType]);
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    if (Password !== RePassword) {
-      return toast.error(Language?.[LanguageType]?.PasswordMismatch);
+    if (
+      UserType !== "patient" &&
+      (LanguageType === "hindi" || LanguageType === "punjabi")
+    ) {
+      setLanguageType("english");
     }
+  }, [UserType, LanguageType]);
 
-    if (UserType === "patient") {
-      if (DiseasesType.length <= 0 || Age === null || (Age <= 0 || Age<=18)) {
-        return toast.error(Language?.[LanguageType]?.AllFieldsMandatory);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (Password !== RePassword) {
+        return toast.error(Language?.[LanguageType]?.PasswordMismatch);
       }
-    }
 
-    toast.loading(Language?.[LanguageType]?.Registering);
-    const res = await RegisterHandler(
-      Username,
-      Email,
-      Password,
-      Location,
-      UserType,
-      DiseasesType,
-      Age
-    );
+      toast.loading(Language?.[LanguageType]?.Registering);
+      const res = await RegisterHandler(
+        Email,
+        Password,
+        UserType
+      );
 
-    if (res?.errortype) {
+      if (res?.errortype) {
+        toast.dismissAll();
+        return toast.error(Language?.[LanguageType]?.InvalidEmailPassword);
+      }
+
+      if (res?.status === 200) {
+        toast.dismissAll();
+        toast.success(Language?.[LanguageType]?.UserRegisteredSuccess);
+
+        setTimeout(() => {
+          router.replace("/auth/login");
+        }, 1500);
+      }
+    } catch (e) {
       toast.dismissAll();
-      return toast.error(Language?.[LanguageType]?.InvalidEmailPassword);
+      toast.error(Language?.[LanguageType]?.SomethingWentWrong);
     }
+  };
 
-    if (res?.status === 200) {
-      toast.dismissAll();
-      toast.success(Language?.[LanguageType]?.UserRegisteredSuccess);
+  const handleMapEvent = (e) => {
+    setCoords({
+      lat: e.detail.latLng.lat,
+      lng: e.detail.latLng.lng,
+    });
+  };
 
-      setTimeout(() => {
-        router.replace("/auth/login");
-      }, 1500);
-    }
-  } catch (e) {
-    toast.dismissAll();
-    toast.error(Language?.[LanguageType]?.SomethingWentWrong);
-  }
-};
   return (
-    <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide">
+    <div className="h-screen w-full bg-white flex sm:flex-row flex-col items-center poppins tracking-wide relative ">
       <Toaster />
       {/*image vector green curve */}
       <div className="h-[20%] sm:h-full w-full sm:w-[40%]">
@@ -116,22 +118,7 @@ const handleSubmit = async (e) => {
             className="space-y-3  flex flex-col justify-center items-center w-[90%]"
           >
             {/* name input container */}
-            <div className="relative space-x-2">
-              {Username.length > 0 ? null : (
-                <UserRound
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-              )}
-              <input
-                type="text"
-                value={Username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder={Language?.[LanguageType]?.usernametext}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm  focus:border-green-700 focus:ring-1 focus:ring-green-500 text-gray-800 pl-10 outline-none"
-                required
-              />
-            </div>
+            
 
             {/* Email Input Container*/}
             <div className="relative space-x-2">
@@ -219,22 +206,6 @@ const handleSubmit = async (e) => {
             </div>
 
             {/* location input container */}
-            <div className="relative space-x-2">
-              {Location.length > 0 ? null : (
-                <MapPin
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-              )}
-              <input
-                type="text"
-                value={Location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder={Language?.[LanguageType]?.locationtext}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm  focus:border-green-700 focus:ring-1 focus:ring-green-500 text-gray-800 pl-10 outline-none"
-                required
-              />
-            </div>
             {/* Forgot Password*/}
             <div className="flex justify-end mt-2">
               <a
@@ -245,46 +216,6 @@ const handleSubmit = async (e) => {
                 {Language?.[LanguageType]?.forgotpassword}
               </a>
             </div>
-
-            {/*Diseases and Age Div */}
-
-            {UserType === "patient" ? (
-              <div className="w-full h-[10%] flex justify-center items-center text-gray-900 space-x-5 ">
-                <select
-                  className="w-[60%] text-sm border-gray-300 border p-2 rounded-lg"
-
-                  onChange={(e)=>{
-                    e.preventDefault()
-                    if(!DiseasesType?.includes(e.target.value)){
-                      setDiseasesType((prev)=>[...prev,e.target.value])
-                    }
-                    console.log(DiseasesType)
-                  }}
-                >
-                  <option value="" disabled>
-                    Medical Condition
-                  </option>
-                  {DiseasesList.map((item, index) => (
-                    <option key={index} value={item} className={DiseasesType?.includes(item) ? "bg-green-500 text-white":""}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  value={Age}
-                  placeholder={Language?.[LanguageType]?.agetext}
-                  className="w-[20%] p-2 border border-gray-300 rounded-lg"
-                  onChange={(e)=>{
-                    e.preventDefault()
-                    setAge(e.target.value)
-                  }}
-                ></input>
-              </div>
-            ) : (
-              <div></div>
-            )}
-
 
             {/* Toggle usertype*/}
             <div className="w-full max-w-md mx-auto">
@@ -351,34 +282,36 @@ const handleSubmit = async (e) => {
             >
               {Language?.[LanguageType]?.englishtext}
             </button>
-         {UserType === 'patient' ? 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setLanguageType("hindi");
-              }}
-              className={
-                LanguageType === "hindi"
-                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
-                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
-              }
-            >
-              {Language?.[LanguageType]?.hinditext}
-            </button> : null}
-            {UserType === 'patient' ? 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setLanguageType("punjabi");
-              }}
-              className={
-                LanguageType === "punjabi"
-                  ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
-                  : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
-              }
-            >
-              {Language?.[LanguageType]?.punjabtext}
-            </button> : null}
+            {UserType === "patient" ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLanguageType("hindi");
+                }}
+                className={
+                  LanguageType === "hindi"
+                    ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                    : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+                }
+              >
+                {Language?.[LanguageType]?.hinditext}
+              </button>
+            ) : null}
+            {UserType === "patient" ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLanguageType("punjabi");
+                }}
+                className={
+                  LanguageType === "punjabi"
+                    ? "rounded-xl bg-green-700 w-[20%] h-[90%]"
+                    : "text-gray-500 hover:text-gray-700 w-[20%] h-[90%]"
+                }
+              >
+                {Language?.[LanguageType]?.punjabtext}
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

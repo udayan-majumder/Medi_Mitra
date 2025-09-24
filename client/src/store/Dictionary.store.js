@@ -70,6 +70,9 @@ export const LanguageStore = create((set) => ({
       Uploading: "Uploading...",
       FileUploadFailed: "File not uploaded",
       FileUploadSuccess: "File Uploaded Successfully",
+      CurrentLocation: "Current Location",
+      Done: "Done",
+      Seemap: "See Map",
     },
     hindi: {
       username: "यूजरनेम",
@@ -136,6 +139,9 @@ export const LanguageStore = create((set) => ({
       Uploading: "अपलोड हो रहा है...",
       FileUploadFailed: "फ़ाइल अपलोड नहीं हुई",
       FileUploadSuccess: "फ़ाइल सफलतापूर्वक अपलोड हुई",
+      CurrentLocation: "वर्तमान स्थान",
+      Done: "संपन्न",
+      Seemap: "नक्शा खोलें",
     },
     punjabi: {
       username: "ਯੂਜ਼ਰਨੇਮ",
@@ -202,6 +208,9 @@ export const LanguageStore = create((set) => ({
       Uploading: "ਅਪਲੋਡ ਹੋ ਰਿਹਾ...",
       FileUploadFailed: "ਫਾਇਲ ਅਪਲੋਡ ਨਹੀਂ ਹੋਈ",
       FileUploadSuccess: "ਫਾਇਲ ਸਫਲਤਾਪੂਰਵਕ ਅਪਲੋਡ ਹੋਈ",
+      CurrentLocation: "ਮੌਜੂਦਾ ਸਥਾਨ",
+      Done: "ਹੋ ਗਿਆ",
+      Seemap: "ਨਕਸ਼ਾ ਖੋਲ੍ਹੋ",
     },
   },
 }));

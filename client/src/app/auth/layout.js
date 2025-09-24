@@ -3,6 +3,7 @@
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function AuthLayout({ children }) {
   const { User } = UserStore();
@@ -14,5 +15,7 @@ export default function AuthLayout({ children }) {
     }
   }, [User?.id]);
 
-  return <>{children}</>;
+  return <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+    {children}
+  </APIProvider>
 }

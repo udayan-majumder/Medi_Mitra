@@ -4,14 +4,27 @@ import { useState,useEffect, useRef } from "react";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, UserRoundCog,Calendar,MapPin,ClipboardPlus,ClipboardList,CirclePlus, LogOut, X } from "lucide-react";
+import {
+  ChevronLeft,
+  UserRoundCog,
+  Calendar,
+  MapPin,
+  ClipboardPlus,
+  ClipboardList,
+  CirclePlus,
+  LogOut,
+  X,
+  RefreshCcw,
+} from "lucide-react";
 import { UploadPatientPescription, LogoutHandler } from "@/services/user.services";
 import toast, { Toaster } from "react-hot-toast";
+import { usePatientStore } from "@/hooks/usePatient.hooks";
 
 export default function CheckPatientProfile(){
 {/*Default hooks */}
 const {Language} = LanguageStore()
-const {LanguageType,User,Age,Diseases,setUser,Prescription_URLS,setPrescription_URLS} = UserStore()
+const {LanguageType,User,setUser} = UserStore()
+const {PatientProfile,setReload,setcurrentProfileId} = usePatientStore()
 const router = useRouter()
 
 {/*custom hooks */}
@@ -29,7 +42,8 @@ const listenFileChanges = async (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("id", User?.id);
+    formData.append("userid", User?.id);
+    formData.append("profileid",PatientProfile?.profileid)
 
     const res = await UploadPatientPescription(formData);
 
@@ -38,7 +52,7 @@ const listenFileChanges = async (e) => {
       return toast.error(Language?.[LanguageType]?.FileUploadFailed);
     }
 
-    setPrescription_URLS((prev) => [...prev, res]);
+    setReload(true)
     toast.dismissAll();
     toast.success(Language?.[LanguageType]?.FileUploadSuccess);
 
@@ -58,7 +72,7 @@ const handleLogout = async () => {
             toast.dismissAll();
             toast.success(Language?.[LanguageType]?.LogoutSuccess);
             localStorage.removeItem("languagetype");
-            
+            localStorage.removeItem("profileid")
             setTimeout(() => {
                 setUser(null);
                 router.push("/auth/login");
@@ -74,6 +88,12 @@ const handleLogout = async () => {
     }
 };
 
+const handleSwitchProfile = ()=>{
+  localStorage.removeItem("profileid")
+  setcurrentProfileId(null)
+  router.replace("/patient")
+}
+
     return (
       //main div
       <div className="h-full w-full space-y-8 poppins bg-gray-900 text-white pt-12">
@@ -86,15 +106,26 @@ const handleLogout = async () => {
             </button> */}
             <div className="text-xl">{Language?.[LanguageType]?.profile}</div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
-          >
-            <LogOut size={18} strokeWidth={1.5} />
-            <span className="text-sm font-medium">
-              {Language?.[LanguageType]?.LogOut}
-            </span>
-          </button>
+          <div className="flex space-x-3">
+            <button
+              onClick={handleSwitchProfile}
+              className="flex items-center space-x-2 border border-gray-300 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
+            >
+              <RefreshCcw size={18} strokeWidth={1.5} />
+              <span className="text-sm font-medium">
+                Switch
+              </span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors"
+            >
+              <LogOut size={18} strokeWidth={1.5} />
+              <span className="text-sm font-medium">
+                {Language?.[LanguageType]?.LogOut}
+              </span>
+            </button>
+          </div>
         </div>
 
         {/*User Profile */}
@@ -109,7 +140,7 @@ const handleLogout = async () => {
 
             {/*UserName */}
             <div className="h-full w-[60%] flex flex-col justify-center">
-              <div className="text-base text-white">{User?.username}</div>
+              <div className="text-base text-white">{PatientProfile?.name}</div>
               <div className="text-xs text-gray-300">{User?.email}</div>
             </div>
 
@@ -133,7 +164,9 @@ const handleLogout = async () => {
                 <div className="text-base text-white">
                   {Language?.[LanguageType]?.age}
                 </div>
-                <div className="text-xs text-gray-300">{Age}</div>
+                <div className="text-xs text-gray-300">
+                  {PatientProfile?.age}
+                </div>
               </div>
 
               {/*edit */}
@@ -152,7 +185,9 @@ const handleLogout = async () => {
                 <div className="text-base text-white">
                   {Language?.[LanguageType]?.location}
                 </div>
-                <div className="text-xs text-gray-300">{User?.location}</div>
+                <div className="text-xs text-gray-300">
+                  {PatientProfile?.coordinates?.location}
+                </div>
               </div>
 
               {/*edit */}
@@ -172,7 +207,7 @@ const handleLogout = async () => {
                   {Language?.[LanguageType]?.medicalCondition}
                 </div>
                 <div className="text-[9px] text-gray-300">
-                  {Diseases?.map((items) => items)}
+                  {PatientProfile?.diseases?.map((items) => items)}
                 </div>
               </div>
 
@@ -219,8 +254,8 @@ const handleLogout = async () => {
               </div>
             </div>
             <div className="h-[70%] w-full grid grid-cols-3 p-4 gap-4 overflow-y-scroll">
-              {Prescription_URLS?.length > 0 ? (
-                Prescription_URLS?.map((items) => (
+              {PatientProfile?.prescriptions?.length > 0 ? (
+                PatientProfile?.prescriptions?.map((items) => (
                   <button
                     key={items}
                     onClick={() => {
