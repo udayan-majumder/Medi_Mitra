@@ -6,7 +6,6 @@ const RegisterFunction = async (req, res) => {
   try {
     const {password, email ,type} =
       req.body;
-      console.log(password,email,type)
     const isUserExsists = await CheckUserFunction(email, type);
 
     if (isUserExsists) {

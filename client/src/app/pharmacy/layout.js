@@ -5,6 +5,8 @@ import { UserStore } from "@/hooks/userauth.hooks";
 import { GetPharamacyStock } from "@/services/pharmacy.services";
 import PharmacyStore from "@/store/pharmacy.store";
 import MedicalLoader from "@/Components/MedicalLoader";
+import PharmacyWrapper from "@/hooks/usePharmacy.hooks";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function PharmacyLayout({ children }) {
   const { User, isLoading } = UserStore();
@@ -51,5 +53,9 @@ export default function PharmacyLayout({ children }) {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+      <PharmacyWrapper>{children}</PharmacyWrapper>
+    </APIProvider>
+  );
 }

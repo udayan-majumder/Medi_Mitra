@@ -6,8 +6,11 @@ import {
   SearchPharmacy,
   UpdateStock,
   DeleteStock,
-  getPharmacyDetails
+  getPharmacyDetails,
+  CreateProfilePharmacy
 } from "../controllers/pharmacy.controller.js";
+import { CompletePharmacyInfoFunction } from "../controllers/userdetails.controller.js";
+
 
 const pharmacyRouter = Router();
 
@@ -17,6 +20,8 @@ pharmacyRouter.get("/check-medicine", isMedicine);
 pharmacyRouter.get("/get-pharmacy", SearchPharmacy);
 pharmacyRouter.post("/update-stock", UpdateStock);
 pharmacyRouter.post("/delete-stock", DeleteStock);
+pharmacyRouter.get("/pharmacy-profile-info",CompletePharmacyInfoFunction)
+pharmacyRouter.post("/pharmacy-profile-add", CreateProfilePharmacy);
 pharmacyRouter.get("/get-info",getPharmacyDetails)
 
 export default pharmacyRouter;
