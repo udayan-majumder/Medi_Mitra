@@ -84,6 +84,9 @@ const handleSubmit = async()=>{
                 value={Location}
                 onChange={(e) => {
                   setLocation(e.target.value);
+                  setCoords((prev)=>(
+                    {...prev,location:e.target.value}
+                  ))
                 }}
               />
             </div>

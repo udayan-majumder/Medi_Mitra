@@ -19,22 +19,21 @@ export const CheckMedicine = async (medicine_id) => {
 };
 
 export const AllPharmacy = async () => {
-  const usertype = "pharmacy";
-  const res = await pool.query("select * from userinfo2 where type = $1", [
-    usertype,
-  ]);
+ 
+  const res = await pool.query(
+    "select u.id,u.email,u.type, p.username,p.coordinates from userinfo2 as u inner join pharma_profile as p on u.id = p.pharma_id",
+  );
   if (res.rows.length > 0) {
-    return res?.rows?.map(({ password, ...items }) => items);
+    return res?.rows
   }
 };
 
 export const SearchPharmacyByName = async (name) => {
-  const usertype = "pharmacy";
   const cleanName = name.replace(/['"]+/g, "");
 
   const res = await pool.query(
-    "select * from userinfo where type = $1 and username ilike $2",
-    [usertype, `%${cleanName}%`]
+    "select u.id,u.email,u.type, p.username,p.coordinates from userinfo2 as u inner join pharma_profile as p on u.id = p.pharma_id where username ilike $1",
+    [`%${cleanName}%`]
   );
 
   if (res?.rows?.length > 0) {
@@ -66,6 +65,23 @@ export const PharmacyProfileInfo = async(id)=>{
     return false
   }
   const res = await pool.query("select * from pharma_profile where pharma_id = $1",[id])
+  if(res?.rows?.length<=0){
+    return false
+  }
+  return res?.rows[0]
+  }catch(e){
+    return false
+  }
+}
+
+export const GetCompletePharmacyInfo = async(id)=>{
+  try{
+    if(!id){
+      return false
+    }
+  const res = await pool.query(
+    "select u.email,u.type, p.username,p.coordinates from userinfo2 as u inner join pharma_profile as p on  u.id = p.pharma_id where u.id = $1",[id]
+  );
   if(res?.rows?.length<=0){
     return false
   }

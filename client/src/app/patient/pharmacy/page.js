@@ -7,6 +7,7 @@ import { UserStore } from "@/hooks/userauth.hooks";
 import { useRouter } from "next/navigation";
 import PharmacyStore from "@/store/pharmacy.store";
 import { LanguageStore } from "@/store/Dictionary.store";
+import { usePatientStore } from "@/hooks/usePatient.hooks";
 
 
 export default function Pharmacy() {
@@ -14,6 +15,7 @@ export default function Pharmacy() {
   const {User,LanguageType} = UserStore()
   const  router = useRouter()
   const {Language} = LanguageStore()
+  const {PatientProfile} = usePatientStore()
   {/*Custom hook */}
   const [SearchParam,setSearchParam] = useState(null)
   const {PharmacyList,setPharmacyList} = PharmacyStore()
@@ -89,13 +91,17 @@ catch(e){
           {PharmacyList?.length > 0 ? (
             PharmacyList?.sort((prev, next) => {
               if (
-                prev.location === User?.location &&
-                next?.location !== User?.location
+                prev?.coordinates?.location ===
+                  PatientProfile?.coordinates?.location &&
+                next?.coordinates?.location !==
+                  PatientProfile?.coordinates?.location
               )
                 return -1;
               if (
-                prev?.location !== User?.location &&
-                next?.location === User?.location
+                prev?.coordinates?.location !==
+                  PatientProfile?.coordinates?.location &&
+                next?.coordinates?.location ===
+                  PatientProfile?.coordinates?.location
               )
                 return 1;
               return 0;
@@ -113,10 +119,11 @@ catch(e){
                     {items?.username}
                   </div>
                   <div className="w-full text-left text-[12px]">
-                    {items?.location}
+                    {items?.coordinates?.location}
                   </div>
                   <div className="w-full text-left text-[11px] text-gray-300">
-                    {items?.location === User?.location
+                    {items?.coordinates?.location ===
+                    PatientProfile?.coordinates?.location
                       ? Language?.[LanguageType]?.AvailableInYourCity
                       : Language?.[LanguageType]?.NotAvailableInYourCity}
                   </div>
@@ -124,12 +131,14 @@ catch(e){
                 <div className="h-full w-[20%] flex justify-center items-start">
                   <div
                     className={
-                      items?.location === User?.location
+                      items?.coordinates?.location ===
+                      PatientProfile?.coordinates?.location
                         ? "h-[60%] w-[70%] rounded-[100px] bg-green-400 flex justify-center items-center"
                         : "h-[60%] w-[70%] rounded-[100px] bg-red-500 flex justify-center items-center"
                     }
                   >
-                    {items?.location === User?.location ? (
+                    {items?.coordinates?.location ===
+                    PatientProfile?.coordinates?.location ? (
                       <MapPinCheck color="white" />
                     ) : (
                       <MapPinX color="white" />
@@ -144,7 +153,9 @@ catch(e){
               <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
 
               {/* Text */}
-              <div className="text-white text-sm">{Language?.[LanguageType]?.FetchingStore}</div>
+              <div className="text-white text-sm">
+                {Language?.[LanguageType]?.FetchingStore}
+              </div>
             </div>
           )}
         </div>

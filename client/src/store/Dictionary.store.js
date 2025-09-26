@@ -34,7 +34,7 @@ export const LanguageStore = create((set) => ({
       placeholderAiChat: "Ask me anything",
       placeholderMedicine: "Search medicine",
       AvailableInYourCity: "Available in your city",
-      NotAvailableInYourCity: "Not available in yourc city",
+      NotAvailableInYourCity: "Not available in your city",
       age: "Age",
       location: "Location",
       medicalCondition: "Medical Condition",
