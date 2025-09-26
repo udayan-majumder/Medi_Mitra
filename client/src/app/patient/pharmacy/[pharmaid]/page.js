@@ -10,12 +10,14 @@ import { FetchPharmacyDetails, GetPharamacyStock } from "@/services/pharmacy.ser
 import { LanguageStore } from "@/store/Dictionary.store";
 import { Map ,Marker} from "@vis.gl/react-google-maps";
 import MedicalLoader from "@/Components/MedicalLoader";
+import { usePatientStore } from "@/hooks/usePatient.hooks";
 
 export default function PharmacyStockpage(){
 {/*default hooks */}
 const {PharmacyList,MedicineInventory,setMedicineInventory} = PharmacyStore()
 const { pharmaid } = useParams();
 const {User,LanguageType} = UserStore()
+const  {PatientProfile} = usePatientStore()
 const router = useRouter()
 const {Language} = LanguageStore()
 
@@ -24,6 +26,8 @@ const [currentProfile, setCurrentProfile] = useState([])
 const  [currentProfileDetails,setCurrentProfileDetails] = useState([])
 const  [SearchParam,setSearchParam] = useState(null)
 const   [MapShow,setMapShow] = useState(false)
+
+
 useEffect(()=>{
     if(PharmacyList?.length<=0){
      router.push("/patient/pharmacy")
@@ -63,6 +67,7 @@ const handleSubmit = async(e) =>{
 }
 
 
+
     return (
       //main div
       <div className="h-screen w-full bg-gray-900 text-white poppins relative">
@@ -84,10 +89,11 @@ const handleSubmit = async(e) =>{
                 {currentProfileDetails?.username}
               </div>
               <div className="w-full text-left text-[16px]">
-                {currentProfileDetails?.location}
+                {currentProfileDetails?.coordinates?.location}
               </div>
               <div className="w-full text-left text-[13px] text-gray-300">
-                {User?.location === currentProfileDetails?.location
+                {PatientProfile?.coordinates?.location ===
+                currentProfileDetails?.coordinates?.location
                   ? Language?.[LanguageType]?.AvailableInYourCity
                   : Language?.[LanguageType]?.NotAvailableInYourCity}
               </div>
@@ -96,12 +102,14 @@ const handleSubmit = async(e) =>{
               <button
                 onClick={() => setMapShow(true)}
                 className={
-                  User?.location === currentProfileDetails?.location
+                  PatientProfile?.coordinates?.location ===
+                  currentProfileDetails?.coordinates?.location
                     ? "h-[55%] w-[60%] rounded-[100px] bg-green-400 flex justify-center items-center"
                     : "h-[55%] w-[60%] rounded-[100px] bg-red-500 flex justify-center items-center"
                 }
               >
-                {User?.location === currentProfileDetails?.location ? (
+                {PatientProfile?.coordinates?.location ===
+                currentProfileDetails?.coordinates?.location ? (
                   <MapPinCheck color="white" />
                 ) : (
                   <MapPinX color="white" />
@@ -184,8 +192,11 @@ const handleSubmit = async(e) =>{
         {MapShow ? (
           <div className="h-full w-full backdrop-blur-md absolute top-0 left-0 space-y-2">
             <div className="h-[5%] w-full flex justify-start items-center">
-              <button className="h-[80%] min-w-[40px] bg-green-500 rounded-lg m-2 flex justify-center items-center" onClick={()=>setMapShow(false)}>
-                <X color="white" strokeWidth={2}/>
+              <button
+                className="h-[80%] min-w-[40px] bg-green-500 rounded-lg m-2 flex justify-center items-center"
+                onClick={() => setMapShow(false)}
+              >
+                <X color="white" strokeWidth={2} />
               </button>
             </div>
             <Map
@@ -198,17 +209,29 @@ const handleSubmit = async(e) =>{
                   lat: currentProfileDetails?.coordinates?.lat,
                   lng: currentProfileDetails?.coordinates?.lng,
                 }}
+                label={{
+                  text: currentProfileDetails?.username,
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                }}
                 icon={{
                   url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                  labelOrigin: new google.maps.Point(18, 40),
                 }}
               />
               <Marker
                 position={{
-                  lat: User?.coordinates?.lat,
-                  lng: User?.coordinates?.lng,
+                  lat: PatientProfile?.coordinates?.lat,
+                  lng: PatientProfile?.coordinates?.lng,
+                }}
+                label={{
+                  text: "You",
+                  fontSize: "20px",
+                  fontWeight: "bold",
                 }}
                 icon={{
                   url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                  labelOrigin: new google.maps.Point(18, 40),
                 }}
               />
             </Map>
