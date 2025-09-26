@@ -1,6 +1,6 @@
 import pool from "../db/db.js";
 import { checkUserById } from "../models/user.models.js";
-import { CheckMedicine } from "../models/pharmacy.models.js";
+import { AddnewPharmacyProfile, CheckMedicine } from "../models/pharmacy.models.js";
 import { AllPharmacy } from "../models/pharmacy.models.js";
 import { SearchPharmacyByName } from "../models/pharmacy.models.js";
 
@@ -26,7 +26,7 @@ export const getPharmacyStock = async (req, res) => {
     p.manufacture_date,
     p.expiry_date,
     p.quantity
-    FROM pharma p
+    FROM pharma2 p
     JOIN medicine m ON p.medicine_id = m.medicine_id
     WHERE p.pharma_id = $1 AND p.quantity > 0`,
       [id]
@@ -36,7 +36,7 @@ export const getPharmacyStock = async (req, res) => {
       `SELECT
     p.pharma_id,
     sum(p.quantity) as TotalQuantity
-    FROM pharma p
+    FROM pharma2 p
     JOIN medicine m ON p.medicine_id = m.medicine_id
     WHERE p.pharma_id = $1 AND p.quantity > 0 group by p.pharma_id`,
       [id]
@@ -77,7 +77,7 @@ export const addPharmacyStock = async (req, res) => {
     }
 
     const fetchQuery = await pool.query(
-      "INSERT INTO pharma(pharma_id,medicine_name,medicine_id,manufacture_date,expiry_date,quantity) values($1,$2,$3,$4,$5,$6)",
+      "INSERT INTO pharma2(pharma_id,medicine_name,medicine_id,manufacture_date,expiry_date,quantity) values($1,$2,$3,$4,$5,$6)",
       [id, medicine_name, medicine_id, manufacture_date, expiry_date, quantity]
     );
     return res.status(200).json({ message: "medicine added successfully" });
@@ -141,7 +141,7 @@ export const UpdateStock = async (req, res) => {
     }
 
     const fetchQuery = await pool.query(
-      "UPDATE pharma SET quantity = $1 WHERE pharma_id = $2 AND medicine_id = $3",
+      "UPDATE pharma2 SET quantity = $1 WHERE pharma_id = $2 AND medicine_id = $3",
       [quantity, id, medicine_id]
     );
     return res.status(200).json({ message: "stock updated successfully" });
@@ -163,7 +163,7 @@ export const DeleteStock = async (req, res) => {
     }
 
     const fetchQuery = await pool.query(
-      "DELETE FROM pharma WHERE pharma_id = $1 AND medicine_id = $2",
+      "DELETE FROM pharma2 WHERE pharma_id = $1 AND medicine_id = $2",
       [id, medicine_id]
     );
     return res.status(200).json({ message: "stock deleted successfully" });
@@ -193,4 +193,24 @@ export const getPharmacyDetails = async(req,res) =>{
   }
 
 
+}
+
+export const CreateProfilePharmacy = async(req,res)=>{
+  try{
+   const {pharma_id,username,coordinates} =req.body
+
+   if(!pharma_id || username.length <=0 || !coordinates?.lat){
+    return res.status(400).json({missingField:true})
+   }
+   
+   const isAddedPharma = await AddnewPharmacyProfile(pharma_id,username,coordinates)
+
+   if(!isAddedPharma){
+    return res.status(400).json({useradded:false})
+   }
+  
+   return res.status(200).json({useradded:true})
+  }catch(e){
+    return res.status(400).json({error:true})
+  }
 }

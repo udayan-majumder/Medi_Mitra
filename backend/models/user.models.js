@@ -56,7 +56,7 @@ export const AddPatientFunction = async (id, name, diseases = [], age = null , p
 export const checkUserById = async (id) => {
   try {
     const isUserExsists = await pool.query(
-      "SELECT * FROM userinfo WHERE id=$1",
+      "SELECT * FROM userinfo2 WHERE id=$1",
       [id]
     );
     if (isUserExsists.rows.length > 0) {

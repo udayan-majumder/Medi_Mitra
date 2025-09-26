@@ -5,6 +5,7 @@ import { House, BriefcaseMedical, SquareStack, LogOut } from 'lucide-react';
 import { UserStore } from "@/hooks/userauth.hooks";
 import { LogoutHandler } from "@/services/user.services";
 import toast from "react-hot-toast";
+import { usePharmaStore } from "@/hooks/usePharmacy.hooks";
 
  {
    /*Taking parameter <SideNavbar height={100} width={20}/> */
@@ -13,12 +14,14 @@ export const SidePharmacyNavbar = ({ height, width }) => {
   const router = useRouter();
   const [currentPage, setPage] = useState("");
   const  {User,setUser} = UserStore()
+  const  {Pharmacy_profile,Reload} = usePharmaStore()
+  const  [Username,setUsername] = useState("")
 
   const Logout = async()=>{
     toast.loading("Logging out...")
     const res = await LogoutHandler()
     if(res){
-      console.log(res)
+
       setUser(null)
       toast.dismiss()
       toast.success("Logged out successfully")
@@ -26,6 +29,11 @@ export const SidePharmacyNavbar = ({ height, width }) => {
     }
   }
   
+  useEffect(()=>{
+    if(Pharmacy_profile?.id){
+    setUsername(Pharmacy_profile?.username)
+    }
+  },[Pharmacy_profile?.id,Reload])
 
   // Get current path from window.location
   useEffect(() => {
@@ -71,7 +79,7 @@ export const SidePharmacyNavbar = ({ height, width }) => {
               <span className="text-green-600 text-sm font-bold">👤</span>
             </div>
           </div>
-          <span className="text-white font-semibold text-lg">{User?.username}</span>
+          <span className="text-white font-semibold text-lg">{Username}</span>
         </div>
         <h2 className="text-white text-xl font-medium">Pharmacy Dashboard</h2>
       </div>

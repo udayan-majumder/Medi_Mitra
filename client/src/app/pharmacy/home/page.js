@@ -2,14 +2,127 @@
 import { useState, useEffect } from "react";
 import { SidePharmacyNavbar} from "@/Components/sidenavbar.components";
 import PharmacyStore from "@/store/pharmacy.store";
-
+import { usePharmaStore } from "@/hooks/usePharmacy.hooks";
+import { Map,Marker } from "@vis.gl/react-google-maps";
+import toast,{Toaster} from "react-hot-toast";
+import { AddnewPharmacyProfile } from "@/services/pharmacy.services";
+import { UserStore } from "@/hooks/userauth.hooks";
 export default function Home() {
+ {/*Custom hooks */}
+const [Username,setUsername] = useState("")
+const [Coords,setCoords] = useState({})
+const  [Location,setLocation] = useState("")
+
+  {/*Default hooks */}
   // Get total stock from your pharmacy store
   const { MedicineInventory } = PharmacyStore();
+  const {Pharmacy_profile,setPharmacy_profile,Reload,setReload} = usePharmaStore()
+  const {User} = UserStore()
+
+useEffect(()=>{
+  navigator.geolocation.getCurrentPosition((position)=>{
+    setCoords({
+      lat:position?.coords?.latitude,
+      lng:position?.coords?.longitude,
+      location:Location
+    })
+  })
+
+},[])
+
+
+
+const handleSubmit = async()=>{
+  try{
+   toast.loading("Processing")
+   if(Username.length<=0 || !Coords?.lat || Location.length<=0){
+    toast.dismissAll();
+    return toast.error("Missing Fields")
+   }
+   
+   const res = await AddnewPharmacyProfile(User?.id,Username,Coords)
+   if(!res){
+    toast.dismissAll()
+    return toast.error("Unable to add details")
+   }
+   toast.dismissAll()
+   setReload(true)
+   toast.success("Details added succesfully")
+  }catch(e){
+    console.log(e)
+  }
+}
+
+
 
   return (
     //main container
     <div className="h-screen w-full flex justify-center items-center tracking-wider poppins">
+      <Toaster />
+      {(!Pharmacy_profile?.pharma_id && !Reload) && (
+        
+        //Main popup div
+        <div className="h-full w-full bg-[#0e0e0e8c] absolute z-15 left-0 top-0 flex justify-center items-center backdrop-blur-xl text-black">
+          {/*Popup inside box */}
+          <div className="h-[60%] w-[25%] bg-white rounded-lg shadow-md flex flex-col justify-start items-center p-2">
+            {/*Username Input div */}
+
+            <div className="h-[20%] w-full p-1 flex flex-col justify-center items-start space-y-2">
+              <div>Username</div>
+              <input
+                className="border border-gray-300 p-2 rounded-lg outline-green-300 w-full"
+                value={Username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+
+            {/*Location Input div */}
+            <div className="h-[20%] w-full p-1 flex flex-col justify-center items-start space-y-2">
+              <div>Location</div>
+              <input
+                className="border border-gray-300 p-2 rounded-lg outline-green-300 w-full"
+                value={Location}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                }}
+              />
+            </div>
+
+            {/*Map Div */}
+            <div className="h-[50%] w-full p-1 flex flex-col justify-center items-start space-y-2">
+              <div>Select Location In Map</div>
+              <Map
+                style={{ width: "100%", height: "100%", borderRadius: "20px" }}
+                defaultCenter={Coords?.lat ? Coords : { lat: 22.0, lng: 24.0 }}
+                defaultZoom={6}
+                gestureHandling="greedy"
+                disableDefaultUI
+                onClick={(e) => {
+                  setCoords({
+                    lat: e.detail.latLng.lat,
+                    lng: e.detail.latLng.lng,
+                    location: Location,
+                  });
+                }}
+              >
+                <Marker
+                  position={Coords?.lat ? Coords : { lat: 22.0, lng: 24.0 }}
+                />
+              </Map>
+            </div>
+
+            {/*Done ButtonDiv */}
+            <div className="h-[10%] w-full p-1 flex flex-col justify-center items-center space-y-2">
+              <button
+                className="bg-green-500 p-2 pr-10 pl-10 rounded-lg cursor-pointer text-white hover:bg-green-400 font-medium"
+                onClick={handleSubmit}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/*Side Navbar */}
       <SidePharmacyNavbar height={100} width={20} />
 

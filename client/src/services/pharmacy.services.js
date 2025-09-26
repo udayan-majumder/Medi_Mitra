@@ -1,5 +1,47 @@
 import { api } from "@/lib/axios.lib";
 
+export const GetPharmacyProfileInfo = async(id) =>{
+  try{
+   if(!id){
+    return false
+   }
+   
+   const res = await api.get("/pharmacy/pharmacy-profile-info",{
+    params:{
+      "id":id
+    }
+   })
+  if(!res?.data?.isPharmacyProfile){
+  return false
+  }
+  return res?.data?.isPharmacyProfile
+  }catch(e){
+    return false
+  }
+}
+
+export const AddnewPharmacyProfile = async(pharma_id,username,coordinates) =>{
+  try{
+  if(!pharma_id || username.length<=0 || !coordinates?.lat){
+   
+    return false
+  }
+ 
+  const res = api.post("/pharmacy/pharmacy-profile-add",{
+  "pharma_id":pharma_id,
+  "username":username,
+  "coordinates":coordinates
+  }) 
+
+  if(!res){
+    return false
+  }
+  return true
+  }catch(e){
+    return false
+  }
+}
+
 export const GetPharamacyStock = async (id) => {
   try {
     const res = await api.get("/pharmacy/get-stock", {
@@ -108,3 +150,4 @@ export const UpdatePharmacyStock = async (id, medicine_id, quantity) => {
     return false;
   }
 };
+
