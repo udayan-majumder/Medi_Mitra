@@ -13,7 +13,7 @@ export const GetChatFunction = async (req, res) => {
       return res.status(400).json({ message: "user does not exists" });
     }
     const fetchQuery = await pool.query(
-      "SELECT * FROM chat_history WHERE user_id = $1",
+      "SELECT * FROM chat_history2 WHERE user_id = $1",
       [id]
     );
     return res.status(200).json({ chat: fetchQuery.rows });
@@ -35,7 +35,7 @@ export const AddToChatHistory = async (req, res) => {
     }
 
     const fetchQuery = await pool.query(
-      "INSERT INTO chat_history (user_id, sender, message) VALUES ($1, $2, $3)",
+      "INSERT INTO chat_history2 (user_id, sender, message) VALUES ($1, $2, $3)",
       [id, sender, message]
     );
     return res.status(200).json({ message: "message added to chat history" });
@@ -53,7 +53,7 @@ export const DeleteChatHistory = async (req, res) => {
     }
 
     const fetchQuery = await pool.query(
-      "DELETE FROM chat_history WHERE user_id = $1",
+      "DELETE FROM chat_history2 WHERE user_id = $1",
       [id]
     );
     

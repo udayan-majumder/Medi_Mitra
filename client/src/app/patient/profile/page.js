@@ -253,7 +253,7 @@ const handleSwitchProfile = ()=>{
                 />
               </div>
             </div>
-            <div className="h-[70%] w-full grid grid-cols-3 p-4 gap-4 overflow-y-scroll">
+            <div className="h-[70%] w-full grid grid-cols-3 p-4 gap-4 overflow-y-scroll relative">
               {PatientProfile?.prescriptions?.length > 0 ? (
                 PatientProfile?.prescriptions?.map((items) => (
                   <button
@@ -269,7 +269,7 @@ const handleSwitchProfile = ()=>{
                   </button>
                 ))
               ) : (
-                <div className="h-full w-full flex items-center justify center text-xl text-white">
+                <div className="h-full w-full flex items-center justify-center text-xl text-white absolute">
                   {" "}
                   no items here
                 </div>
