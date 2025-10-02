@@ -101,9 +101,10 @@ export const useSocket = (handlers = {}, userInfo = null) => {
     };
   }, []); 
 
-  const joinAsUserA = useCallback(() => {
-    console.log("Joining as User A with userInfo:", userInfo);
-    socketRef.current?.emit('join-as-A', { userInfo });
+  const joinAsUserA = useCallback((customUserInfo = null) => {
+    const infoToSend = customUserInfo || userInfo;
+    console.log("Joining as User A with userInfo:", infoToSend);
+    socketRef.current?.emit('join-as-A', { userInfo: infoToSend });
     setUserState((prev) => ({ ...prev, type: 'A' }));
     setStatus('Joining as User A...');
   }, [userInfo]);

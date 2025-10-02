@@ -86,34 +86,35 @@ export const GetPatientInfo = async (profileid,userid) =>{
   
 }
 
-export const GetCompletePatientInfo = async (id) => {
+export const GetCompletePatientInfo = async (profileid) => {
   try {
-    console.log("GetCompletePatientInfo called with id:", id);
-    if (!id) {
-      console.log("No ID provided");
+    console.log("GetCompletePatientInfo called with profileid:", profileid);
+    if (!profileid) {
+      console.log("No profileid provided");
       return false;
     }
 
     // Get user basic info and patient specific info in one query
     const res = await pool.query(`
       SELECT 
-        u.id,
-        u.username,
         u.email,
-        u.location,
-        u.type,
+        p.profileid,
+        p.userid,
+        p.name,
+        p.coordinates,
         p.diseases,
         p.age,
-        p.prescription_urls
-      FROM userinfo u
-      LEFT JOIN patient_table p ON u.id = p.id
-      WHERE u.id = $1 AND u.type = 'patient'
-    `, [id]);
+        p.prescriptions,
+        p.allergies
+      FROM patient_profile p 
+      INNER JOIN userinfo2 u ON u.id = p.userid
+      WHERE p.profileid = $1
+    `, [profileid]);
 
     console.log("Database query result:", res.rows);
 
     if (res?.rows.length <= 0) {
-      console.log("No patient found with ID:", id);
+      console.log("No patient profile found with ID:", profileid);
       return false;
     }
 
@@ -121,15 +122,16 @@ export const GetCompletePatientInfo = async (id) => {
     console.log("Patient data from DB:", patientData);
     
     // Get prescriptions from the prescription_urls column
-    const prescriptions = patientData.prescription_urls || [];
+    const prescriptions = patientData.prescriptions || [];
 
     const result = {
-      id: patientData.id,
-      name: patientData.username,
+      id: patientData.profileid,
+      name: patientData.name,
       email: patientData.email,
-      location: patientData.location,
+      location: patientData.coordinates.location,
       age: patientData.age,
       medicalConditions: patientData.diseases || [],
+      allergies: patientData.allergies,
       prescriptions: prescriptions
     };
 

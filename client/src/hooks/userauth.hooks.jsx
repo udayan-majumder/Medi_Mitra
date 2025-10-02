@@ -1,7 +1,6 @@
 "use client";
 import { useContext, createContext, useState, useEffect } from "react";
 import { GetUserDetails } from "@/services/user.services";
-import { GetPatientInfo } from "@/services/user.services";
 
 export const UserContext = createContext(null);
 

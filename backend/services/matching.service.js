@@ -29,15 +29,15 @@ export class MatchingService {
     // Get patient data if userA is a patient
     let patientData = null;
     console.log("UserA socket userInfo:", userA.socket.userInfo);
-    if (userA.socket.userInfo && userA.socket.userInfo.id) {
+    if (userA.socket.userInfo && userA.socket.userInfo.profileId) {
       try {
-        patientData = await GetCompletePatientInfo(userA.socket.userInfo.id);
+        patientData = await GetCompletePatientInfo(userA.socket.userInfo.profileId);
         console.log("Patient data retrieved:", patientData);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
     } else {
-      console.log("No userInfo found for userA or missing ID");
+      console.log("No userInfo found for userA or missing profileId");
     }
 
     // Notify both users about the match

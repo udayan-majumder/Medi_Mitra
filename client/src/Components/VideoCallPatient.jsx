@@ -67,12 +67,25 @@ const VideoCallPatient = () => {
 
   const handleJoin = () => {
     console.log("Patient joining with User:", User);
+    console.log("Patient Profile:", PatientProfile);
     if (!User) {
       console.error("No user data available for patient");
       alert("Please log in first");
       return;
     }
-    joinAsUserA();
+    if (!PatientProfile) {
+      console.error("No patient profile selected");
+      alert("Please select a patient profile first");
+      return;
+    }
+    
+    const userInfoWithProfile = {
+      ...User,
+      profileId: PatientProfile.profileid
+    };
+    
+    console.log("Joining with profile ID:", PatientProfile.profileid);
+    joinAsUserA(userInfoWithProfile);
   };
   
   const router = useRouter()
