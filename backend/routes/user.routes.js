@@ -13,6 +13,11 @@ import upload from "../middleware/multer.middleware.js";
 import { uploadFile } from "../controllers/imageupload.controller.js";
 import { CreateProfile, GetAllProfiles } from "../controllers/patient.controller.js";
 import { CreateDoctorProfile, GetDoctorProfile } from "../controllers/doctor.controller.js";
+import { 
+  GetUserTierController, 
+  UpdateUserTierController, 
+  GetCompleteUserInfoController 
+} from "../controllers/usertier.controller.js";
 
 
 const userRouter = Router();
@@ -29,7 +34,12 @@ userRouter.post("/delete-chat", MiddleWareFunction, DeleteChatHistory);
 userRouter.post("/upload-pescription", upload.single("file"), uploadFile);
 userRouter.post("/add-profile",CreateProfile)
 userRouter.get("/all-profiles",GetAllProfiles)
+
 userRouter.post("/doctor-profile-add",CreateDoctorProfile)
 userRouter.get("/doctor-profile/",GetDoctorProfile)
+
+userRouter.get("/user-tier", MiddleWareFunction, GetUserTierController);
+userRouter.post("/update-user-tier", UpdateUserTierController);
+userRouter.get("/complete-user-info", MiddleWareFunction, GetCompleteUserInfoController);
 
 export default userRouter;

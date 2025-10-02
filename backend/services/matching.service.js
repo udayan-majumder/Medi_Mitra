@@ -7,60 +7,87 @@ export class MatchingService {
     this.sessionService = sessionService;
   }
 
-  async matchUsers() {
-    if (!this.queueService.hasAvailableUsers()) {
+  // Match users for a specific specialization
+  async matchUsersForSpecialization(specialization) {
+    if (!this.queueService.hasAvailableUsers(specialization)) {
       return null;
     }
 
-    const userA = this.queueService.getRandomUserA();
-    const userB = this.queueService.getNextUserB();
+    const patient = this.queueService.getRandomPatient(specialization);
+    const doctor = this.queueService.getNextDoctor(specialization);
 
-    if (!userA || !userB) return null;
+    if (!patient || !doctor) return null;
 
     const roomId = generateRoomId();
 
-    // Create session
-    this.sessionService.createSession(roomId, userA.socketId, userB.socketId);
+    // Create session with specialization info
+    this.sessionService.createSession(
+      roomId, 
+      patient.socketId, 
+      doctor.socketId,
+      specialization
+    );
 
     // Join both users to the room
-    userA.socket.join(roomId);
-    userB.socket.join(roomId);
+    patient.socket.join(roomId);
+    doctor.socket.join(roomId);
 
-    // Get patient data if userA is a patient
+    // Get patient data
     let patientData = null;
-    console.log("UserA socket userInfo:", userA.socket.userInfo);
-    if (userA.socket.userInfo && userA.socket.userInfo.profileId) {
+    console.log("Patient socket userInfo:", patient.socket.userInfo);
+    if (patient.socket.userInfo && patient.socket.userInfo.profileId) {
       try {
-        patientData = await GetCompletePatientInfo(userA.socket.userInfo.profileId);
+        patientData = await GetCompletePatientInfo(patient.socket.userInfo.profileId);
         console.log("Patient data retrieved:", patientData);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
     } else {
-      console.log("No userInfo found for userA or missing profileId");
+      console.log("No userInfo found for patient or missing profileId");
     }
 
     // Notify both users about the match
-    userA.socket.emit("matched", { 
+    patient.socket.emit("matched", { 
       roomId, 
-      userType: "A", 
-      partnerType: "B",
+      userType: "patient", 
+      partnerType: "doctor",
+      specialization,
       patientData: patientData 
     });
-    userB.socket.emit("matched", { 
+    doctor.socket.emit("matched", { 
       roomId, 
-      userType: "B", 
-      partnerType: "A",
+      userType: "doctor", 
+      partnerType: "patient",
+      specialization,
       patientData: patientData 
     });
 
-    // Mark User A as consumed
-    this.queueService.markUserAConsumed(userA.socketId);
+    // Mark patient as consumed
+    this.queueService.markPatientConsumed(patient.socketId);
 
     console.log(
-      `Matched User A (${userA.socketId}) with User B (${userB.socketId}) in room ${roomId}`
+      `Matched Patient (${patient.socketId}) with Doctor (${doctor.socketId}) for ${specialization} in room ${roomId}`
     );
 
-    return { userA: userA.socketId, userB: userB.socketId, roomId };
+    return { patient: patient.socketId, doctor: doctor.socketId, roomId, specialization };
+  }
+
+  // Attempt to match users across all specializations
+  async matchUsers() {
+    const availableSpecializations = this.queueService.getAvailableSpecializations();
+    
+    if (availableSpecializations.length === 0) {
+      return null;
+    }
+
+    // Try to match for each available specialization
+    for (const specialization of availableSpecializations) {
+      const result = await this.matchUsersForSpecialization(specialization);
+      if (result) {
+        return result;
+      }
+    }
+
+    return null;
   }
 }

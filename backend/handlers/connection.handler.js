@@ -7,48 +7,70 @@ export class ConnectionHandler {
   }
 
   handleJoinAsA(socket, data = {}) {
-    console.log(`User ${socket.id} joined as User A`);
+    console.log(`User ${socket.id} joined as Patient (User A)`);
     console.log("Data received:", data);
     
     // Store user info in socket for later use
     socket.userInfo = data.userInfo;
     console.log("Stored userInfo in socket:", socket.userInfo);
 
-    if (this.queueService.isUserAConsumed(socket.id)) {
-      socket.emit("error", { message: "User A can only connect once" });
+    if (this.queueService.isPatientConsumed(socket.id)) {
+      socket.emit("error", { message: "Patient can only connect once per session" });
       return;
     }
 
-    const { inA, inB } = this.queueService.findUserInQueues(socket.id);
+    const { inPatientQueue, inDoctorQueue } = this.queueService.findUserInQueues(socket.id);
     const inSession = this.sessionService.isInActiveSession(socket.id);
 
-    if (inA || inB || inSession) {
+    if (inPatientQueue || inDoctorQueue || inSession) {
       socket.emit("error", { message: "User already in queue" });
-      return;
+      return;12
     }
 
-    const position = this.queueService.addUserA(socket.id, socket);
-    socket.emit("queued", { userType: "A", position });
+    // Extract user tier and specialization from data
+    const userTier = data.userInfo.userTier || 'regular';
+    const requestedSpecialization = data.userInfo.specialization || 'General Physician';
+    
+    // Regular users can only access General Physician
+    const specialization = userTier === 'regular' ? 'General Physician' : requestedSpecialization;
+    
+    console.log(`Patient tier: ${userTier}, requested: ${requestedSpecialization}, assigned: ${specialization}`);
+
+    const position = this.queueService.addPatient(socket.id, socket, specialization, userTier);
+    socket.emit("queued", { 
+      userType: "patient", 
+      position, 
+      specialization,
+      userTier 
+    });
 
     this.matchingService.matchUsers();
   }
 
   handleJoinAsB(socket, data = {}) {
-    console.log(`User ${socket.id} joined as User B`);
+    console.log(`User ${socket.id} joined as Doctor (User B)`);
     
     // Store user info in socket for later use
     socket.userInfo = data.userInfo;
+    
+    // Extract doctor's specialization from data
+    const specialization = data.userInfo.specialization || 'General Physician';
+    console.log(`Doctor specialization: ${specialization}`);
 
-    const { inA, inB } = this.queueService.findUserInQueues(socket.id);
+    const { inPatientQueue, inDoctorQueue } = this.queueService.findUserInQueues(socket.id);
     const inSession = this.sessionService.isInActiveSession(socket.id);
 
-    if (inA || inB || inSession) {
+    if (inPatientQueue || inDoctorQueue || inSession) {
       socket.emit("error", { message: "User already in queue" });
       return;
     }
 
-    const position = this.queueService.addUserB(socket.id, socket);
-    socket.emit("queued", { userType: "B", position });
+    const position = this.queueService.addDoctor(socket.id, socket, specialization);
+    socket.emit("queued", { 
+      userType: "doctor", 
+      position, 
+      specialization 
+    });
 
     this.matchingService.matchUsers();
   }
@@ -57,31 +79,32 @@ export class ConnectionHandler {
     const { roomId } = data;
     const session = this.sessionService.getSession(roomId);
 
-    if (!session || session.userB !== socket.id) {
+    if (!session || session.doctor !== socket.id) {
       socket.emit("error", { message: "Invalid session or not authorized" });
       return;
     }
 
     console.log(
-      `User B (${socket.id}) skipping User A (${session.userA}) in room ${roomId}`
+      `Doctor (${socket.id}) skipping Patient (${session.patient}) in room ${roomId} for ${session.specialization}`
     );
 
-    const userASocket = this.io.sockets.sockets.get(session.userA);
-    if (userASocket) {
-      userASocket.emit("skipped");
-      userASocket.leave(roomId);
+    const patientSocket = this.io.sockets.sockets.get(session.patient);
+    if (patientSocket) {
+      patientSocket.emit("skipped");
+      patientSocket.leave(roomId);
     }
 
     socket.leave(roomId);
+    const specialization = session.specialization;
     this.sessionService.deleteSession(roomId);
 
     setTimeout(() => {
-      const position = this.queueService.addUserB(socket.id, socket);
-      socket.emit("queued", { userType: "B", position });
+      const position = this.queueService.addDoctor(socket.id, socket, specialization);
+      socket.emit("queued", { userType: "doctor", position, specialization });
 
       const matched = this.matchingService.matchUsers();
       console.log(
-        `User B re-queued, match attempt result: ${
+        `Doctor re-queued for ${specialization}, match attempt result: ${
           matched ? "success" : "no match"
         }`
       );
@@ -92,47 +115,73 @@ export class ConnectionHandler {
     const { roomId } = data;
     const session = this.sessionService.getSession(roomId);
 
-    if (!session || session.userB !== socket.id) {
+    if (!session || session.doctor !== socket.id) {
       socket.emit("error", { message: "Invalid session or not authorized" });
       return;
     }
 
     console.log(
-      `User B (${socket.id}) ending session with User A (${session.userA}) in room ${roomId}`
+      `Doctor (${socket.id}) ending session with Patient (${session.patient}) in room ${roomId} for ${session.specialization}`
     );
 
-    const userASocket = this.io.sockets.sockets.get(session.userA);
-    if (userASocket) {
-      userASocket.emit("session-ended");
-      userASocket.leave(roomId);
+    const patientSocket = this.io.sockets.sockets.get(session.patient);
+    if (patientSocket) {
+      patientSocket.emit("session-ended");
+      patientSocket.leave(roomId);
     }
 
     socket.leave(roomId);
+    const specialization = session.specialization;
     this.sessionService.deleteSession(roomId);
 
-    setTimeout(() => {
-      const position = this.queueService.addUserB(socket.id, socket);
-      socket.emit("queued", { userType: "B", position });
+    // When doctor ends session, they should be removed from queue, not re-queued
+    // This is the "Exit" functionality - doctor leaves the queue completely
+    console.log(`Doctor (${socket.id}) exiting queue for ${specialization}`);
+    socket.emit("exited-queue", { message: "Successfully exited the queue" });
+  }
 
-      setTimeout(() => {
-        const matched = this.matchingService.matchUsers();
-        console.log(
-          `User B re-queued after session end, match attempt result: ${
-            matched ? "success" : "no match"
-          }`
-        );
-      }, 200);
-    }, 100);
+  handleLeaveQueue(socket) {
+    console.log(`User ${socket.id} leaving queue`);
+    
+    // Remove from both patient and doctor queues
+    const removedPatient = this.queueService.removePatient(socket.id);
+    const removedDoctor = this.queueService.removeDoctor(socket.id);
+    
+    if (removedPatient) {
+      console.log(`Removed ${socket.id} from Patient queue (${removedPatient.specialization})`);
+    }
+    if (removedDoctor) {
+      console.log(`Removed ${socket.id} from Doctor queue (${removedDoctor.specialization})`);
+    }
+    
+    // Check if user is in an active session
+    const sessionInfo = this.sessionService.findSessionByUser(socket.id);
+    if (sessionInfo) {
+      const { roomId, session } = sessionInfo;
+      console.log(`Cleaning up session ${roomId} due to leaving queue`);
+      
+      const otherUserId = session.patient === socket.id ? session.doctor : session.patient;
+      const otherUserSocket = this.io.sockets.sockets.get(otherUserId);
+      
+      if (otherUserSocket) {
+        otherUserSocket.emit("partner-disconnected");
+        otherUserSocket.leave(roomId);
+      }
+      
+      this.sessionService.deleteSession(roomId);
+    }
+    
+    socket.emit("left-queue", { message: "Successfully left the queue" });
   }
 
   handleDisconnect(socket) {
     console.log(`User disconnected: ${socket.id}`);
 
-    const removedFromA = this.queueService.removeUserA(socket.id);
-    const removedFromB = this.queueService.removeUserB(socket.id);
+    const removedPatient = this.queueService.removePatient(socket.id);
+    const removedDoctor = this.queueService.removeDoctor(socket.id);
 
-    if (removedFromA) console.log(`Removed ${socket.id} from User A queue`);
-    if (removedFromB) console.log(`Removed ${socket.id} from User B queue`);
+    if (removedPatient) console.log(`Removed ${socket.id} from Patient queue (${removedPatient.specialization})`);
+    if (removedDoctor) console.log(`Removed ${socket.id} from Doctor queue (${removedDoctor.specialization})`);
 
     const sessionInfo = this.sessionService.findSessionByUser(socket.id);
 
@@ -141,7 +190,7 @@ export class ConnectionHandler {
       console.log(`Cleaning up session ${roomId} due to disconnection`);
 
       const otherUserId =
-        session.userA === socket.id ? session.userB : session.userA;
+        session.patient === socket.id ? session.doctor : session.patient;
       const otherUserSocket = this.io.sockets.sockets.get(otherUserId);
 
       if (otherUserSocket) {
@@ -149,15 +198,18 @@ export class ConnectionHandler {
         otherUserSocket.leave(roomId);
       }
 
+      const specialization = session.specialization;
       this.sessionService.deleteSession(roomId);
 
-      if (session.userA === socket.id && otherUserSocket) {
+      // If patient disconnected, re-queue the doctor
+      if (session.patient === socket.id && otherUserSocket) {
         setTimeout(() => {
-          const position = this.queueService.addUserB(
+          const position = this.queueService.addDoctor(
             otherUserId,
-            otherUserSocket
+            otherUserSocket,
+            specialization
           );
-          otherUserSocket.emit("queued", { userType: "B", position });
+          otherUserSocket.emit("queued", { userType: "doctor", position, specialization });
           this.matchingService.matchUsers();
         }, 100);
       }

@@ -3,12 +3,14 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useSocket } from "../hooks/useSocket";
 import { useWebRTC } from "../hooks/useWebRTC";
 import { UserStore } from "@/hooks/userauth.hooks";
+import { useDoctorStore } from "@/hooks/useDoctor.hooks";
 import Image from "next/image";
 import BeforeMatchDoctor from "./BeforeMatchDoctor";
 
 const VideoCallDoctor = () => {
   // Get user info from UserStore
   const { User } = UserStore();
+  const { DoctorProfile } = useDoctorStore();
   
   // State for patient information
   const [patientInfo, setPatientInfo] = useState({
@@ -79,6 +81,7 @@ const VideoCallDoctor = () => {
     skipUser,
     endSession,
     disconnect,
+    leaveQueue,
   } = useSocket({
     onMatched,
     onSkipped: cleanupWebRTC,
@@ -86,7 +89,11 @@ const VideoCallDoctor = () => {
       cleanupWebRTC();
       disconnect();
     },
+    onExitedQueue: () => {
+      cleanupWebRTC();
+    },
     onPartnerDisconnected: cleanupWebRTC,
+    onDisconnect: cleanupWebRTC,
     onWebRTCOffer: onWebRTCOfferHandler,
     onWebRTCAnswer: handleWebRTCAnswer,
     onWebRTCIceCandidate: handleWebRTCIceCandidate,
@@ -100,12 +107,28 @@ const VideoCallDoctor = () => {
 
   const handleJoin = () => {
     console.log("Doctor joining with User:", User);
+    console.log("Doctor Profile:", DoctorProfile);
+    
     if (!User) {
       console.error("No user data available for doctor");
       alert("Please log in first");
       return;
     }
-    joinAsUserB();
+    
+    if (!DoctorProfile) {
+      console.error("No doctor profile found");
+      alert("Please create a doctor profile first");
+      return;
+    }
+    
+    const doctorInfo = {
+      ...User,
+      specialization: DoctorProfile.specialty || 'General Physician'
+    };
+    
+    console.log("Joining with specialization:", doctorInfo.specialization);
+    
+    joinAsUserB(doctorInfo);
   };
 
   return (
@@ -118,7 +141,7 @@ const VideoCallDoctor = () => {
             error={error}
             status={status}
             onJoin={handleJoin}
-            onDisconnect={disconnect}
+            onDisconnect={leaveQueue}
           />
         ) : (
           // After Match - Video Call Interface
@@ -144,6 +167,7 @@ const VideoCallDoctor = () => {
                   ref={remoteVideoRef}
                   autoPlay
                   playsInline
+                  muted={false}
                   className="w-full h-full object-cover"
                 />
               </div>

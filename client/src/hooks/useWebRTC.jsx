@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 const rtcConfiguration = {
   iceServers: [
@@ -40,6 +40,13 @@ export const useWebRTC = () => {
       setWebRTCState((prev) => ({ ...prev, localStream: stream }));
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
+        console.log('Local video element updated with stream');
+        localVideoRef.current
+          .play()
+          .then(() => console.log('Local video started playing'))
+          .catch((err) => console.warn('Local video autoplay failed:', err));
+      } else {
+        console.warn('Local video ref not available');
       }
 
       const pc = new RTCPeerConnection(rtcConfiguration);
@@ -65,9 +72,13 @@ export const useWebRTC = () => {
           
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = remoteStream;
+            console.log('Remote video element updated with stream');
             remoteVideoRef.current
               .play()
+              .then(() => console.log('Remote video started playing'))
               .catch((err) => console.warn('Autoplay failed:', err));
+          } else {
+            console.warn('Remote video ref not available');
           }
         }
       };
@@ -88,32 +99,53 @@ export const useWebRTC = () => {
       pc.onconnectionstatechange = () => {
         console.log('Connection state:', pc.connectionState);
         if (pc.connectionState === 'failed') {
-          console.error('WebRTC connection failed');
+          console.error('WebRTC connection failed - attempting to restart');
+          // Attempt to restart the connection
+          setTimeout(() => {
+            if (peerConnectionRef.current && peerConnectionRef.current.connectionState === 'failed') {
+              console.log('Restarting WebRTC connection...');
+              initializeWebRTC(roomId, userType, socket);
+            }
+          }, 2000);
         }
       };
 
       pc.oniceconnectionstatechange = () => {
         console.log('ICE connection state:', pc.iceConnectionState);
         if (pc.iceConnectionState === 'failed') {
-          console.error('ICE connection failed');
+          console.error('ICE connection failed - attempting to restart');
+          // Attempt to restart the connection
+          setTimeout(() => {
+            if (peerConnectionRef.current && peerConnectionRef.current.iceConnectionState === 'failed') {
+              console.log('Restarting ICE connection...');
+              initializeWebRTC(roomId, userType, socket);
+            }
+          }, 2000);
         }
       };
 
-      // User B creates offer, User A waits for offer and creates answer
-      if (userType === 'B') {
-        console.log('User B creating offer...');
-        const offer = await pc.createOffer({
-          offerToReceiveAudio: true,
-          offerToReceiveVideo: true,
-        });
-        await pc.setLocalDescription(offer);
-        console.log('User B sending offer');
-        socket?.emit('webrtc-offer', {
-          roomId,
-          offer,
-        });
+      // Map user types: doctor creates offer, patient waits for offer
+      if (userType === 'doctor') {
+        console.log('Doctor creating offer...');
+        // Small delay to ensure everything is set up
+        setTimeout(async () => {
+          try {
+            const offer = await pc.createOffer({
+              offerToReceiveAudio: true,
+              offerToReceiveVideo: true,
+            });
+            await pc.setLocalDescription(offer);
+            console.log('Doctor sending offer');
+            socket?.emit('webrtc-offer', {
+              roomId,
+              offer,
+            });
+          } catch (err) {
+            console.error('Error creating offer:', err);
+          }
+        }, 100);
       } else {
-        console.log('User A waiting for offer...');
+        console.log('Patient waiting for offer...');
       }
     } catch (err) {
       console.error('Error initializing WebRTC:', err);
@@ -125,7 +157,7 @@ export const useWebRTC = () => {
     console.log('Received WebRTC offer');
     // Race-condition guard: ensure PC and local media exist before answering
     if (!peerConnectionRef.current) {
-      await initializeWebRTC(data.roomId, 'A', socket);
+      await initializeWebRTC(data.roomId, 'patient', socket);
     }
     const pc = peerConnectionRef.current;
     if (!pc) {
@@ -202,6 +234,23 @@ export const useWebRTC = () => {
       remoteStream: null,
     });
   }, [webRTCState.localStream]);
+
+  // Monitor video elements and ensure streams are properly connected
+  useEffect(() => {
+    const checkVideoElements = () => {
+      if (webRTCState.localStream && localVideoRef.current && !localVideoRef.current.srcObject) {
+        console.log('Reconnecting local video stream');
+        localVideoRef.current.srcObject = webRTCState.localStream;
+      }
+      if (webRTCState.remoteStream && remoteVideoRef.current && !remoteVideoRef.current.srcObject) {
+        console.log('Reconnecting remote video stream');
+        remoteVideoRef.current.srcObject = webRTCState.remoteStream;
+      }
+    };
+
+    const interval = setInterval(checkVideoElements, 1000);
+    return () => clearInterval(interval);
+  }, [webRTCState.localStream, webRTCState.remoteStream]);
 
   return {
     webRTCState,

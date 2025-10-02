@@ -32,6 +32,7 @@ export const useSocket = (handlers = {}, userInfo = null) => {
     socketRef.current.on('disconnect', () => {
       setUserState((prev) => ({ ...prev, isConnected: false }));
       setStatus('Disconnected from server');
+      handlersRef.current.onDisconnect?.();
     });
 
     socketRef.current.on('queued', (data) => {
@@ -41,7 +42,7 @@ export const useSocket = (handlers = {}, userInfo = null) => {
         isMatched: false,
         roomId: null,
       }));
-      setStatus(`Queued as ${data.userType==='A' ? 'Patient' : 'Doctor'} (Position: ${data.position})`);
+      setStatus(`Queued as ${data.userType==='patient' ? 'Patient' : 'Doctor'} (Position: ${data.position})`);
     });
 
     socketRef.current.on('matched', (data) => {
@@ -77,6 +78,30 @@ export const useSocket = (handlers = {}, userInfo = null) => {
       handlersRef.current.onSessionEnded?.();
     });
 
+    socketRef.current.on('exited-queue', (data) => {
+      setStatus('Successfully exited the queue');
+      setUserState((prev) => ({
+        ...prev,
+        type: null,
+        isMatched: false,
+        roomId: null,
+        position: null,
+      }));
+      handlersRef.current.onExitedQueue?.();
+    });
+
+    socketRef.current.on('left-queue', (data) => {
+      setStatus('Successfully left the queue');
+      setUserState((prev) => ({
+        ...prev,
+        type: null,
+        isMatched: false,
+        roomId: null,
+        position: null,
+      }));
+      handlersRef.current.onLeftQueue?.();
+    });
+
     socketRef.current.on('partner-disconnected', () => {
       setStatus('Your partner disconnected');
       setUserState((prev) => ({
@@ -109,9 +134,10 @@ export const useSocket = (handlers = {}, userInfo = null) => {
     setStatus('Joining as User A...');
   }, [userInfo]);
 
-  const joinAsUserB = useCallback(() => {
-    console.log("Joining as User B with userInfo:", userInfo);
-    socketRef.current?.emit('join-as-B', { userInfo });
+  const joinAsUserB = useCallback((customUserInfo = null) => {
+    const infoToSend = customUserInfo || userInfo;
+    console.log("Joining as User B with userInfo:", infoToSend);
+    socketRef.current?.emit('join-as-B', { userInfo: infoToSend });
     setUserState((prev) => ({ ...prev, type: 'B' }));
     setStatus('Joining as User B...');
   }, [userInfo]);
@@ -140,6 +166,19 @@ export const useSocket = (handlers = {}, userInfo = null) => {
     setStatus('Disconnected');
   }, []);
 
+  const leaveQueue = useCallback(() => {
+    // Remove from queue but keep socket connected
+    socketRef.current?.emit('leave-queue');
+    setUserState((prev) => ({
+      ...prev,
+      type: null,
+      isMatched: false,
+      roomId: null,
+      position: null,
+    }));
+    setStatus('Left the queue');
+  }, []);
+
   return {
     userState,
     error,
@@ -150,5 +189,6 @@ export const useSocket = (handlers = {}, userInfo = null) => {
     skipUser,
     endSession,
     disconnect,
+    leaveQueue,
   };
 };

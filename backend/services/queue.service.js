@@ -1,81 +1,221 @@
 export class QueueService {
   constructor() {
-    this.userAQueue = [];
-    this.userBQueue = [];
-    this.consumedUserA = new Set();
+    // Patient queues organized by specialization
+    // Key: specialization name, Value: array of patient objects
+    this.patientQueues = {
+      'General Physician': [],
+      'Nephrologist': [],
+      'Dermatologist': [],
+      'Pediatrician': [],
+      'Cardiologist': []
+    };
+    
+    // Doctor queues organized by specialization
+    // Key: specialization name, Value: array of doctor objects
+    this.doctorQueues = {
+      'General Physician': [],
+      'Nephrologist': [],
+      'Dermatologist': [],
+      'Pediatrician': [],
+      'Cardiologist': []
+    };
+    
+    this.consumedPatients = new Set();
   }
 
-  addUserA(socketId, socket) {
-    this.userAQueue.push({ socketId, socket });
-    return this.userAQueue.length;
+  // Add patient to a specific specialization queue
+  addPatient(socketId, socket, specialization = 'General Physician', userTier = 'regular') {
+    // Regular users can only join General Physician queue
+    const targetSpecialization = userTier === 'regular' ? 'General Physician' : specialization;
+    
+    if (!this.patientQueues[targetSpecialization]) {
+      this.patientQueues[targetSpecialization] = [];
+    }
+    
+    this.patientQueues[targetSpecialization].push({ 
+      socketId, 
+      socket, 
+      specialization: targetSpecialization,
+      userTier 
+    });
+    return this.patientQueues[targetSpecialization].length;
   }
 
-  addUserB(socketId, socket) {
-    this.userBQueue.push({ socketId, socket });
-    return this.userBQueue.length;
+  // Add doctor to their specialization queue
+  addDoctor(socketId, socket, specialization = 'General Physician') {
+    if (!this.doctorQueues[specialization]) {
+      this.doctorQueues[specialization] = [];
+    }
+    
+    this.doctorQueues[specialization].push({ 
+      socketId, 
+      socket, 
+      specialization 
+    });
+    return this.doctorQueues[specialization].length;
   }
 
-  removeUserA(socketId) {
-    const index = this.userAQueue.findIndex(
-      (user) => user.socketId === socketId
-    );
-    if (index !== -1) {
-      return this.userAQueue.splice(index, 1)[0];
+  // Remove patient from all queues
+  removePatient(socketId) {
+    for (const specialization in this.patientQueues) {
+      const index = this.patientQueues[specialization].findIndex(
+        (user) => user.socketId === socketId
+      );
+      if (index !== -1) {
+        return this.patientQueues[specialization].splice(index, 1)[0];
+      }
     }
     return null;
   }
 
-  removeUserB(socketId) {
-    const index = this.userBQueue.findIndex(
-      (user) => user.socketId === socketId
-    );
-    if (index !== -1) {
-      return this.userBQueue.splice(index, 1)[0];
+  // Remove doctor from all queues
+  removeDoctor(socketId) {
+    for (const specialization in this.doctorQueues) {
+      const index = this.doctorQueues[specialization].findIndex(
+        (user) => user.socketId === socketId
+      );
+      if (index !== -1) {
+        return this.doctorQueues[specialization].splice(index, 1)[0];
+      }
     }
     return null;
   }
 
+  // Find user in any queue
   findUserInQueues(socketId) {
-    const inA = this.userAQueue.find((user) => user.socketId === socketId);
-    const inB = this.userBQueue.find((user) => user.socketId === socketId);
-    return { inA, inB };
+    let inPatientQueue = null;
+    let inDoctorQueue = null;
+    
+    for (const specialization in this.patientQueues) {
+      const found = this.patientQueues[specialization].find(
+        (user) => user.socketId === socketId
+      );
+      if (found) {
+        inPatientQueue = found;
+        break;
+      }
+    }
+    
+    for (const specialization in this.doctorQueues) {
+      const found = this.doctorQueues[specialization].find(
+        (user) => user.socketId === socketId
+      );
+      if (found) {
+        inDoctorQueue = found;
+        break;
+      }
+    }
+    
+    return { inPatientQueue, inDoctorQueue };
   }
 
-  markUserAConsumed(socketId) {
-    this.consumedUserA.add(socketId);
+  markPatientConsumed(socketId) {
+    this.consumedPatients.add(socketId);
   }
 
-  isUserAConsumed(socketId) {
-    return this.consumedUserA.has(socketId);
+  isPatientConsumed(socketId) {
+    return this.consumedPatients.has(socketId);
   }
 
-  getRandomUserA() {
-    if (this.userAQueue.length === 0) return null;
-    const randomIndex = Math.floor(Math.random() * this.userAQueue.length);
-    return this.userAQueue.splice(randomIndex, 1)[0];
+  // Get a random patient from a specific specialization queue
+  getRandomPatient(specialization) {
+    const queue = this.patientQueues[specialization];
+    if (!queue || queue.length === 0) return null;
+    
+    const randomIndex = Math.floor(Math.random() * queue.length);
+    return queue.splice(randomIndex, 1)[0];
   }
 
-  getNextUserB() {
-    return this.userBQueue.shift();
+  // Get next doctor from a specific specialization queue (FIFO)
+  getNextDoctor(specialization) {
+    const queue = this.doctorQueues[specialization];
+    if (!queue || queue.length === 0) return null;
+    
+    return queue.shift();
   }
 
-  hasAvailableUsers() {
-    return this.userAQueue.length > 0 && this.userBQueue.length > 0;
+  // Check if there are available users for a specific specialization
+  hasAvailableUsers(specialization) {
+    return (
+      this.patientQueues[specialization]?.length > 0 && 
+      this.doctorQueues[specialization]?.length > 0
+    );
+  }
+
+  // Get all specializations that have both patients and doctors waiting
+  getAvailableSpecializations() {
+    const available = [];
+    for (const specialization in this.patientQueues) {
+      if (this.hasAvailableUsers(specialization)) {
+        available.push(specialization);
+      }
+    }
+    return available;
   }
 
   getQueueStats() {
+    const patientStats = {};
+    const doctorStats = {};
+    
+    for (const spec in this.patientQueues) {
+      patientStats[spec] = this.patientQueues[spec].length;
+    }
+    
+    for (const spec in this.doctorQueues) {
+      doctorStats[spec] = this.doctorQueues[spec].length;
+    }
+    
     return {
-      userAQueue: this.userAQueue.length,
-      userBQueue: this.userBQueue.length,
-      consumedUserA: this.consumedUserA.size,
+      patientQueues: patientStats,
+      doctorQueues: doctorStats,
+      consumedPatients: this.consumedPatients.size,
     };
   }
 
   getDebugInfo() {
+    const patientDebug = {};
+    const doctorDebug = {};
+    
+    for (const spec in this.patientQueues) {
+      patientDebug[spec] = this.patientQueues[spec].map((u) => ({
+        socketId: u.socketId,
+        userTier: u.userTier
+      }));
+    }
+    
+    for (const spec in this.doctorQueues) {
+      doctorDebug[spec] = this.doctorQueues[spec].map((u) => u.socketId);
+    }
+    
     return {
-      userAQueue: this.userAQueue.map((u) => u.socketId),
-      userBQueue: this.userBQueue.map((u) => u.socketId),
-      consumedUserA: Array.from(this.consumedUserA),
+      patientQueues: patientDebug,
+      doctorQueues: doctorDebug,
+      consumedPatients: Array.from(this.consumedPatients),
     };
+  }
+
+  // Backward compatibility methods
+  addUserA(socketId, socket, specialization = 'General Physician', userTier = 'regular') {
+    return this.addPatient(socketId, socket, specialization, userTier);
+  }
+
+  addUserB(socketId, socket, specialization = 'General Physician') {
+    return this.addDoctor(socketId, socket, specialization);
+  }
+
+  removeUserA(socketId) {
+    return this.removePatient(socketId);
+  }
+
+  removeUserB(socketId) {
+    return this.removeDoctor(socketId);
+  }
+
+  isUserAConsumed(socketId) {
+    return this.isPatientConsumed(socketId);
+  }
+
+  markUserAConsumed(socketId) {
+    this.markPatientConsumed(socketId);
   }
 }

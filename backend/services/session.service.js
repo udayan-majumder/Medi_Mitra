@@ -3,12 +3,17 @@ export class SessionService {
     this.activeSessions = new Map();
   }
 
-  createSession(roomId, userA, userB) {
+  createSession(roomId, patient, doctor, specialization = 'General Physician') {
     this.activeSessions.set(roomId, {
-      userA: userA,
-      userB: userB,
-      userAType: "A",
-      userBType: "B",
+      patient: patient,
+      doctor: doctor,
+      userA: patient,
+      userB: doctor,
+      patientType: "patient",
+      doctorType: "doctor",
+      userAType: "A", 
+      userBType: "B",  
+      specialization: specialization,
     });
   }
 
@@ -22,7 +27,7 @@ export class SessionService {
 
   isInActiveSession(socketId) {
     for (const session of this.activeSessions.values()) {
-      if (session.userA === socketId || session.userB === socketId) {
+      if (session.patient === socketId || session.doctor === socketId) {
         return true;
       }
     }
@@ -31,7 +36,7 @@ export class SessionService {
 
   findSessionByUser(socketId) {
     for (const [roomId, session] of this.activeSessions.entries()) {
-      if (session.userA === socketId || session.userB === socketId) {
+      if (session.patient === socketId || session.doctor === socketId) {
         return { roomId, session };
       }
     }
@@ -44,5 +49,15 @@ export class SessionService {
 
   getAllSessions() {
     return Object.fromEntries(this.activeSessions);
+  }
+
+  getSessionsBySpecialization(specialization) {
+    const sessions = [];
+    for (const [roomId, session] of this.activeSessions.entries()) {
+      if (session.specialization === specialization) {
+        sessions.push({ roomId, ...session });
+      }
+    }
+    return sessions;
   }
 }

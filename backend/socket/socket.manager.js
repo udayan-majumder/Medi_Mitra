@@ -21,6 +21,9 @@ export class SocketManager {
       socket.on("end-session", (data) =>
         this.connectionHandler.handleEndSession(socket, data)
       );
+      socket.on("leave-queue", () =>
+        this.connectionHandler.handleLeaveQueue(socket)
+      );
       socket.on("disconnect", () =>
         this.connectionHandler.handleDisconnect(socket)
       );

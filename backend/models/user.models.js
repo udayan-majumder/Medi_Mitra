@@ -238,3 +238,67 @@ export const GetDoctorFunction = async (doctorid) => {
     return false;
   }
 };
+
+export const GetUserTier = async (userid) => {
+  try {
+    if (!userid) {
+      return false;
+    }
+    const res = await pool.query(
+      "SELECT user_tier FROM userinfo2 WHERE id=$1",
+      [userid]
+    );
+    if (res.rows.length === 0) {
+      return false;
+    }
+    return res.rows[0].user_tier || 'regular';
+  } catch (e) {
+    console.error("Error getting user tier:", e);
+    return 'regular';
+  }
+};
+
+// Update user tier
+export const UpdateUserTier = async (userid, tier) => {
+  try {
+    if (!userid || !tier) {
+      return false;
+    }
+    
+    if (!['regular', 'premium'].includes(tier)) {
+      return false;
+    }
+    
+    const res = await pool.query(
+      "UPDATE userinfo2 SET user_tier=$1 WHERE id=$2 RETURNING id, user_tier",
+      [tier, userid]
+    );
+    
+    if (res.rows.length === 0) {
+      return false;
+    }
+    return res.rows[0];
+  } catch (e) {
+    console.error("Error updating user tier:", e);
+    return false;
+  }
+};
+
+export const GetCompleteUserInfo = async (userid) => {
+  try {
+    if (!userid) {
+      return false;
+    }
+    const res = await pool.query(
+      "SELECT id, email, type, user_tier FROM userinfo2 WHERE id=$1",
+      [userid]
+    );
+    if (res.rows.length === 0) {
+      return false;
+    }
+    return res.rows[0];
+  } catch (e) {
+    console.error("Error getting complete user info:", e);
+    return false;
+  }
+};
