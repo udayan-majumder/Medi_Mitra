@@ -16,7 +16,7 @@ export const GenerateToken = (payload) => {
     });
     return token;
   } catch (e) {
-    console.log("error", e);
+    console.error("error", e);
   }
 };
 

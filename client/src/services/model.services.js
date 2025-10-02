@@ -13,7 +13,7 @@ export const ModelSymptompAnalysis = async (symptoms, language) => {
     console.log(res?.data);
     return res?.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -24,23 +24,22 @@ export const AddToChatHistory = async (user_id, sender, message) => {
       sender: sender,
       message: message,
     });
-
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
 export const GetChatHistory = async (user_id) => {
   try {
     const res = await api.get(`/user/get-chat?id=${user_id}`);
-    
+
     if (!res?.data) {
       return false;
     }
-    
+
     return res?.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return false;
   }
 };
@@ -50,14 +49,14 @@ export const DeleteChatHistory = async (user_id) => {
     const res = await api.post("/user/delete-chat", {
       id: user_id,
     });
-    
+
     if (!res?.data) {
       return false;
     }
-    
+
     return res?.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return false;
   }
 };

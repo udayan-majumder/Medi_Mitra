@@ -4,6 +4,7 @@ import { UserStore } from "@/hooks/userauth.hooks";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import MedicalLoader from "@/Components/MedicalLoader";
+import DoctorWrapper from "@/hooks/useDoctor.hooks";
 
 export default function DoctorLayout({ children }) {
   const { User, isLoading } = UserStore();
@@ -27,5 +28,9 @@ export default function DoctorLayout({ children }) {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <DoctorWrapper>
+      {children}
+    </DoctorWrapper>
+  );
 }

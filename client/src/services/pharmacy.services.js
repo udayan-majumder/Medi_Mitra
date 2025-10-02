@@ -1,46 +1,49 @@
 import { api } from "@/lib/axios.lib";
 
-export const GetPharmacyProfileInfo = async(id) =>{
-  try{
-   if(!id){
-    return false
-   }
-   
-   const res = await api.get("/pharmacy/pharmacy-profile-info",{
-    params:{
-      "id":id
+export const GetPharmacyProfileInfo = async (id) => {
+  try {
+    if (!id) {
+      return false;
     }
-   })
-  if(!res?.data?.isPharmacyProfile){
-  return false
-  }
-  return res?.data?.isPharmacyProfile
-  }catch(e){
-    return false
-  }
-}
 
-export const AddnewPharmacyProfile = async(pharma_id,username,coordinates) =>{
-  try{
-  if(!pharma_id || username.length<=0 || !coordinates?.lat){
-   
-    return false
+    const res = await api.get("/pharmacy/pharmacy-profile-info", {
+      params: {
+        id: id,
+      },
+    });
+    if (!res?.data?.isPharmacyProfile) {
+      return false;
+    }
+    return res?.data?.isPharmacyProfile;
+  } catch (e) {
+    return false;
   }
- 
-  const res = api.post("/pharmacy/pharmacy-profile-add",{
-  "pharma_id":pharma_id,
-  "username":username,
-  "coordinates":coordinates
-  }) 
+};
 
-  if(!res){
-    return false
+export const AddnewPharmacyProfile = async (
+  pharma_id,
+  username,
+  coordinates
+) => {
+  try {
+    if (!pharma_id || username.length <= 0 || !coordinates?.lat) {
+      return false;
+    }
+
+    const res = api.post("/pharmacy/pharmacy-profile-add", {
+      pharma_id: pharma_id,
+      username: username,
+      coordinates: coordinates,
+    });
+
+    if (!res) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
   }
-  return true
-  }catch(e){
-    return false
-  }
-}
+};
 
 export const GetPharamacyStock = async (id) => {
   try {
@@ -64,18 +67,18 @@ export const AddPharmacyStock = async (
   quantity
 ) => {
   try {
-    const res = await api.post("/pharmacy/add-stock",{
-         "id":id,
-         "medicine_name":medicine_name,
-         "medicine_id":medicine_id,
-         "manufacture_date":manufacture_date,
-         "expiry_date":expiry_date,
-         "quantity":quantity
-         })
-    if(res?.status === 200){
-     return true
+    const res = await api.post("/pharmacy/add-stock", {
+      id: id,
+      medicine_name: medicine_name,
+      medicine_id: medicine_id,
+      manufacture_date: manufacture_date,
+      expiry_date: expiry_date,
+      quantity: quantity,
+    });
+    if (res?.status === 200) {
+      return true;
     }
-   return false
+    return false;
   } catch (e) {
     return false;
   }
@@ -88,7 +91,6 @@ export const FetchMedicine = async (medicineid) => {
         medicineid: medicineid,
       },
     });
-    console.log(res);
     if (res?.data?.Medicine) {
       return res?.data?.Medicine;
     }
@@ -98,49 +100,48 @@ export const FetchMedicine = async (medicineid) => {
   }
 };
 
-export const FetchPharmacyList = async (Searchparam) =>{
-  try{
-    const res = await api.get("/pharmacy/get-pharmacy",{
-      params:{
-        "Search":Searchparam
-      }
+export const FetchPharmacyList = async (Searchparam) => {
+  try {
+    const res = await api.get("/pharmacy/get-pharmacy", {
+      params: {
+        Search: Searchparam,
+      },
     });
-    if(res?.data?.length<=0){
+    if (res?.data?.length <= 0) {
       return false;
     }
     return res?.data;
-  }catch(e){
-    return false
+  } catch (e) {
+    return false;
   }
-}
+};
 
-export const FetchPharmacyDetails = async(id)=>{
-  try{
-    if(!id){
-      return false
+export const FetchPharmacyDetails = async (id) => {
+  try {
+    if (!id) {
+      return false;
     }
-    const res =  await api.get("/pharmacy/get-info",{
-      params:{
-        "id":id
-      }
-    })
+    const res = await api.get("/pharmacy/get-info", {
+      params: {
+        id: id,
+      },
+    });
 
-    if(!res?.data){
-      return false
+    if (!res?.data) {
+      return false;
     }
-    return res?.data
+    return res?.data;
+  } catch (e) {
+    return false;
   }
-  catch(e){
-  return false
-  }
-}
+};
 
 export const UpdatePharmacyStock = async (id, medicine_id, quantity) => {
   try {
     const res = await api.post("/pharmacy/update-stock", {
       id: id,
       medicine_id: medicine_id,
-      quantity: quantity
+      quantity: quantity,
     });
     if (res?.status === 200) {
       return true;
@@ -150,4 +151,3 @@ export const UpdatePharmacyStock = async (id, medicine_id, quantity) => {
     return false;
   }
 };
-

@@ -7,6 +7,9 @@ import { LogOut } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { LanguageStore } from "@/store/Dictionary.store";
+import { useDoctorStore } from "@/hooks/useDoctor.hooks";
+import { DoctorProfileForm } from "./DoctorProfileForm";
+import MedicalLoader from "./MedicalLoader";
 
 const BeforeMatchDoctor = ({
   userState,
@@ -16,6 +19,12 @@ const BeforeMatchDoctor = ({
   onDisconnect,
 }) => {
   const { User, setUser, LanguageType } = UserStore();
+  const {
+    DoctorProfile,
+    createDoctorProfile,
+    isLoading,
+    error: doctorError,
+  } = useDoctorStore();
   const router = useRouter();
   const { Language } = LanguageStore();
 
@@ -42,6 +51,16 @@ const BeforeMatchDoctor = ({
     }
   };
 
+  // Show doctor profile form if no profile exists and not loading
+  if (!DoctorProfile && !isLoading) {
+    return <DoctorProfileForm onCreateProfile={createDoctorProfile} />;
+  }
+
+  // Show loading state while fetching profile
+  if (isLoading) {
+    return <MedicalLoader />;
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header Section */}
@@ -54,9 +73,12 @@ const BeforeMatchDoctor = ({
             </div>
             <div>
               <h1 className="text-xl font-semibold text-gray-800">
-                {Language?.[LanguageType]?.hello}, {User?.username}
+                {Language?.[LanguageType]?.hello}, {DoctorProfile?.name}
               </h1>
-              <p className="text-gray-500">{User?.location}</p>
+              <p className="text-gray-500">{DoctorProfile?.specialty}</p>
+              <p className="text-gray-500">
+                {DoctorProfile?.experience_years} years of experience
+              </p>
             </div>
           </div>
         </div>
@@ -132,7 +154,12 @@ const BeforeMatchDoctor = ({
       {/* Medical Professionals Illustration - Bottom */}
       <div className="p-6">
         <div className="flex justify-center items-end space-x-8">
-          <Image src="/doctors-vector.png" alt="Doctor" width={800} height={800} />
+          <Image
+            src="/doctors-vector.png"
+            alt="Doctor"
+            width={800}
+            height={800}
+          />
         </div>
       </div>
     </div>

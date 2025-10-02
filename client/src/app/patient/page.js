@@ -67,7 +67,6 @@ export default function App() {
         toast.dismissAll();
         return toast.error("Invalid or empty field");
       }
-      console.log(User?.id, Username, Diseases, Allergies, Coords);
       const res = await AddnewProfile(
         User?.id,
         Username,
@@ -92,7 +91,7 @@ export default function App() {
       setPopup(false);
       return toast.success("profile created successfully");
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 

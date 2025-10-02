@@ -59,7 +59,7 @@ const FetchStock = async()=>{
        setMedicineInventory(res?.data?.list)
        setCurrentProfileDetails(newres?.isPharmacy)
     }catch(e){
-    console.log(e)
+    console.error(e)
     }
 }
 const handleSubmit = async(e) =>{

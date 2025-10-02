@@ -49,7 +49,7 @@ const handleSubmit = async()=>{
    setReload(true)
    toast.success("Details added succesfully")
   }catch(e){
-    console.log(e)
+    console.error(e)
   }
 }
 

@@ -60,7 +60,7 @@ const listenFileChanges = async (e) => {
   } catch (e) {
     toast.dismissAll();
     toast.error(Language?.[LanguageType]?.FileUploadFailed);
-    console.log(e);
+    console.error(e);
   }
 };
 

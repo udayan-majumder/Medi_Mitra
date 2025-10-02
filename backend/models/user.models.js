@@ -1,4 +1,3 @@
-
 import pool from "../db/db.js";
 
 export const CheckUserFunction = async (email, type) => {
@@ -36,20 +35,33 @@ export const AddUserFunction = async (
   }
 };
 
-export const AddPatientFunction = async (id, name, diseases = [], age = null , prescription =[] , allergies = [] , coordinates = {}) => {
+export const AddPatientFunction = async (
+  id,
+  name,
+  diseases = [],
+  age = null,
+  prescription = [],
+  allergies = [],
+  coordinates = {}
+) => {
   try {
-    if (diseases.length > 0 && age !== null && id && name.length>0 && coordinates?.lat) {
+    if (
+      diseases.length > 0 &&
+      age !== null &&
+      id &&
+      name.length > 0 &&
+      coordinates?.lat
+    ) {
       const AddQuery = await pool.query(
         "insert into patient_profile(userid,name,age,diseases,prescriptions,allergies,coordinates) values($1,$2,$3,$4,$5,$6,$7)",
-        [id,name,age,diseases,prescription,allergies,coordinates]
+        [id, name, age, diseases, prescription, allergies, coordinates]
       );
       return true;
     } else {
-    
       return false;
     }
   } catch (err) {
-    console.log(err)
+    console.error(err);
   }
 };
 
@@ -68,34 +80,34 @@ export const checkUserById = async (id) => {
   }
 };
 
-export const GetPatientInfo = async (profileid,userid) =>{
-  try{
-  if(!profileid && !userid){
-    return false
-  }
+export const GetPatientInfo = async (profileid, userid) => {
+  try {
+    if (!profileid && !userid) {
+      return false;
+    }
 
-  const res = await pool.query("select * from patient_profile where profileid=$1 and userid=$2",[profileid,userid])
-  if(res?.rows.length<=0){
-    return false
+    const res = await pool.query(
+      "select * from patient_profile where profileid=$1 and userid=$2",
+      [profileid, userid]
+    );
+    if (res?.rows.length <= 0) {
+      return false;
+    }
+    return res?.rows;
+  } catch (e) {
+    return false;
   }
-  return res?.rows
-  }
-  catch(e){
-    return false
-  }
-  
-}
+};
 
 export const GetCompletePatientInfo = async (profileid) => {
   try {
-    console.log("GetCompletePatientInfo called with profileid:", profileid);
     if (!profileid) {
-      console.log("No profileid provided");
       return false;
     }
 
     // Get user basic info and patient specific info in one query
-    const res = await pool.query(`
+    const res = await pool.query(
+      `
       SELECT 
         u.email,
         p.profileid,
@@ -109,18 +121,16 @@ export const GetCompletePatientInfo = async (profileid) => {
       FROM patient_profile p 
       INNER JOIN userinfo2 u ON u.id = p.userid
       WHERE p.profileid = $1
-    `, [profileid]);
-
-    console.log("Database query result:", res.rows);
+    `,
+      [profileid]
+    );
 
     if (res?.rows.length <= 0) {
-      console.log("No patient profile found with ID:", profileid);
       return false;
     }
 
     const patientData = res.rows[0];
-    console.log("Patient data from DB:", patientData);
-    
+
     // Get prescriptions from the prescription_urls column
     const prescriptions = patientData.prescriptions || [];
 
@@ -132,7 +142,7 @@ export const GetCompletePatientInfo = async (profileid) => {
       age: patientData.age,
       medicalConditions: patientData.diseases || [],
       allergies: patientData.allergies,
-      prescriptions: prescriptions
+      prescriptions: prescriptions,
     };
 
     console.log("Returning patient info:", result);
@@ -141,35 +151,90 @@ export const GetCompletePatientInfo = async (profileid) => {
     console.error("Error getting complete patient info:", e);
     return false;
   }
-}
+};
 
-export const UploadPescriptionToDB = async(profileid,userid,new_url)=>{
-  try{
+export const UploadPescriptionToDB = async (profileid, userid, new_url) => {
+  try {
     console.log(profileid, userid, new_url);
-   const getAllPescription = await pool.query("select prescriptions from patient_profile where userid=$1 and profileid=$2",[userid,profileid])
-  
-   const new_urls = [...getAllPescription?.rows[0]?.prescriptions,new_url]
-  
-   const addAllPescription = await pool.query("update patient_profile set prescriptions = $1 where userid=$2 and profileid = $3",[new_urls,userid,profileid])
-   return true
-  }catch(e){
-  return false
-  }
-}
+    const getAllPescription = await pool.query(
+      "select prescriptions from patient_profile where userid=$1 and profileid=$2",
+      [userid, profileid]
+    );
 
-export const GetAllPatientProfiles = async(id)=>{
-  try{
-  if(!id){
-    return false
+    const new_urls = [...getAllPescription?.rows[0]?.prescriptions, new_url];
+
+    const addAllPescription = await pool.query(
+      "update patient_profile set prescriptions = $1 where userid=$2 and profileid = $3",
+      [new_urls, userid, profileid]
+    );
+    return true;
+  } catch (e) {
+    return false;
   }
-  
-  const res = await pool.query("select * from patient_profile where userid=$1",[id])
-  if(!res?.rows){
-    return false
+};
+
+export const GetAllPatientProfiles = async (id) => {
+  try {
+    if (!id) {
+      return false;
+    }
+
+    const res = await pool.query(
+      "select * from patient_profile where userid=$1",
+      [id]
+    );
+    if (!res?.rows) {
+      return false;
+    }
+    return res?.rows;
+  } catch {
+    return false;
   }
-  return res?.rows
+};
+
+export const AddDoctorFunction = async (
+  doctorid,
+  name,
+  age,
+  specialization,
+  experience
+) => {
+  try {
+    if (
+      !doctorid ||
+      name.length <= 0 ||
+      age === null ||
+      specialization.length <= 0 ||
+      experience === null
+    ) {
+      return false;
+    }
+    const res = await pool.query(
+      "insert into doctor(doctorid,name,age,specialty,experience_years) values($1,$2,$3,$4,$5)",
+      [doctorid, name, age, specialization, experience]
+    );
+    if (!res) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
   }
-  catch{
-    return false
+};
+
+export const GetDoctorFunction = async (doctorid) => {
+  try {
+    if (!doctorid) {
+      return false;
+    }
+    const res = await pool.query("select * from doctor where doctorid=$1", [
+      doctorid,
+    ]);
+    if (res.rows.length === 0) {
+      return false;
+    }
+    return res.rows[0];
+  } catch (e) {
+    return false;
   }
-}
+};

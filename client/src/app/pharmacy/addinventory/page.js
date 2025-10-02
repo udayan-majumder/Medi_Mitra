@@ -43,7 +43,6 @@ export default function AddInventory() {
         MedicineQuantity
       );
       if (res) {
-        console.log(res);
         setPharmacyRefresh(true);
         setMedicineid("");
         setMedicineName("");
@@ -55,14 +54,13 @@ export default function AddInventory() {
         return toast.error("stock not added");
       }
     } catch (e) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const getMedicine = async () => {
     try {
       const res = await FetchMedicine(Number(Medicineid));
-      console.log(res);
       if (res?.medicine_id) {
         setMedicineName(res?.medicine_name);
       } else {
@@ -70,7 +68,7 @@ export default function AddInventory() {
         return toast.error("no medicine found");
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
