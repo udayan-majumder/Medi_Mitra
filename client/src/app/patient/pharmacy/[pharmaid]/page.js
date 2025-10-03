@@ -208,7 +208,7 @@ const handleSubmit = async(e) =>{
           </div>
         </div>
         {MapShow ? (
-          <div className="h-full w-full backdrop-blur-md absolute top-0 left-0 space-y-2">
+          <div className="h-full w-full backdrop-blur-md absolute top-0 left-0 space-y-2 flex flex-col justify-center items-center">
             <div className="h-[5%] w-full flex justify-start items-center">
               <button
                 className="h-[80%] min-w-[40px] bg-green-500 rounded-lg m-2 flex justify-center items-center"
@@ -233,7 +233,7 @@ const handleSubmit = async(e) =>{
                   fontWeight: "bold",
                 }}
                 icon={{
-                  url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                  url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                   labelOrigin: new google.maps.Point(18, 40),
                 }}
               />
