@@ -20,7 +20,7 @@ const router = useRouter()
     {
       icon: <Brain className="w-8 h-8" />,
       title: "AI-Powered Symptom Checker",
-      description: "Advanced LLM-based symptom analysis provides personalized health advice and triage recommendations. Our fine-tuned classifier adapts to regional health issues, suggesting local remedies or urgent consultation needs based on your symptoms."
+      description: "Advanced LLM-based symptom analysis provides personalized health advice and triage recommendations. It adapts suggests local remedies or urgent consultation needs based on your symptoms."
     },
     {
       icon: <MapPin className="w-8 h-8" />,
@@ -45,7 +45,7 @@ const router = useRouter()
     {
       icon: <Shield className="w-8 h-8" />,
       title: "Secure & Scalable Architecture",
-      description: "Containerized microservices architecture deployed on Docker and AWS EC2. Enterprise-grade security with encrypted data storage, HIPAA-compliant practices, and scalable infrastructure ready for nationwide expansion."
+      description: "Containerized microservices architecture deployed on Docker and AWS EC2. Scalable infrastructure ready for nationwide expansion."
     }
   ];
 
@@ -68,14 +68,11 @@ const router = useRouter()
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-16">
           <div className="text-center">
             <div className="flex justify-center mb-6">
              <img src='/logo.png'></img>
             </div>
-            <p className="text-xl sm:text-2xl text-gray-600 mb-4 font-medium">
-              Your Health Companion
-            </p>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
               A multilingual telemedicine platform bridging the healthcare gap in rural India. 
               Empowering communities with accessible, affordable, and quality healthcare through 
@@ -104,22 +101,6 @@ const router = useRouter()
               <span className="font-medium">Symptom Checker Repository</span>
             </a>
           </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="bg-white border-y border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-green-600 mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -239,7 +220,7 @@ const router = useRouter()
             <div className="bg-white rounded-xl p-6 shadow-md">
               <h3 className="font-bold text-green-600 mb-3">Backend</h3>
               <ul className="space-y-2 text-gray-700">
-                <li>• Python/Flask Microservices</li>
+                <li>• Python FASTAPI Microservices</li>
                 <li>• Amazon RDS PostgreSQL</li>
                 <li>• JWT Authentication</li>
                 <li>• REST/Webhook APIs</li>
@@ -281,10 +262,6 @@ const router = useRouter()
               <li className="flex items-start gap-2">
                 <span className="text-green-600 font-bold">✓</span>
                 <span>Reduced waiting times</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span>Extended consultation hours</span>
               </li>
             </ul>
           </div>
