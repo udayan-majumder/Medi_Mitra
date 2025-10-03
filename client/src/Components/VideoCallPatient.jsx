@@ -129,7 +129,7 @@ const VideoCallPatient = () => {
   const {Language} = LanguageStore()
   // Patient UI
   return (
-    <div className="min-h-screen bg-gray-800 poppins">
+    <div className="min-h-screen bg-gray-800 poppins py-12">
       {/* User Profile Section */}
       <div className="px-4 py-4 sticky top-0 bg-gray-800 z-10">
         <div className="flex items-center space-x-3">
