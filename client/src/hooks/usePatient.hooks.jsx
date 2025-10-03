@@ -4,6 +4,7 @@ import { UserStore } from "./userauth.hooks";
 import { GetAllProfiles } from "@/services/patient.services";
 import { GetPatientInfo } from "@/services/user.services";
 import { useRouter } from "next/navigation";
+import { Geolocation } from '@capacitor/geolocation';
 import CapacitorInfoStore from "@/store/capacitorInfo.store";
 const PatientContext = createContext(null);
 
@@ -109,19 +110,7 @@ const PatientWrapper = ({ children }) => {
     }
   }, [currentProfileId]);
 
- useEffect(() => {
-    if (IsMobileView) {
-      MobileFetchCoordinates();
-    } else {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCoords({
-          lat: position?.coords?.latitude,
-          lng: position?.coords?.longitude,
-          location: Location,
-        });
-      });
-    }
-  }, []);
+
    useEffect(() => {
     if (IsMobileView) {
       MobileFetchCoordinates();
