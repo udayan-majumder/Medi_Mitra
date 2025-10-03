@@ -31,12 +31,10 @@ export default function PatientLayout({ children }) {
 
   return (
     <PatientWrapper>
-      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
         <div className="h-screen w-full bg-white">
           <div className="h-[90%] w-full ">{children}</div>
           <MobileNavbarComponent height={10} width={100} />
         </div>
-      </APIProvider>
     </PatientWrapper>
   );
 }
