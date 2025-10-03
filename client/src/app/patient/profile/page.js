@@ -113,7 +113,7 @@ const handleSwitchProfile = ()=>{
             >
               <RefreshCcw size={18} strokeWidth={1.5} />
               <span className="text-sm font-medium">
-                Switch
+                {Language?.[LanguageType]?.switch}
               </span>
             </button>
             <button

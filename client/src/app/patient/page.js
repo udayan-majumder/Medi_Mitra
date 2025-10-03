@@ -9,17 +9,18 @@ import toast, { Toaster } from "react-hot-toast";
 import { AddnewProfile } from "@/services/patient.services";
 import { UserStore } from "@/hooks/userauth.hooks";
 import CapacitorInfoStore from "@/store/capacitorInfo.store";
+import { LanguageStore } from "@/store/Dictionary.store";
 
 export default function App() {
   {
     /*Default hooks */
   }
   const router = useRouter();
-  const { User } = UserStore();
+  const { User ,LanguageType} = UserStore();
   const { AllProfiles, setcurrentProfileId, setReload } = usePatientStore();
   const { DiseasesList, AllergiesList } = DiseasesStore();
   const { IsMobileView } = CapacitorInfoStore();
-
+  const  {Language} =LanguageStore()
   {
     /*custom hooks */
   }
@@ -103,8 +104,8 @@ export default function App() {
       <div className="h-[90%] w-[95%] flex flex-col justify-start items-center p-4 space-y-2">
         {/*Heading Div */}
         <div className="h-[10%] w-full p-2 text-[30px] ">
-          Welcome User
-          <p className="text-base p-1 text-gray-400">Select Your Profile</p>
+          {Language?.[LanguageType]?.welcome}
+          <p className="text-base p-1 text-gray-400">{Language?.[LanguageType]?.selectProfile}</p>
         </div>
 
         {/*All Profile Show */}
