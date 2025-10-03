@@ -7,6 +7,16 @@ const config: CapacitorConfig = {
   server: {
     url: "https://development-medimitra.udayan.fyi/",
   },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: false,
+  },
+  plugins: {
+    App: {
+      disableBackButtonHandler: false,
+    },
+  },
 };
 
 export default config;
