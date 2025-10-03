@@ -248,7 +248,7 @@ const handleSubmit = async(e) =>{
                   fontWeight: "bold",
                 }}
                 icon={{
-                  url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                  url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
                   labelOrigin: new google.maps.Point(18, 40),
                 }}
               />
