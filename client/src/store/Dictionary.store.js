@@ -75,6 +75,9 @@ export const LanguageStore = create((set) => ({
       Seemap: "See Map",
       NoMedicinesAvailable: "No medicines available at this pharmacy",
       CheckOtherPharmacies: "Try checking other pharmacies",
+      welcome: "Welcome User",
+      selectProfile: "Select Your Profile",
+      switch: "Switch",
     },
     hindi: {
       username: "यूजरनेम",
@@ -146,6 +149,9 @@ export const LanguageStore = create((set) => ({
       Seemap: "नक्शा खोलें",
       NoMedicinesAvailable: "इस फार्मेसी में कोई दवाएं उपलब्ध नहीं हैं",
       CheckOtherPharmacies: "अन्य फार्मेसियों को देखने की कोशिश करें",
+      welcome: "स्वागत है उपयोगकर्ता",
+      selectProfile: "अपनी प्रोफ़ाइल चुनें",
+      switch: "बदलें",
     },
     punjabi: {
       username: "ਯੂਜ਼ਰਨੇਮ",
@@ -217,6 +223,9 @@ export const LanguageStore = create((set) => ({
       Seemap: "ਨਕਸ਼ਾ ਖੋਲ੍ਹੋ",
       NoMedicinesAvailable: "ਇਸ ਫਾਰਮਸੀ ਵਿੱਚ ਕੋਈ ਦਵਾਈਆਂ ਉਪਲਬਧ ਨਹੀਂ ਹਨ",
       CheckOtherPharmacies: "ਹੋਰ ਫਾਰਮਸੀਆਂ ਦੇਖਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+      welcome: "ਸੁਆਗਤ ਹੈ ਯੂਜ਼ਰ",
+      selectProfile: "ਆਪਣੀ ਪ੍ਰੋਫ਼ਾਈਲ ਚੁਣੋ",
+      switch: "ਬਦਲੋ",
     },
   },
 }));
