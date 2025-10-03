@@ -1,7 +1,7 @@
 "use client";
 import { useContext, createContext, useState, useEffect } from "react";
 import { GetUserDetails } from "@/services/user.services";
-
+import { APIProvider } from "@vis.gl/react-google-maps";
 export const UserContext = createContext(null);
 
 export const UserStore = () => {
@@ -56,7 +56,9 @@ const Wrapper = ({ children }) => {
         isLoading,
       }}
     >
+       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
       {children}
+      </APIProvider>
     </UserContext.Provider>
   );
 };
