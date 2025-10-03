@@ -8,7 +8,6 @@ import { Map, Marker } from "@vis.gl/react-google-maps";
 import toast, { Toaster } from "react-hot-toast";
 import { AddnewProfile } from "@/services/patient.services";
 import { UserStore } from "@/hooks/userauth.hooks";
-import CapacitorInfoStore from "@/store/capacitorInfo.store";
 import { LanguageStore } from "@/store/Dictionary.store";
 
 export default function App() {
@@ -17,9 +16,8 @@ export default function App() {
   }
   const router = useRouter();
   const { User ,LanguageType} = UserStore();
-  const { AllProfiles, setcurrentProfileId, setReload } = usePatientStore();
+  const { AllProfiles, setcurrentProfileId, setReload,Coords,setCoords } = usePatientStore();
   const { DiseasesList, AllergiesList } = DiseasesStore();
-  const { IsMobileView } = CapacitorInfoStore();
   const  {Language} =LanguageStore()
   {
     /*custom hooks */
@@ -30,30 +28,9 @@ export default function App() {
   const [Diseases, setDiseases] = useState([DiseasesList[0]]);
   const [Allergies, setAllergies] = useState([AllergiesList[0]]);
   const [Location, setLocation] = useState("");
-  const [Coords, setCoords] = useState({});
+ 
 
-  useEffect(() => {
-    if (IsMobileView) {
-      MobileFetchCoordinates();
-    } else {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCoords({
-          lat: position?.coords?.latitude,
-          lng: position?.coords?.longitude,
-          location: Location,
-        });
-      });
-    }
-  }, []);
-
-  async function MobileFetchCoordinates() {
-    const position = await Geolocation.getCurrentPosition();
-    setCoords({
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      location: Location,
-    });
-  }
+  
 
   const handleSubmit = async (e) => {
     try {

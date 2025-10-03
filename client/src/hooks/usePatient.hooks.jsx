@@ -4,7 +4,7 @@ import { UserStore } from "./userauth.hooks";
 import { GetAllProfiles } from "@/services/patient.services";
 import { GetPatientInfo } from "@/services/user.services";
 import { useRouter } from "next/navigation";
-
+import CapacitorInfoStore from "@/store/capacitorInfo.store";
 const PatientContext = createContext(null);
 
 export const usePatientStore = () => {
@@ -21,7 +21,7 @@ const PatientWrapper = ({ children }) => {
   }
   const { User } = UserStore();
   const router = useRouter();
-
+  const {IsMobileView} = CapacitorInfoStore()
   {
     /*Custom hooks */
   }
@@ -29,6 +29,7 @@ const PatientWrapper = ({ children }) => {
   const [currentProfileId, setcurrentProfileId] = useState(null);
   const [PatientProfile, setPatientProfile] = useState(null);
   const [Reload, setReload] = useState(false);
+  const [Coords, setCoords] = useState({});
   {
     /*Fetch all exsisting profiles */
   }
@@ -107,6 +108,29 @@ const PatientWrapper = ({ children }) => {
     }
   }, [currentProfileId]);
 
+ useEffect(() => {
+    if (IsMobileView) {
+      MobileFetchCoordinates();
+    } else {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoords({
+          lat: position?.coords?.latitude,
+          lng: position?.coords?.longitude,
+          location: Location,
+        });
+      });
+    }
+  }, []);
+
+  async function MobileFetchCoordinates() {
+    const position = await Geolocation.getCurrentPosition();
+    setCoords({
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      location: Location,
+    });
+  }
+
   return (
     <PatientContext.Provider
       value={{
@@ -116,6 +140,8 @@ const PatientWrapper = ({ children }) => {
         PatientProfile,
         setPatientProfile,
         setReload,
+        Coords,
+        setCoords
       }}
     >
       {children}
