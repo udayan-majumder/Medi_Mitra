@@ -82,7 +82,9 @@ export default function App() {
         {/*Heading Div */}
         <div className="h-[10%] w-full p-2 text-[30px] ">
           {Language?.[LanguageType]?.welcome}
-          <p className="text-base p-1 text-gray-400">{Language?.[LanguageType]?.selectProfile}</p>
+          <p className="text-base p-1 text-gray-400">
+            {Language?.[LanguageType]?.selectProfile}
+          </p>
         </div>
 
         {/*All Profile Show */}
@@ -121,12 +123,16 @@ export default function App() {
                   <Plus className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">Create New Profile</h2>
-                  <p className="text-sm text-gray-500">Add your medical information</p>
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Create New Profile
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    Add your medical information
+                  </p>
                 </div>
               </div>
-              <button 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200" 
+              <button
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
                 onClick={() => setPopup(false)}
               >
                 <X className="w-5 h-5 text-gray-500" />
@@ -137,7 +143,9 @@ export default function App() {
             <div className="w-full flex-1 flex flex-col space-y-6 overflow-y-auto scrollbar-hide">
               {/*Username Input */}
               <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username
+                </label>
                 <div className="relative">
                   <input
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-[#0D7136] focus:ring-2 focus:ring-[#0D7136] focus:ring-opacity-20 outline-none transition-all duration-300 text-gray-800 placeholder-gray-400"
@@ -154,7 +162,9 @@ export default function App() {
 
               {/* Age Input */}
               <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Age
+                </label>
                 <div className="relative">
                   <input
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-[#0D7136] focus:ring-2 focus:ring-[#0D7136] focus:ring-opacity-20 outline-none transition-all duration-300 text-gray-800 placeholder-gray-400"
@@ -170,7 +180,9 @@ export default function App() {
 
               {/* Diseases Selection */}
               <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Diseases</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Diseases
+                </label>
                 <div className="relative">
                   <select
                     className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-xl focus:border-[#0D7136] focus:ring-2 focus:ring-[#0D7136] focus:ring-opacity-20 outline-none transition-all duration-300 text-gray-800 bg-white appearance-none hover:border-gray-400 cursor-pointer"
@@ -179,10 +191,16 @@ export default function App() {
                       setDiseases((prev) => [...prev, e.target.value]);
                     }}
                   >
-                    <option value="" className="text-gray-500">Select a disease</option>
+                    <option value="" className="text-gray-500">
+                      Select a disease
+                    </option>
                     {DiseasesList?.length > 0
                       ? DiseasesList?.map((items) => (
-                          <option key={items} value={items} className="text-gray-800">
+                          <option
+                            key={items}
+                            value={items}
+                            className="text-gray-800"
+                          >
                             {items}
                           </option>
                         ))
@@ -194,7 +212,9 @@ export default function App() {
 
               {/* Allergies Selection */}
               <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Allergies</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Allergies
+                </label>
                 <div className="relative">
                   <select
                     className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-xl focus:border-[#0D7136] focus:ring-2 focus:ring-[#0D7136] focus:ring-opacity-20 outline-none transition-all duration-300 text-gray-800 bg-white appearance-none hover:border-gray-400 cursor-pointer"
@@ -203,10 +223,16 @@ export default function App() {
                       setAllergies((prev) => [...prev, e.target.value]);
                     }}
                   >
-                    <option value="" className="text-gray-500">Select an allergy</option>
+                    <option value="" className="text-gray-500">
+                      Select an allergy
+                    </option>
                     {AllergiesList?.length > 0
                       ? AllergiesList?.map((items) => (
-                          <option key={items} value={items} className="text-gray-800">
+                          <option
+                            key={items}
+                            value={items}
+                            className="text-gray-800"
+                          >
                             {items}
                           </option>
                         ))
@@ -218,7 +244,9 @@ export default function App() {
 
               {/* Map */}
               <div className="w-full flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select Location</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Location
+                </label>
                 <div className="relative mb-3">
                   <input
                     type="text"
@@ -228,14 +256,20 @@ export default function App() {
                     onChange={(e) => {
                       e.preventDefault();
                       setLocation(e.target.value);
-                      setCoords((prev) => ({ ...prev, location: e.target.value }));
+                      setCoords((prev) => ({
+                        ...prev,
+                        location: e.target.value,
+                      }));
                     }}
                   />
                 </div>
                 <div className="w-full h-48 border border-gray-300 rounded-xl overflow-hidden shadow-inner">
                   <Map
                     style={{ width: "100%", height: "100%" }}
-                    defaultCenter={Coords}
+                    defaultCenter={{
+                      lat: 22.9734,
+                      lng: 78.6569,
+                    }}
                     defaultZoom={6}
                     gestureHandling="greedy"
                     disableDefaultUI
@@ -250,12 +284,14 @@ export default function App() {
                     <Marker position={Coords}></Marker>
                   </Map>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Click on the map to set your exact location</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Click on the map to set your exact location
+                </p>
               </div>
 
               {/* Submit Button */}
               <div className="w-full pt-4">
-                <button 
+                <button
                   className="w-full bg-gradient-to-r from-[#0D7136] to-[#7CBD27] text-white py-3 px-6 rounded-xl font-medium hover:from-[#0D7136] hover:to-[#4CAF50] transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                   type="submit"
                 >
