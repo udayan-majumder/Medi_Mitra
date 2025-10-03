@@ -206,6 +206,7 @@ const VideoCallPatient = () => {
                   <div className="relative">
                     <Image
                       src="/doctor-consulting-vector.png"
+                      priority={true}
                       alt="doctor-consulting"
                       width={80}
                       height={80}

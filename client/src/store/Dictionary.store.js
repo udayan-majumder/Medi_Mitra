@@ -44,7 +44,7 @@ export const LanguageStore = create((set) => ({
       Availability: "Availability",
       PerStrip: "Per Strip",
       FetchingStore: "Fetching Stores ...",
-      FetchingMedicine: "Fetching Medicine",
+      FetchMedicine: "Fetching Medicine",
       LoggingOut: "Logging out...",
       LogoutSuccess: "Logged out successfully",
       LogoutFailed: "Logout failed. Please try again.",
@@ -73,6 +73,8 @@ export const LanguageStore = create((set) => ({
       CurrentLocation: "Current Location",
       Done: "Done",
       Seemap: "See Map",
+      NoMedicinesAvailable: "No medicines available at this pharmacy",
+      CheckOtherPharmacies: "Try checking other pharmacies",
     },
     hindi: {
       username: "यूजरनेम",
@@ -142,6 +144,8 @@ export const LanguageStore = create((set) => ({
       CurrentLocation: "वर्तमान स्थान",
       Done: "संपन्न",
       Seemap: "नक्शा खोलें",
+      NoMedicinesAvailable: "इस फार्मेसी में कोई दवाएं उपलब्ध नहीं हैं",
+      CheckOtherPharmacies: "अन्य फार्मेसियों को देखने की कोशिश करें",
     },
     punjabi: {
       username: "ਯੂਜ਼ਰਨੇਮ",
@@ -211,6 +215,8 @@ export const LanguageStore = create((set) => ({
       CurrentLocation: "ਮੌਜੂਦਾ ਸਥਾਨ",
       Done: "ਹੋ ਗਿਆ",
       Seemap: "ਨਕਸ਼ਾ ਖੋਲ੍ਹੋ",
+      NoMedicinesAvailable: "ਇਸ ਫਾਰਮਸੀ ਵਿੱਚ ਕੋਈ ਦਵਾਈਆਂ ਉਪਲਬਧ ਨਹੀਂ ਹਨ",
+      CheckOtherPharmacies: "ਹੋਰ ਫਾਰਮਸੀਆਂ ਦੇਖਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
     },
   },
 }));

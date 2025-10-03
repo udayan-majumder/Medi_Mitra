@@ -9,7 +9,6 @@ import { ChevronLeft, Search, Store, MapPinCheck, MapPinX, X } from "lucide-reac
 import { FetchPharmacyDetails, GetPharamacyStock } from "@/services/pharmacy.services";
 import { LanguageStore } from "@/store/Dictionary.store";
 import { Map ,Marker} from "@vis.gl/react-google-maps";
-import MedicalLoader from "@/Components/MedicalLoader";
 import { usePatientStore } from "@/hooks/usePatient.hooks";
 
 export default function PharmacyStockpage(){
@@ -26,6 +25,7 @@ const [currentProfile, setCurrentProfile] = useState([])
 const  [currentProfileDetails,setCurrentProfileDetails] = useState([])
 const  [SearchParam,setSearchParam] = useState(null)
 const   [MapShow,setMapShow] = useState(false)
+const [isLoading, setIsLoading] = useState(true)
 
 
 useEffect(()=>{
@@ -47,6 +47,7 @@ if(currentProfile?.id){
 
 const FetchStock = async()=>{
     try{
+       setIsLoading(true)
        const res = await GetPharamacyStock(currentProfile?.id)
        const newres = await FetchPharmacyDetails(currentProfile?.id)
        
@@ -55,11 +56,15 @@ const FetchStock = async()=>{
        }
        if(!newres?.isPharmacy){
         router.push("/patient/pharmacy")
+        return
        }
-       setMedicineInventory(res?.data?.list)
+       setMedicineInventory(res?.data?.list || [])
        setCurrentProfileDetails(newres?.isPharmacy)
     }catch(e){
-    console.error(e)
+       console.error(e)
+       setMedicineInventory([])
+    }finally{
+       setIsLoading(false)
     }
 }
 const handleSubmit = async(e) =>{
@@ -145,7 +150,16 @@ const handleSubmit = async(e) =>{
 
           {/*List item div */}
           <div className="h-[74%] w-full p-[22px] flex flex-col justify-start items-start overflow-y-scroll space-y-3">
-            {MedicineInventory?.length > 0 ? (
+            {isLoading ? (
+              <div className="h-full w-full flex flex-col justify-center items-center space-y-3">
+                {/* Spinner */}
+                <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                {/* Text */}
+                <div className="text-gray-300 text-sm">
+                  {Language?.[LanguageType]?.FetchMedicine}
+                </div>
+              </div>
+            ) : MedicineInventory?.length > 0 ? (
               MedicineInventory?.filter((items) =>
                 items?.medicine_name
                   ?.toLowerCase()
@@ -178,12 +192,16 @@ const handleSubmit = async(e) =>{
               ))
             ) : (
               <div className="h-full w-full flex flex-col justify-center items-center space-y-3">
-                {/* Spinner */}
-                <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-
-                {/* Text */}
-                <div className="text-white text-sm">
-                  {Language?.[LanguageType]?.FetchMedicine}
+                {/* Empty State Icon */}
+                <div className="w-16 h-16 bg-gray-600 rounded-full flex justify-center items-center">
+                  <Store color="white" size={32} />
+                </div>
+                {/* Empty State Text */}
+                <div className="text-white text-sm text-center">
+                  {Language?.[LanguageType]?.NoMedicinesAvailable}
+                </div>
+                <div className="text-gray-400 text-xs text-center">
+                  {Language?.[LanguageType]?.CheckOtherPharmacies}
                 </div>
               </div>
             )}
