@@ -241,8 +241,8 @@ export default function App() {
                     disableDefaultUI
                     onClick={(e) => {
                       setCoords({
-                        lat: e.detail.latLng.lat,
-                        lng: e.detail.latLng.lng,
+                        lat: e?.detail?.latLng?.lat,
+                        lng: e?.detail?.latLng?.lng,
                         location: Location,
                       });
                     }}

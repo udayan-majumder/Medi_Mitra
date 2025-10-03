@@ -30,6 +30,7 @@ const PatientWrapper = ({ children }) => {
   const [PatientProfile, setPatientProfile] = useState(null);
   const [Reload, setReload] = useState(false);
   const [Coords, setCoords] = useState({});
+  const [Location,setLocation] = useState("")
   {
     /*Fetch all exsisting profiles */
   }
@@ -121,12 +122,25 @@ const PatientWrapper = ({ children }) => {
       });
     }
   }, []);
+   useEffect(() => {
+    if (IsMobileView) {
+      MobileFetchCoordinates();
+    } else {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoords({
+          lat: position?.coords?.latitude,
+          lng: position?.coords?.longitude,
+          location: Location,
+        });
+      });
+    }
+  }, [IsMobileView]);
 
   async function MobileFetchCoordinates() {
     const position = await Geolocation.getCurrentPosition();
     setCoords({
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
+      lat: position?.coords?.latitude,
+      lng: position?.coords?.longitude,
       location: Location,
     });
   }
