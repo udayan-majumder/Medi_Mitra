@@ -20,7 +20,7 @@ export default function AuthLayout({ children }) {
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
-      <div className="absolute bottom-2 left-2 h-[40px] w-[140px] bg-black rounded-[60px] flex justify-center items-center shadow-2xl active:bg-gray-400 ">
+      <div className="absolute bottom-5 left-2 h-[40px] w-[140px] bg-black rounded-[60px] flex justify-center items-center shadow-2xl active:bg-gray-400 ">
         <button
           onClick={() => router.replace("/about")}
           className="h-full w-full flex justify-center items-center gap-2 cursor-pointer"

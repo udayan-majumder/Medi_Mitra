@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import Wrapper from "@/hooks/userauth.hooks";
+import BackButtonHandler from "@/Components/BackButtonHandler";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         <Wrapper>
+            <BackButtonHandler />
             {children}
         </Wrapper>
       </body>
