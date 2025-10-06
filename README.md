@@ -24,7 +24,7 @@ Use Medi Mitra to:
 2) Create an account or log in.  
 3) Choose your role: Patient, Doctor, or Pharmacy.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741555/1_loginregister_a9oxmv.gif" width="1400" alt="Login Demo">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747189/1_loginregister_hividq.gif" width="1400" alt="Login Demo">
 
 ### Option B — Android App
 1) Download the APK from the provided link (the app is not on app stores).  
@@ -39,7 +39,7 @@ Choose your language on the login screen.
 2) The app/website will render in that language after you log in.  
 3) To change language later, log out, choose another language on the login page, and log in again.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741542/2_multiLanguage_eke3o5.gif" width="1400" alt="Change Language">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747189/2_multiLanguage_ro0gv4.gif" width="1400" alt="Change Language">
 
 ## 🩺 Role-based Login
 
@@ -65,24 +65,24 @@ Use the following **test credentials** to explore each role:
 
 ---
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741545/3_RoleBasedLogin_jfqu6l.gif" width="1400" alt="Role Based Login">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747191/3_RoleBasedLogin_oz5bks.gif" width="1400" alt="Role Based Login">
 
 ## Patient Profile
 Keep your health info handy for faster care.
 
 **First-time login:**
-1) Right after creating or logging into a new account, you’ll be asked to fill your patient details once (name, contact, health info as available).  
+1) Right after creating or logging into a new account, you'll be asked to fill your patient details once (name, contact, health info as available).  
 2) Save when done.
 
 **Switch or add profiles later:**
 1) Open the Profile tab.  
 2) Tap "Switch Profiles".  
-3) You’ll be redirected to the Choose Profile screen.  
+3) You'll be redirected to the Choose Profile screen.  
 4) Select an existing profile, or tap Add New Profile to create another one. Adding a new profile follows the same steps as first-time login.
 
 You can edit any profile anytime.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741546/4_PatientProfile_tfruzl.gif" width="400" alt="Patient Profile">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747195/4_PatientProfile_zobht5.gif" width="400" alt="Patient Profile">
 
 ## AI Symptom Checker (with Voice)
 Get guidance on symptoms before you visit a doctor.
@@ -95,18 +95,18 @@ Tips:
 - Be clear and speak in a quiet place.  
 - Use your preferred language when available.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741571/5_AISymptomChecker_zh3yy8.gif" width="400" alt="AI Symptom Checker">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747195/5_AISymptomChecker_z7krpj.gif" width="400" alt="AI Symptom Checker">
 
 ## Upload Prescription
 Share your prescription with pharmacies for quick fulfilment.
 1) Go to Prescriptions or Upload Prescription.  
 2) Take a photo or select a file.  
 3) Check that the image is clear and readable.  
-4) Submit. You’ll be notified when a pharmacy updates status.
+4) Submit. You'll be notified when a pharmacy updates status.
 
 Note: Only upload prescriptions from licensed medical professionals.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741540/6_UploadPescription_jsrysa.gif" width="400" alt="Upload Prescription">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747198/6_UploadPescription_a0mvio.gif" width="400" alt="Upload Prescription">
 
 ## Video Call with a Doctor
 Speak with a doctor from home.
@@ -117,7 +117,7 @@ Speak with a doctor from home.
 Good to know:
 - A stable internet connection improves video quality.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741541/7_VideocallPatient_mugfvq.gif" width="400" alt="Patient Video Call">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747195/7_VideocallPatient_caaqwv.gif" width="400" alt="Patient Video Call">
 
 ## Find Pharmacies, Live Stock, and Map
 See nearby pharmacies and check medicine availability in real time.
@@ -126,16 +126,16 @@ See nearby pharmacies and check medicine availability in real time.
 3) Search for a medicine or browse pharmacies.  
 4) View live stock indicators and directions on the map.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741564/8_PharmacyStockAnd_Map_et1x0d.gif" width="400" alt="Pharmacy Map">
+<img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2lyczJ5Nm83eTRwczVscjh2NHF0MHppaHJyM2JkMnV6ZnZ6ZDF1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4SIfAENOmZE2I6gPg7/giphy.gif" width="400" alt="Pharmacy Map">
 
 ## Doctor Panel
 Designed for doctors to manage consultations.
 1) Complete your Doctor Profile (specialization, experience, timings).  
-2) Set availability so patients know when you’re online.  
+2) Set availability so patients know when you're online.  
 3) Start the video call.  
 4) End calls and update notes where available.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741546/9_DoctorVideoCall_dw947r.gif" width="1400" alt="Doctor Panel">
+<img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGQ3OWZ3eDVsN2hmMHdwY3pwOXVrOWhsNTY4cXJrdDE4NWlzb2d3aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UMUQB61YaOrAciRhIY/giphy.gif" width="1400" alt="Doctor Panel">
 
 ## Pharmacy Panel
 Tools for pharmacies to manage store presence and stock.
@@ -143,7 +143,7 @@ Tools for pharmacies to manage store presence and stock.
 2) Update live stock so patients see accurate availability.  
 3) Keep your map location accurate for easy navigation.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759743156/Screencast_From_2025-10-06_15-00-55_urrubb.gif" width="1400" alt="Pharmacy Panel">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759755398/Screencast_From_2025-10-06_15-00-55_nk5c6l.gif" width="1400" alt="Pharmacy Panel">
 
 ## Inventory Management (Add, Update, Delete, Stock)
 Pharmacies can manage inventory in a few taps.
@@ -152,4 +152,4 @@ Pharmacies can manage inventory in a few taps.
 3) Update quantities as stock changes.  
 4) Delete discontinued items.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741538/1-_PharmacyPanel_hjtbe9.gif" width="1400" alt="Inventory Management">
+<img src="https://res.cloudinary.com/dfnc2knvg/image/upload/v1759747192/1-_PharmacyPanel_voakor.gif" width="1400" alt="Inventory Management">
