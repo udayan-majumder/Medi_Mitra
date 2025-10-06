@@ -153,7 +153,7 @@ See nearby pharmacies and check medicine availability in real time.
 4) View live stock indicators and directions on the map.
 
 <p align="center">
-  <img src="./assets/8_PharmacyStockAndMap....gif" width="400" alt="Pharmacy Map and Stock">
+  <img src="./assets/8_PharmacyStockAndMap.gif" width="400" alt="Pharmacy Map and Stock">
 </p>
 
 ---
