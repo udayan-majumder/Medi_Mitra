@@ -24,7 +24,7 @@ Use Medi Mitra to:
 2) Create an account or log in.  
 3) Choose your role: Patient, Doctor, or Pharmacy.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741555/1_loginregister_a9oxmv.gif" width="1200" alt="Login Demo">
+<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741555/1_loginregister_a9oxmv.gif" width="1400" alt="Login Demo">
 
 ### Option B — Android App
 1) Download the APK from the provided link (the app is not on app stores).  
@@ -39,7 +39,7 @@ Choose your language on the login screen.
 2) The app/website will render in that language after you log in.  
 3) To change language later, log out, choose another language on the login page, and log in again.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741542/2_multiLanguage_eke3o5.gif" width="1200" alt="Change Language">
+<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741542/2_multiLanguage_eke3o5.gif" width="1400" alt="Change Language">
 
 ## 🩺 Role-based Login
 
@@ -65,7 +65,7 @@ Use the following **test credentials** to explore each role:
 
 ---
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741545/3_RoleBasedLogin_jfqu6l.gif" width="1200" alt="Role Based Login">
+<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741545/3_RoleBasedLogin_jfqu6l.gif" width="1400" alt="Role Based Login">
 
 ## Patient Profile
 Keep your health info handy for faster care.
@@ -135,7 +135,7 @@ Designed for doctors to manage consultations.
 3) Start the video call.  
 4) End calls and update notes where available.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741546/9_DoctorVideoCall_dw947r.gif" width="1200" alt="Doctor Panel">
+<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741546/9_DoctorVideoCall_dw947r.gif" width="1400" alt="Doctor Panel">
 
 ## Pharmacy Panel
 Tools for pharmacies to manage store presence and stock.
@@ -143,7 +143,7 @@ Tools for pharmacies to manage store presence and stock.
 2) Update live stock so patients see accurate availability.  
 3) Keep your map location accurate for easy navigation.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759743156/Screencast_From_2025-10-06_15-00-55_urrubb.gif" width="1200" alt="Pharmacy Panel">
+<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759743156/Screencast_From_2025-10-06_15-00-55_urrubb.gif" width="1400" alt="Pharmacy Panel">
 
 ## Inventory Management (Add, Update, Delete, Stock)
 Pharmacies can manage inventory in a few taps.
@@ -152,4 +152,4 @@ Pharmacies can manage inventory in a few taps.
 3) Update quantities as stock changes.  
 4) Delete discontinued items.
 
-<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741538/1-_PharmacyPanel_hjtbe9.gif" width="1200" alt="Inventory Management">
+<img src="https://res.cloudinary.com/dfnc2knvg/video/upload/v1759741538/1-_PharmacyPanel_hjtbe9.gif" width="1400" alt="Inventory Management">
