@@ -211,7 +211,7 @@ medi-mitra/
 
 ## Technical Stack
 
-- **Frontend:** React.js (Capacitor)
+- **Frontend:** React.js (Capacitor) / Next.js
 - **Backend:** Node.js / Express / Dockerized
 - **Database:** AWS RDS PostgreSQL
 - **Video Calling:** WebRTC
