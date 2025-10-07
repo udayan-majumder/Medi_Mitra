@@ -211,9 +211,9 @@ medi-mitra/
 
 ## Technical Stack
 
-- **Frontend:** React.js / React Native
-- **Backend:** Node.js / Express
-- **Database:** MongoDB / PostgreSQL
+- **Frontend:** React.js (Capacitor)
+- **Backend:** Node.js / Express / Dockerized
+- **Database:** AWS RDS PostgreSQL
 - **Video Calling:** WebRTC
 - **AI/ML:** Symptom analysis integration
 - **Maps:** Google Maps API / Mapbox
@@ -225,7 +225,7 @@ medi-mitra/
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
-- MongoDB / PostgreSQL
+- AWS RDS PostgreSQL
 
 ### Backend Setup
 ```bash
